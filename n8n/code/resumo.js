@@ -1,6 +1,7 @@
 // === Resumo das 9h · o que está esperando o Russo ===
 // Entrada: resposta do Notion (databases/query). Saída: 3 parâmetros do template "resumo_fichas", ou nada.
 const res  = ($input.first().json && $input.first().json.results) || [];
+const cfg  = $('Config do resumo').first().json;
 const DIA  = 86400000;
 const agora = Date.now();
 
@@ -35,6 +36,14 @@ return [{
       limpa(esperando.map(linha).join(' · ') || 'nenhuma', 400),
       limpa(cutucar.map(pg => nomeDe(pg) + ' (' + semMexer(pg) + 'd)').join(' · ') || 'ninguém', 200),
     ],
-    notionDb: String($env.NOTION_DB_ATENDIMENTOS || '').replace(/-/g, ''),
+    waTexto: [
+      'Bom dia. Fichas esperando resposta: ' + esperando.length,
+      '',
+      esperando.map(linha).join('\n') || 'nenhuma',
+      '',
+      'Orçados pra cutucar: ' + (cutucar.map(pg => nomeDe(pg) + ' (' + semMexer(pg) + 'd)').join(' · ') || 'ninguém'),
+    ].join('\n'),
+    notionDb: cfg.db,
+    wa: cfg.wa,
   },
 }];

@@ -1,5 +1,5 @@
 {
-  "name": "Russo · Pré-atendimento (Tally → Notion → WhatsApp)",
+  "name": "Russo · Pré-atendimento (ficha → Notion → WhatsApp)",
   "nodes": [
     {
       "parameters": {
@@ -9,18 +9,19 @@
         "options": {}
       },
       "id": "a1000000-0000-4000-8000-000000000001",
-      "name": "Webhook do Tally",
+      "name": "Webhook da ficha",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
         -460,
         300
       ],
-      "webhookId": "russo-preatendimento"
+      "webhookId": "russo-preatendimento",
+      "notes": "Recebe a ficha do site (função do Netlify) ou do Tally, no mesmo formato. Recomendado: Authentication = Header Auth com o header x-ficha-token igual ao FICHA_TOKEN do Netlify."
     },
     {
       "parameters": {
-        "jsCode": "// === Pré-atendimento Russo · normaliza o payload do Tally e pontua o lead ===\n// Entrada: webhook do Tally (FORM_RESPONSE). Saída: 1 item pronto pro Notion + WhatsApp.\n\nconst body = $input.first().json;\nconst fields = (body && body.data && body.data.fields) || [];\n\n// Tally manda [{key, label, type, value, options?}]. Vira um objeto label -> valor legível.\nconst raw = {};\nfor (const f of fields) {\n  let v = f.value;\n  if (Array.isArray(v) && Array.isArray(f.options)) {\n    // múltipla escolha / dropdown / checkboxes: value é array de ids\n    v = v.map(id => (f.options.find(o => o.id === id) || {}).text).filter(Boolean).join(', ');\n  } else if (Array.isArray(v) && v.length && v[0] && v[0].url) {\n    // upload de arquivos\n    v = v.map(a => a.url);\n  } else if (Array.isArray(v)) {\n    v = v.join(', ');\n  }\n  raw[String(f.label || '').trim()] = v;\n}\n\nconst get = (label, fb = '') => {\n  const v = raw[label];\n  return (v === undefined || v === null || v === '') ? fb : v;\n};\nconst arr = (label) => {\n  const v = raw[label];\n  return Array.isArray(v) ? v : (v ? [v] : []);\n};\n\n// --- campos ---\nconst nome        = String(get('Como te chamo?', 'Sem nome'));\nconst insta       = String(get('Seu @ do Instagram')).trim().replace(/^@/, '').replace(/\\s+/g, '');\nconst whats       = String(get('WhatsApp')).replace(/\\D/g, '');\nconst cidadeOpc   = String(get('De onde você vem?'));\nconst cidadeOutra = String(get('Qual cidade?')).trim();\nconst cidade      = cidadeOutra || cidadeOpc;\nconst regiao      = /fora da grande vit/i.test(cidadeOpc) ? '🚗 Fora da Grande Vitória' : (cidadeOpc ? '🏠 Grande Vitória' : '');\nconst experiencia = String(get('É sua primeira tatuagem?'));\nconst ideia       = String(get('Me conta a ideia'));\nconst refs        = arr('Referências');\nconst refLink     = String(get('Link de pasta / Pinterest'));\nconst local       = String(get('Onde no corpo?'));\nconst fotoLocal   = arr('Foto do local');\nconst tamanho     = String(get('Tamanho aproximado'));\nconst coberturaTx = String(get('É cobertura de uma tattoo antiga?'));\nconst cobertura   = /^sim/i.test(coberturaTx.trim());\nconst fotoCover   = arr('Foto da tattoo que vai ser coberta');\nconst cor         = String(get('Preto e cinza ou colorido?'));\nconst faixa       = String(get('Quanto você tem pra investir nesse projeto?'));\nconst prazo       = String(get('Quando você quer fazer?'));\nconst dataLimite  = String(get('Qual a data?'));\nconst disp        = String(get('Quando você consegue vir?'));\nconst origem      = String(get('Como você chegou até mim?'));\n\n// --- pontuação ---\nlet score = 0;\nconst porque = [];\nconst add = (p, motivo) => { score += p; porque.push((p > 0 ? '+' : '') + p + ' ' + motivo); };\n\nif (/j[áa] me tatuou/i.test(experiencia)) add(3, 'já é cliente');\nif (/indica/i.test(origem)) add(2, 'veio por indicação');\nif (refs.length || refLink) add(2, 'mandou referência');\nif (fotoLocal.length) add(2, 'mandou foto do local');\n\nif (/4\\.?000|acima/i.test(faixa)) add(3, 'faixa alta');\nelse if (/2\\.?000/i.test(faixa)) add(3, 'faixa alta');\nelse if (/1\\.?000/i.test(faixa)) add(2, 'faixa média');\nelse if (/500/i.test(faixa)) add(1, 'faixa inicial');\n\nif (/data marcada/i.test(prazo)) add(2, 'tem data marcada');\nelse if (/30 dias/i.test(prazo)) add(1, 'quer nos próximos 30 dias');\n\nif (ideia.length > 120) add(1, 'descreveu bem a ideia');\nif (ideia.length > 0 && ideia.length < 40) add(-1, 'ideia vaga');\nif (cobertura && !fotoCover.length) add(-2, 'cobertura sem foto');\nif (/at[ée] R\\$ ?500/i.test(faixa) && /(15|25|fechamento)/i.test(tamanho)) add(-2, 'orçamento x tamanho incompatível');\n\nconst termometro = score >= 8 ? '🔥 Quente' : (score >= 4 ? '🌤 Morno' : '❄️ Frio');\n\n// --- helpers Notion ---\nconst txt  = (s) => ({ rich_text: [{ type: 'text', text: { content: String(s || '').slice(0, 1900) } }] });\nconst sel  = (s) => (s ? { select: { name: String(s).slice(0, 90) } } : { select: null });\nconst file = (urls, prefixo) => ({\n  files: (urls || []).slice(0, 10).map((u, i) => ({\n    type: 'external',\n    name: prefixo + '-' + (i + 1),\n    external: { url: u },\n  })),\n});\n\nconst waLink = whats ? 'https://wa.me/' + (whats.length <= 11 ? '55' + whats : whats) : '';\nconst igLink = insta ? 'https://instagram.com/' + insta : '';\n\nconst notion = {\n  parent: { database_id: $env.NOTION_DB_ATENDIMENTOS || 'COLE_AQUI_O_ID_DO_DATABASE' },\n  icon: { type: 'emoji', emoji: score >= 8 ? '🔥' : (score >= 4 ? '🌤' : '❄️') },\n  properties: {\n    'Cliente':                { title: [{ type: 'text', text: { content: nome } }] },\n    'Status':                 sel('🆕 Novo'),\n    'Entrou em':              { date: { start: (body && body.data && body.data.createdAt) || new Date().toISOString() } },\n    'Termômetro':             sel(termometro),\n    'Score':                  { number: score },\n    'Por que essa nota':      txt(porque.join(' · ')),\n    'Instagram':              { url: igLink || null },\n    'WhatsApp':               { url: waLink || null },\n    'Cidade':                 txt(cidade),\n    'Região':                 sel(regiao),\n    'Experiência':            sel(experiencia),\n    'Ideia':                  txt(ideia),\n    'Local do corpo':         sel(local),\n    'Tamanho':                sel(tamanho),\n    'Cor':                    sel(cor),\n    'Cobertura':              { checkbox: cobertura },\n    'Faixa de investimento':  sel(faixa),\n    'Prazo':                  sel(prazo),\n    'Data limite':            dataLimite ? { date: { start: dataLimite } } : { date: null },\n    'Disponibilidade':        txt(disp),\n    'Origem':                 sel(origem),\n    'Referências':            file(refs, 'ref'),\n    'Foto do local':          file(fotoLocal, 'local'),\n    'Cover atual':            file(fotoCover, 'cover'),\n  },\n  children: [\n    { object: 'block', type: 'heading_3', heading_3: { rich_text: [{ type: 'text', text: { content: 'A ideia, nas palavras do cliente' } }] } },\n    { object: 'block', type: 'quote', quote: { rich_text: [{ type: 'text', text: { content: ideia || '(não descreveu)' } }] } },\n    { object: 'block', type: 'heading_3', heading_3: { rich_text: [{ type: 'text', text: { content: 'Rascunho de resposta' } }] } },\n    { object: 'block', type: 'paragraph', paragraph: { rich_text: [{ type: 'text', text: { content:\n      'Fala ' + nome.split(' ')[0] + '! Curti sua ideia. ' +\n      (cobertura ? 'Cobertura dá pra fazer. O desenho tem que nascer em cima do que já tem, te explico. ' : '') +\n      'Sobre a ideia: ' } }] } },\n  ],\n};\n\n// WhatsApp (template \"ficha_quente\"): parâmetro não aceita quebra de linha, tab nem 4+ espaços seguidos\nconst limpa = (t, max) => {\n  const v = String(t || '').replace(/[\\r\\n\\t]+/g, ' ').replace(/ {4,}/g, '   ').trim();\n  return v.length > max ? v.slice(0, max - 1) + '…' : (v || '-');\n};\nconst primeiro   = (nome.split(' ')[0] || 'Sem nome');\nconst prazoCurto = /data marcada/i.test(prazo) ? ('data ' + (dataLimite || 'marcada'))\n                 : (/30 dias/i.test(prazo) ? '30 dias' : 'sem pressa');\nconst faixaCurta = faixa.replace('Prefiro que você me diga', 'sem faixa').replace(/R\\$ ?/g, 'R$');\n// {{1}} vai na 1a linha, a que aparece na tela bloqueada: \"🔥 Ficha quente: Marcos · R$2.000 a 4.000 · 30 dias · Coxa\"\nconst waParams = [\n  limpa([primeiro, faixaCurta, prazoCurto, local].filter(Boolean).join(' · '), 80),\n  limpa(ideia, 220),\n  limpa([\n    tamanho, cor, cobertura ? 'COBERTURA' : '', cidade, insta ? '@' + insta : '',\n    refs.length + (refs.length === 1 ? ' referência' : ' referências') + (fotoLocal.length ? ' + foto do local' : ' · SEM foto do local'),\n  ].filter(Boolean).join(' · '), 300),\n];\n\nreturn [{\n  json: {\n    nome, insta, whats, waLink, igLink, cidade, ideia, local, tamanho, cor,\n    cobertura, faixa, prazo, dataLimite, origem, experiencia, regiao,\n    refs, fotoLocal, fotoCover,\n    score, termometro, porque: porque.join(' · '),\n    waParams,\n    notion,\n  },\n}];\n"
+        "jsCode": "// === Pré-atendimento Russo · normaliza o payload do Tally e pontua o lead ===\n// Entrada: webhook do Tally (FORM_RESPONSE). Saída: 1 item pronto pro Notion + WhatsApp.\n\nconst body = $input.first().json;\nconst fields = (body && body.data && body.data.fields) || [];\n\n// Tally manda [{key, label, type, value, options?}]. Vira um objeto label -> valor legível.\nconst raw = {};\nfor (const f of fields) {\n  let v = f.value;\n  if (Array.isArray(v) && Array.isArray(f.options)) {\n    // múltipla escolha / dropdown / checkboxes: value é array de ids\n    v = v.map(id => (f.options.find(o => o.id === id) || {}).text).filter(Boolean).join(', ');\n  } else if (Array.isArray(v) && v.length && v[0] && v[0].url) {\n    // upload de arquivos\n    v = v.map(a => a.url);\n  } else if (Array.isArray(v)) {\n    v = v.join(', ');\n  }\n  raw[String(f.label || '').trim()] = v;\n}\n\nconst get = (label, fb = '') => {\n  const v = raw[label];\n  return (v === undefined || v === null || v === '') ? fb : v;\n};\nconst arr = (label) => {\n  const v = raw[label];\n  return Array.isArray(v) ? v : (v ? [v] : []);\n};\n\n// --- campos ---\nconst nome        = String(get('Como te chamo?', 'Sem nome'));\nconst insta       = String(get('Seu @ do Instagram')).trim().replace(/^@/, '').replace(/\\s+/g, '');\nconst whats       = String(get('WhatsApp')).replace(/\\D/g, '');\nconst cidadeOpc   = String(get('De onde você vem?'));\nconst cidadeOutra = String(get('Qual cidade?')).trim();\nconst cidade      = cidadeOutra || cidadeOpc;\nconst regiao      = /fora da grande vit/i.test(cidadeOpc) ? '🚗 Fora da Grande Vitória' : (cidadeOpc ? '🏠 Grande Vitória' : '');\nconst experiencia = String(get('É sua primeira tatuagem?'));\nconst ideia       = String(get('Me conta a ideia'));\nconst refs        = arr('Referências');\nconst refLink     = String(get('Link de pasta / Pinterest'));\nconst local       = String(get('Onde no corpo?'));\nconst fotoLocal   = arr('Foto do local');\nconst tamanho     = String(get('Tamanho aproximado'));\nconst coberturaTx = String(get('É cobertura de uma tattoo antiga?'));\nconst cobertura   = /^sim/i.test(coberturaTx.trim());\nconst fotoCover   = arr('Foto da tattoo que vai ser coberta');\nconst cor         = String(get('Preto e cinza ou colorido?'));\nconst faixa       = String(get('Quanto você tem pra investir nesse projeto?'));\nconst prazo       = String(get('Quando você quer fazer?'));\nconst dataLimite  = String(get('Qual a data?'));\nconst disp        = String(get('Quando você consegue vir?'));\nconst origem      = String(get('Como você chegou até mim?'));\nconst quem        = String(get('Quem te indicou?'));\nconst coverIdade  = String(get('Há quanto tempo ela foi feita?'));\nconst video       = String(get('Vídeo do local'));\nconst combinado   = arr('Combinado?').length > 0 || !!get('Combinado?');\n\n// Configuração: lê do ambiente do n8n. Se o seu n8n bloqueia $env (N8N_BLOCK_ENV_ACCESS_IN_NODE=true),\n// preencha o CFG aqui no editor do n8n. Não commite valores reais.\nconst CFG = {\n  NOTION_DB_ATENDIMENTOS: '',\n  NOTION_USER_ID: '',      // id do seu usuário no Notion: a menção faz o app te notificar\n  WA_PHONE_NUMBER_ID: '',\n  WA_RUSSO: '',            // quem recebe o aviso, só dígitos com 55 + DDD\n  WA_API_VERSION: 'v23.0',\n  WA_MODO: 'modelo',       // 'texto' no teste com o número de teste da Meta (janela de 24h)\n  WA_AVISAR_TODAS: 'nao',  // 'sim' no teste: avisa toda ficha, não só as quentes\n};\nconst envGet = (k) => { let v; try { v = $env[k]; } catch (e) {} return (v !== undefined && v !== '') ? v : CFG[k]; };\n\n// --- pontuação ---\nlet score = 0;\nconst porque = [];\nconst add = (p, motivo) => { score += p; porque.push((p > 0 ? '+' : '') + p + ' ' + motivo); };\n\nif (/j[áa] me tatuou/i.test(experiencia)) add(3, 'já é cliente');\nif (/indica/i.test(origem)) add(2, 'veio por indicação');\nif (refs.length || refLink) add(2, 'mandou referência');\nif (fotoLocal.length) add(2, 'mandou foto do local');\n\n// compara pelo começo da faixa: \"R$ 1.000 a 2.000\" contém \"2.000\" e não pode virar faixa alta\nif (/acima/i.test(faixa) || /2\\.?000 a 4/i.test(faixa)) add(3, 'faixa alta');\nelse if (/1\\.?000 a 2/i.test(faixa)) add(2, 'faixa média');\nelse if (/500 a 1/i.test(faixa)) add(1, 'faixa inicial');\n\nif (/data marcada/i.test(prazo)) add(2, 'tem data marcada');\nelse if (/30 dias/i.test(prazo)) add(1, 'quer nos próximos 30 dias');\n\nif (ideia.length > 120) add(1, 'descreveu bem a ideia');\nif (ideia.length > 0 && ideia.length < 40) add(-1, 'ideia vaga');\nif (cobertura && !fotoCover.length) add(-2, 'cobertura sem foto');\nif (/at[ée] R\\$ ?500/i.test(faixa) && /(15|25|fechamento)/i.test(tamanho)) add(-2, 'orçamento x tamanho incompatível');\n\nconst termometro = score >= 8 ? '🔥 Quente' : (score >= 4 ? '🌤 Morno' : '❄️ Frio');\n\n// --- helpers Notion ---\nconst txt  = (s) => ({ rich_text: [{ type: 'text', text: { content: String(s || '').slice(0, 1900) } }] });\nconst sel  = (s) => (s ? { select: { name: String(s).slice(0, 90) } } : { select: null });\nconst file = (urls, prefixo) => ({\n  files: (urls || []).slice(0, 10).map((u, i) => ({\n    type: 'external',\n    name: prefixo + '-' + (i + 1),\n    external: { url: u },\n  })),\n});\n\nconst waLink = whats ? 'https://wa.me/' + (whats.length <= 11 ? '55' + whats : whats) : '';\nconst igLink = insta ? 'https://instagram.com/' + insta : '';\n\nconst notion = {\n  parent: { database_id: envGet('NOTION_DB_ATENDIMENTOS') || 'COLE_AQUI_O_ID_DO_DATABASE' },\n  icon: { type: 'emoji', emoji: score >= 8 ? '🔥' : (score >= 4 ? '🌤' : '❄️') },\n  properties: {\n    'Cliente':                { title: [{ type: 'text', text: { content: nome } }] },\n    'Status':                 sel('🆕 Novo'),\n    'Entrou em':              { date: { start: (body && body.data && body.data.createdAt) || new Date().toISOString() } },\n    'Termômetro':             sel(termometro),\n    'Score':                  { number: score },\n    'Por que essa nota':      txt(porque.join(' · ')),\n    'Instagram':              { url: igLink || null },\n    'WhatsApp':               { url: waLink || null },\n    'Cidade':                 txt(cidade),\n    'Região':                 sel(regiao),\n    'Experiência':            sel(experiencia),\n    'Ideia':                  txt(ideia),\n    'Local do corpo':         sel(local),\n    'Tamanho':                sel(tamanho),\n    'Cor':                    sel(cor),\n    'Cobertura':              { checkbox: cobertura },\n    'Faixa de investimento':  sel(faixa),\n    'Prazo':                  sel(prazo),\n    'Data limite':            dataLimite ? { date: { start: dataLimite } } : { date: null },\n    'Disponibilidade':        txt(disp),\n    'Origem':                 sel(origem),\n    'Referências':            file(refs, 'ref'),\n    'Foto do local':          file(fotoLocal, 'local'),\n    'Cover atual':            file(fotoCover, 'cover'),\n  },\n  children: [\n    { object: 'block', type: 'heading_3', heading_3: { rich_text: [{ type: 'text', text: { content: 'A ideia, nas palavras do cliente' } }] } },\n    { object: 'block', type: 'quote', quote: { rich_text: [{ type: 'text', text: { content: ideia || '(não descreveu)' } }] } },\n    { object: 'block', type: 'heading_3', heading_3: { rich_text: [{ type: 'text', text: { content: 'Rascunho de resposta' } }] } },\n    { object: 'block', type: 'paragraph', paragraph: { rich_text: [{ type: 'text', text: { content:\n      'Fala ' + nome.split(' ')[0] + '! Curti sua ideia. ' +\n      (cobertura ? 'Cobertura dá pra fazer. O desenho tem que nascer em cima do que já tem, te explico. ' : '') +\n      'Sobre a ideia: ' } }] } },\n  ],\n};\n\n// Detalhes que não têm propriedade própria no Notion\nconst detalhes = [\n  quem && ('Indicação de: ' + quem),\n  coverIdade && ('Tattoo a cobrir foi feita: ' + coverIdade),\n  refLink && ('Pasta de referências: ' + refLink),\n  video && ('Vídeo do local: ' + video),\n  combinado && 'Aceitou os combinados da ficha (18+, sinal, desenho, prazo)',\n].filter(Boolean);\nif (detalhes.length) {\n  notion.children.push({ object: 'block', type: 'heading_3', heading_3: { rich_text: [{ type: 'text', text: { content: 'Detalhes da ficha' } }] } });\n  for (const d of detalhes) notion.children.push({ object: 'block', type: 'bulleted_list_item', bulleted_list_item: { rich_text: [{ type: 'text', text: { content: d.slice(0, 1900) } }] } });\n}\n\n// Menção = notificação no app do Notion pra quem foi mencionado\nconst notionUser = envGet('NOTION_USER_ID');\nif (notionUser) {\n  notion.children.unshift({ object: 'block', type: 'paragraph', paragraph: { rich_text: [\n    { type: 'mention', mention: { type: 'user', user: { id: notionUser } } },\n    { type: 'text', text: { content: ' ficha nova: ' + termometro } },\n  ] } });\n}\n\n// WhatsApp (template \"ficha_quente\"): parâmetro não aceita quebra de linha, tab nem 4+ espaços seguidos\nconst limpa = (t, max) => {\n  const v = String(t || '').replace(/[\\r\\n\\t]+/g, ' ').replace(/ {4,}/g, '   ').trim();\n  return v.length > max ? v.slice(0, max - 1) + '…' : (v || '-');\n};\nconst primeiro   = (nome.split(' ')[0] || 'Sem nome');\nconst prazoCurto = /data marcada/i.test(prazo) ? ('data ' + (dataLimite || 'marcada'))\n                 : (/30 dias/i.test(prazo) ? '30 dias' : 'sem pressa');\nconst faixaCurta = faixa.replace('Prefiro que você me diga', 'sem faixa').replace(/R\\$ ?/g, 'R$');\n// {{1}} vai na 1a linha, a que aparece na tela bloqueada: \"🔥 Ficha quente: Marcos · R$2.000 a 4.000 · 30 dias · Coxa\"\nconst waParams = [\n  limpa([primeiro, faixaCurta, prazoCurto, local].filter(Boolean).join(' · '), 80),\n  limpa(ideia, 220),\n  limpa([\n    tamanho, cor, cobertura ? 'COBERTURA' : '', cidade, insta ? '@' + insta : '',\n    refs.length + (refs.length === 1 ? ' referência' : ' referências') + (fotoLocal.length ? ' + foto do local' : ' · SEM foto do local'),\n  ].filter(Boolean).join(' · '), 300),\n];\n\n// Texto livre (WA_MODO=texto): só funciona dentro da janela de 24h, mas não precisa de modelo aprovado\nconst waTexto = [\n  termometro.split(' ')[0] + ' Ficha ' + termometro.split(' ').slice(1).join(' ').toLowerCase() + ': ' + waParams[0],\n  '',\n  'Ideia: ' + waParams[1],\n  'Detalhes: ' + waParams[2],\n  '',\n  score + ' pts: ' + (porque.join(' · ') || 'nenhum critério'),\n].join('\\n');\n\nreturn [{\n  json: {\n    nome, insta, whats, waLink, igLink, cidade, ideia, local, tamanho, cor,\n    cobertura, faixa, prazo, dataLimite, origem, experiencia, regiao,\n    refs, fotoLocal, fotoCover,\n    score, termometro, porque: porque.join(' · '),\n    waParams, waTexto,\n    wa: {\n      url: 'https://graph.facebook.com/' + envGet('WA_API_VERSION') + '/' + envGet('WA_PHONE_NUMBER_ID') + '/messages',\n      to: String(envGet('WA_RUSSO') || '').replace(/\\D/g, ''),\n      modo: envGet('WA_MODO') === 'texto' ? 'texto' : 'modelo',\n      avisarAgora: score >= 8 || envGet('WA_AVISAR_TODAS') === 'sim',\n    },\n    notion,\n  },\n}];\n"
       },
       "id": "a1000000-0000-4000-8000-000000000002",
       "name": "Normalizar e pontuar",
@@ -75,12 +76,13 @@
           },
           "conditions": [
             {
-              "id": "cond-quente",
-              "leftValue": "={{ $('Normalizar e pontuar').item.json.score }}",
-              "rightValue": 8,
+              "id": "cond-avisar",
+              "leftValue": "={{ $('Normalizar e pontuar').item.json.wa.avisarAgora }}",
+              "rightValue": "",
               "operator": {
-                "type": "number",
-                "operation": "gte"
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
               }
             }
           ],
@@ -90,7 +92,7 @@
         "options": {}
       },
       "id": "a1000000-0000-4000-8000-000000000004",
-      "name": "Lead quente?",
+      "name": "Avisar agora?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
@@ -105,7 +107,7 @@
         "options": {}
       },
       "id": "a1000000-0000-4000-8000-000000000007",
-      "name": "Responder ao Tally",
+      "name": "Responder à ficha",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
@@ -116,12 +118,12 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "=https://graph.facebook.com/{{ $env.WA_API_VERSION || 'v23.0' }}/{{ $env.WA_PHONE_NUMBER_ID }}/messages",
+        "url": "={{ $('Normalizar e pontuar').item.json.wa.url }}",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({ messaging_product: 'whatsapp', to: $env.WA_RUSSO, type: 'template', template: { name: 'ficha_quente', language: { code: 'pt_BR' }, components: [ { type: 'body', parameters: $('Normalizar e pontuar').item.json.waParams.map(t => ({ type: 'text', text: t })) }, { type: 'button', sub_type: 'url', index: '0', parameters: [ { type: 'text', text: $('Criar card no Notion').item.json.id.replace(/-/g, '') } ] } ] } }) }}",
+        "jsonBody": "={{ JSON.stringify(($('Normalizar e pontuar').item.json.wa.modo === 'texto') ? { messaging_product: 'whatsapp', to: $('Normalizar e pontuar').item.json.wa.to, type: 'text', text: { preview_url: false, body: $('Normalizar e pontuar').item.json.waTexto + '\\n\\nAbrir card: ' + $('Criar card no Notion').item.json.url } } : { messaging_product: 'whatsapp', to: $('Normalizar e pontuar').item.json.wa.to, type: 'template', template: { name: 'ficha_quente', language: { code: 'pt_BR' }, components: [ { type: 'body', parameters: $('Normalizar e pontuar').item.json.waParams.map(t => ({ type: 'text', text: t })) }, { type: 'button', sub_type: 'url', index: '0', parameters: [ { type: 'text', text: $('Criar card no Notion').item.json.id.replace(/-/g, '') } ] } ] } }) }}",
         "options": {}
       },
       "id": "wa-quente",
@@ -164,7 +166,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "=https://api.notion.com/v1/databases/{{ $env.NOTION_DB_ATENDIMENTOS }}/query",
+        "url": "=https://api.notion.com/v1/databases/{{ $json.db }}/query",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "notionApi",
         "sendHeaders": true,
@@ -190,33 +192,33 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -240,
+        0,
         640
       ],
       "credentials": {}
     },
     {
       "parameters": {
-        "jsCode": "// === Resumo das 9h · o que está esperando o Russo ===\n// Entrada: resposta do Notion (databases/query). Saída: 3 parâmetros do template \"resumo_fichas\", ou nada.\nconst res  = ($input.first().json && $input.first().json.results) || [];\nconst DIA  = 86400000;\nconst agora = Date.now();\n\nconst P       = (pg, k) => (pg.properties && pg.properties[k]) || {};\nconst nomeDe  = (pg) => (((P(pg, 'Cliente').title || [])[0] || {}).plain_text || 'Sem nome').replace(/^EXEMPLO · /, '').split(' ')[0];\nconst status  = (pg) => (P(pg, 'Status').select || {}).name || '';\nconst local   = (pg) => (P(pg, 'Local do corpo').select || {}).name || '';\nconst termo   = (pg) => ((P(pg, 'Termômetro').select || {}).name || '').split(' ')[0];\nconst entrou  = (pg) => new Date((P(pg, 'Entrou em').date || {}).start || pg.created_time).getTime();\nconst parado  = (pg) => Math.floor((agora - entrou(pg)) / DIA);\nconst semMexer = (pg) => Math.floor((agora - new Date(pg.last_edited_time).getTime()) / DIA);\n\nconst esperando = res.filter(pg => /Novo|Triagem/.test(status(pg))).sort((a, b) => entrou(a) - entrou(b));\n// Orçado sem ninguém mexer no card há 5+ dias = hora do follow-up. Quem manda é o Russo, à mão (regra da Meta no Direct).\nconst cutucar   = res.filter(pg => /Orçado/.test(status(pg)) && semMexer(pg) >= 5);\n\nif (!esperando.length && !cutucar.length) return [];   // dia limpo: não manda nada\n\nconst limpa = (t, max) => {\n  const v = String(t || '').replace(/[\\r\\n\\t]+/g, ' ').replace(/ {4,}/g, '   ').trim();\n  return v.length > max ? v.slice(0, max - 1) + '…' : (v || '-');\n};\nconst linha = (pg) => {\n  const d = parado(pg);\n  return [termo(pg), nomeDe(pg)].filter(Boolean).join(' ') + (local(pg) ? ' (' + local(pg) + ')' : '') + (d >= 2 ? ' 🔴' + d + 'd' : '');\n};\n\nreturn [{\n  json: {\n    waParams: [\n      String(esperando.length),\n      limpa(esperando.map(linha).join(' · ') || 'nenhuma', 400),\n      limpa(cutucar.map(pg => nomeDe(pg) + ' (' + semMexer(pg) + 'd)').join(' · ') || 'ninguém', 200),\n    ],\n    notionDb: String($env.NOTION_DB_ATENDIMENTOS || '').replace(/-/g, ''),\n  },\n}];\n"
+        "jsCode": "// === Resumo das 9h · o que está esperando o Russo ===\n// Entrada: resposta do Notion (databases/query). Saída: 3 parâmetros do template \"resumo_fichas\", ou nada.\nconst res  = ($input.first().json && $input.first().json.results) || [];\nconst cfg  = $('Config do resumo').first().json;\nconst DIA  = 86400000;\nconst agora = Date.now();\n\nconst P       = (pg, k) => (pg.properties && pg.properties[k]) || {};\nconst nomeDe  = (pg) => (((P(pg, 'Cliente').title || [])[0] || {}).plain_text || 'Sem nome').replace(/^EXEMPLO · /, '').split(' ')[0];\nconst status  = (pg) => (P(pg, 'Status').select || {}).name || '';\nconst local   = (pg) => (P(pg, 'Local do corpo').select || {}).name || '';\nconst termo   = (pg) => ((P(pg, 'Termômetro').select || {}).name || '').split(' ')[0];\nconst entrou  = (pg) => new Date((P(pg, 'Entrou em').date || {}).start || pg.created_time).getTime();\nconst parado  = (pg) => Math.floor((agora - entrou(pg)) / DIA);\nconst semMexer = (pg) => Math.floor((agora - new Date(pg.last_edited_time).getTime()) / DIA);\n\nconst esperando = res.filter(pg => /Novo|Triagem/.test(status(pg))).sort((a, b) => entrou(a) - entrou(b));\n// Orçado sem ninguém mexer no card há 5+ dias = hora do follow-up. Quem manda é o Russo, à mão (regra da Meta no Direct).\nconst cutucar   = res.filter(pg => /Orçado/.test(status(pg)) && semMexer(pg) >= 5);\n\nif (!esperando.length && !cutucar.length) return [];   // dia limpo: não manda nada\n\nconst limpa = (t, max) => {\n  const v = String(t || '').replace(/[\\r\\n\\t]+/g, ' ').replace(/ {4,}/g, '   ').trim();\n  return v.length > max ? v.slice(0, max - 1) + '…' : (v || '-');\n};\nconst linha = (pg) => {\n  const d = parado(pg);\n  return [termo(pg), nomeDe(pg)].filter(Boolean).join(' ') + (local(pg) ? ' (' + local(pg) + ')' : '') + (d >= 2 ? ' 🔴' + d + 'd' : '');\n};\n\nreturn [{\n  json: {\n    waParams: [\n      String(esperando.length),\n      limpa(esperando.map(linha).join(' · ') || 'nenhuma', 400),\n      limpa(cutucar.map(pg => nomeDe(pg) + ' (' + semMexer(pg) + 'd)').join(' · ') || 'ninguém', 200),\n    ],\n    waTexto: [\n      'Bom dia. Fichas esperando resposta: ' + esperando.length,\n      '',\n      esperando.map(linha).join('\\n') || 'nenhuma',\n      '',\n      'Orçados pra cutucar: ' + (cutucar.map(pg => nomeDe(pg) + ' (' + semMexer(pg) + 'd)').join(' · ') || 'ninguém'),\n    ].join('\\n'),\n    notionDb: cfg.db,\n    wa: cfg.wa,\n  },\n}];\n"
       },
       "id": "code-resumo",
       "name": "Montar resumo",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -20,
+        220,
         640
       ]
     },
     {
       "parameters": {
         "method": "POST",
-        "url": "=https://graph.facebook.com/{{ $env.WA_API_VERSION || 'v23.0' }}/{{ $env.WA_PHONE_NUMBER_ID }}/messages",
+        "url": "={{ $json.wa.url }}",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({ messaging_product: 'whatsapp', to: $env.WA_RUSSO, type: 'template', template: { name: 'resumo_fichas', language: { code: 'pt_BR' }, components: [ { type: 'body', parameters: $json.waParams.map(t => ({ type: 'text', text: t })) }, { type: 'button', sub_type: 'url', index: '0', parameters: [ { type: 'text', text: $json.notionDb } ] } ] } }) }}",
+        "jsonBody": "={{ JSON.stringify(($json.wa.modo === 'texto') ? { messaging_product: 'whatsapp', to: $json.wa.to, type: 'text', text: { preview_url: false, body: $json.waTexto } } : { messaging_product: 'whatsapp', to: $json.wa.to, type: 'template', template: { name: 'resumo_fichas', language: { code: 'pt_BR' }, components: [ { type: 'body', parameters: $json.waParams.map(t => ({ type: 'text', text: t })) }, { type: 'button', sub_type: 'url', index: '0', parameters: [ { type: 'text', text: $json.notionDb } ] } ] } }) }}",
         "options": {}
       },
       "id": "wa-resumo",
@@ -224,7 +226,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        200,
+        440,
         640
       ],
       "credentials": {
@@ -235,10 +237,23 @@
       },
       "notes": "Header Auth: Authorization = Bearer <token do usuário do sistema>. O token fica só na credencial do n8n.",
       "notesInFlow": false
+    },
+    {
+      "parameters": {
+        "jsCode": "// === Configuração do resumo das 9h ===\n// Lê do ambiente do n8n. Se o seu n8n bloqueia $env (N8N_BLOCK_ENV_ACCESS_IN_NODE=true),\n// preencha o CFG aqui no editor do n8n. Não commite valores reais.\nconst CFG = {\n  NOTION_DB_ATENDIMENTOS: '',\n  WA_PHONE_NUMBER_ID: '',\n  WA_RUSSO: '',\n  WA_API_VERSION: 'v23.0',\n  WA_MODO: 'modelo',   // 'texto' no teste com o número de teste da Meta (janela de 24h)\n};\nconst envGet = (k) => { let v; try { v = $env[k]; } catch (e) {} return (v !== undefined && v !== '') ? v : CFG[k]; };\n\nreturn [{\n  json: {\n    db: String(envGet('NOTION_DB_ATENDIMENTOS') || '').replace(/-/g, ''),\n    wa: {\n      url: 'https://graph.facebook.com/' + envGet('WA_API_VERSION') + '/' + envGet('WA_PHONE_NUMBER_ID') + '/messages',\n      to: String(envGet('WA_RUSSO') || '').replace(/\\D/g, ''),\n      modo: envGet('WA_MODO') === 'texto' ? 'texto' : 'modelo',\n    },\n  },\n}];\n"
+      },
+      "id": "code-config",
+      "name": "Config do resumo",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -220,
+        640
+      ]
     }
   ],
   "connections": {
-    "Webhook do Tally": {
+    "Webhook da ficha": {
       "main": [
         [
           {
@@ -264,14 +279,14 @@
       "main": [
         [
           {
-            "node": "Lead quente?",
+            "node": "Avisar agora?",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Lead quente?": {
+    "Avisar agora?": {
       "main": [
         [
           {
@@ -282,7 +297,7 @@
         ],
         [
           {
-            "node": "Responder ao Tally",
+            "node": "Responder à ficha",
             "type": "main",
             "index": 0
           }
@@ -293,7 +308,7 @@
       "main": [
         [
           {
-            "node": "Responder ao Tally",
+            "node": "Responder à ficha",
             "type": "main",
             "index": 0
           }
@@ -304,7 +319,7 @@
       "main": [
         [
           {
-            "node": "Buscar pendentes no Notion",
+            "node": "Config do resumo",
             "type": "main",
             "index": 0
           }
@@ -327,6 +342,17 @@
         [
           {
             "node": "Mandar resumo no WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Config do resumo": {
+      "main": [
+        [
+          {
+            "node": "Buscar pendentes no Notion",
             "type": "main",
             "index": 0
           }

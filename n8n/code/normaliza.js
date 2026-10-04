@@ -53,6 +53,23 @@ const prazo       = String(get('Quando você quer fazer?'));
 const dataLimite  = String(get('Qual a data?'));
 const disp        = String(get('Quando você consegue vir?'));
 const origem      = String(get('Como você chegou até mim?'));
+const quem        = String(get('Quem te indicou?'));
+const coverIdade  = String(get('Há quanto tempo ela foi feita?'));
+const video       = String(get('Vídeo do local'));
+const combinado   = arr('Combinado?').length > 0 || !!get('Combinado?');
+
+// Configuração: lê do ambiente do n8n. Se o seu n8n bloqueia $env (N8N_BLOCK_ENV_ACCESS_IN_NODE=true),
+// preencha o CFG aqui no editor do n8n. Não commite valores reais.
+const CFG = {
+  NOTION_DB_ATENDIMENTOS: '',
+  NOTION_USER_ID: '',      // id do seu usuário no Notion: a menção faz o app te notificar
+  WA_PHONE_NUMBER_ID: '',
+  WA_RUSSO: '',            // quem recebe o aviso, só dígitos com 55 + DDD
+  WA_API_VERSION: 'v23.0',
+  WA_MODO: 'modelo',       // 'texto' no teste com o número de teste da Meta (janela de 24h)
+  WA_AVISAR_TODAS: 'nao',  // 'sim' no teste: avisa toda ficha, não só as quentes
+};
+const envGet = (k) => { let v; try { v = $env[k]; } catch (e) {} return (v !== undefined && v !== '') ? v : CFG[k]; };
 
 // --- pontuação ---
 let score = 0;
@@ -64,10 +81,10 @@ if (/indica/i.test(origem)) add(2, 'veio por indicação');
 if (refs.length || refLink) add(2, 'mandou referência');
 if (fotoLocal.length) add(2, 'mandou foto do local');
 
-if (/4\.?000|acima/i.test(faixa)) add(3, 'faixa alta');
-else if (/2\.?000/i.test(faixa)) add(3, 'faixa alta');
-else if (/1\.?000/i.test(faixa)) add(2, 'faixa média');
-else if (/500/i.test(faixa)) add(1, 'faixa inicial');
+// compara pelo começo da faixa: "R$ 1.000 a 2.000" contém "2.000" e não pode virar faixa alta
+if (/acima/i.test(faixa) || /2\.?000 a 4/i.test(faixa)) add(3, 'faixa alta');
+else if (/1\.?000 a 2/i.test(faixa)) add(2, 'faixa média');
+else if (/500 a 1/i.test(faixa)) add(1, 'faixa inicial');
 
 if (/data marcada/i.test(prazo)) add(2, 'tem data marcada');
 else if (/30 dias/i.test(prazo)) add(1, 'quer nos próximos 30 dias');
@@ -94,7 +111,7 @@ const waLink = whats ? 'https://wa.me/' + (whats.length <= 11 ? '55' + whats : w
 const igLink = insta ? 'https://instagram.com/' + insta : '';
 
 const notion = {
-  parent: { database_id: $env.NOTION_DB_ATENDIMENTOS || 'COLE_AQUI_O_ID_DO_DATABASE' },
+  parent: { database_id: envGet('NOTION_DB_ATENDIMENTOS') || 'COLE_AQUI_O_ID_DO_DATABASE' },
   icon: { type: 'emoji', emoji: score >= 8 ? '🔥' : (score >= 4 ? '🌤' : '❄️') },
   properties: {
     'Cliente':                { title: [{ type: 'text', text: { content: nome } }] },
@@ -133,6 +150,28 @@ const notion = {
   ],
 };
 
+// Detalhes que não têm propriedade própria no Notion
+const detalhes = [
+  quem && ('Indicação de: ' + quem),
+  coverIdade && ('Tattoo a cobrir foi feita: ' + coverIdade),
+  refLink && ('Pasta de referências: ' + refLink),
+  video && ('Vídeo do local: ' + video),
+  combinado && 'Aceitou os combinados da ficha (18+, sinal, desenho, prazo)',
+].filter(Boolean);
+if (detalhes.length) {
+  notion.children.push({ object: 'block', type: 'heading_3', heading_3: { rich_text: [{ type: 'text', text: { content: 'Detalhes da ficha' } }] } });
+  for (const d of detalhes) notion.children.push({ object: 'block', type: 'bulleted_list_item', bulleted_list_item: { rich_text: [{ type: 'text', text: { content: d.slice(0, 1900) } }] } });
+}
+
+// Menção = notificação no app do Notion pra quem foi mencionado
+const notionUser = envGet('NOTION_USER_ID');
+if (notionUser) {
+  notion.children.unshift({ object: 'block', type: 'paragraph', paragraph: { rich_text: [
+    { type: 'mention', mention: { type: 'user', user: { id: notionUser } } },
+    { type: 'text', text: { content: ' ficha nova: ' + termometro } },
+  ] } });
+}
+
 // WhatsApp (template "ficha_quente"): parâmetro não aceita quebra de linha, tab nem 4+ espaços seguidos
 const limpa = (t, max) => {
   const v = String(t || '').replace(/[\r\n\t]+/g, ' ').replace(/ {4,}/g, '   ').trim();
@@ -152,13 +191,29 @@ const waParams = [
   ].filter(Boolean).join(' · '), 300),
 ];
 
+// Texto livre (WA_MODO=texto): só funciona dentro da janela de 24h, mas não precisa de modelo aprovado
+const waTexto = [
+  termometro.split(' ')[0] + ' Ficha ' + termometro.split(' ').slice(1).join(' ').toLowerCase() + ': ' + waParams[0],
+  '',
+  'Ideia: ' + waParams[1],
+  'Detalhes: ' + waParams[2],
+  '',
+  score + ' pts: ' + (porque.join(' · ') || 'nenhum critério'),
+].join('\n');
+
 return [{
   json: {
     nome, insta, whats, waLink, igLink, cidade, ideia, local, tamanho, cor,
     cobertura, faixa, prazo, dataLimite, origem, experiencia, regiao,
     refs, fotoLocal, fotoCover,
     score, termometro, porque: porque.join(' · '),
-    waParams,
+    waParams, waTexto,
+    wa: {
+      url: 'https://graph.facebook.com/' + envGet('WA_API_VERSION') + '/' + envGet('WA_PHONE_NUMBER_ID') + '/messages',
+      to: String(envGet('WA_RUSSO') || '').replace(/\D/g, ''),
+      modo: envGet('WA_MODO') === 'texto' ? 'texto' : 'modelo',
+      avisarAgora: score >= 8 || envGet('WA_AVISAR_TODAS') === 'sim',
+    },
     notion,
   },
 }];

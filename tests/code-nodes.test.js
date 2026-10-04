@@ -5,8 +5,11 @@ const fs = require('fs');
 const path = require('path');
 
 const load = (file) => fs.readFileSync(path.join(__dirname, '..', 'n8n', 'code', file), 'utf8');
-const run = (code, input, env = {}) =>
-  new Function('$input', '$env', code)({ first: () => ({ json: input }) }, env);
+const run = (code, input, env = {}, nodes = {}) =>
+  new Function('$input', '$env', '$', code)(
+    { first: () => ({ json: input }) }, env,
+    (nome) => ({ first: () => ({ json: nodes[nome] }) }),
+  );
 
 // Payload no formato do webhook do Tally: múltipla escolha chega como id + options
 const campo = (label, value, options) => ({ label, value, options });
@@ -90,18 +93,65 @@ test('resumo das 9h lista pendentes e orçados parados', () => {
       'Entrou em': { date: { start: dias(entrou) } },
     },
   });
+  const cfg = { db: 'bd61daa1', wa: { url: 'u', to: '5527', modo: 'texto' } };
   const out = run(resumo, { results: [
     card('Pedro', '🆕 Novo', '🌤 Morno', 5, 5),
     card('Lucas', '💬 Orçado', '🌤 Morno', 7, 6),
     card('Bia', '💬 Orçado', '🔥 Quente', 2, 1),
-  ] }, { NOTION_DB_ATENDIMENTOS: 'bd61-daa1' });
+  ] }, {}, { 'Config do resumo': cfg });
   const [{ json }] = out;
   assert.equal(json.waParams[0], '1');
   assert.match(json.waParams[1], /Pedro \(Mão\) 🔴5d/);
   assert.equal(json.waParams[2], 'Lucas (6d)');
   assert.equal(json.notionDb, 'bd61daa1');
+  assert.match(json.waTexto, /^Bom dia\. Fichas esperando resposta: 1\n/);
 });
 
 test('dia sem pendência não manda mensagem', () => {
-  assert.deepEqual(run(resumo, { results: [] }), []);
+  assert.deepEqual(run(resumo, { results: [] }, {}, { 'Config do resumo': { db: 'x', wa: {} } }), []);
+});
+
+test('modo teste: avisa toda ficha em texto livre, com menção no Notion', () => {
+  const env = { WA_MODO: 'texto', WA_AVISAR_TODAS: 'sim', WA_RUSSO: '+55 (27) 98888-0000', WA_PHONE_NUMBER_ID: '123', NOTION_USER_ID: 'user-1' };
+  const [{ json }] = run(normaliza, ficha({
+    'Quanto você tem pra investir nesse projeto?': escolha('Quanto você tem pra investir nesse projeto?', 'Até R$ 500'),
+    'Como você chegou até mim?': escolha('Como você chegou até mim?', 'Instagram'),
+    'Vídeo do local': campo('Vídeo do local', 'Vai mandar vídeo no WhatsApp'),
+  }), env);
+  assert.notEqual(json.termometro, '🔥 Quente');
+  assert.equal(json.wa.avisarAgora, true);
+  assert.equal(json.wa.modo, 'texto');
+  assert.equal(json.wa.to, '5527988880000');
+  assert.equal(json.wa.url, 'https://graph.facebook.com/v23.0/123/messages');
+  assert.match(json.waTexto, /Ideia: /);
+  assert.equal(json.notion.children[0].paragraph.rich_text[0].mention.user.id, 'user-1');
+  assert.ok(json.notion.children.some(b => b.bulleted_list_item && /Vídeo do local/.test(b.bulleted_list_item.rich_text[0].text.content)));
+});
+
+test('modo padrão: só ficha quente avisa na hora', () => {
+  const [{ json }] = run(normaliza, ficha({
+    'Quanto você tem pra investir nesse projeto?': escolha('Quanto você tem pra investir nesse projeto?', 'Até R$ 500'),
+    'Como você chegou até mim?': escolha('Como você chegou até mim?', 'Instagram'),
+  }));
+  assert.equal(json.wa.avisarAgora, false);
+  assert.equal(json.wa.modo, 'modelo');
+});
+
+test('$env bloqueado não quebra o node', () => {
+  const bloqueado = new Proxy({}, { get() { throw new Error('access to env vars denied'); } });
+  const [{ json }] = run(normaliza, ficha(), bloqueado);
+  assert.equal(json.termometro, '🔥 Quente');
+});
+
+test('cada faixa de investimento pontua no degrau certo', () => {
+  const pontos = (faixa) => {
+    const [{ json }] = run(normaliza, ficha({ 'Quanto você tem pra investir nesse projeto?': escolha('Quanto você tem pra investir nesse projeto?', faixa) }));
+    const m = json.porque.match(/\+(\d) faixa/); return m ? Number(m[1]) : 0;
+  };
+  assert.equal(pontos('Acima de R$ 4.000'), 3);
+  assert.equal(pontos('R$ 2.000 a 4.000'), 3);
+  assert.equal(pontos('R$ 1.000 a 2.000'), 2);
+  assert.equal(pontos('R$ 500 a 1.000'), 1);
+  assert.equal(pontos('Até R$ 500'), 0);
+  assert.equal(pontos('Prefiro que você me diga'), 0);
 });
