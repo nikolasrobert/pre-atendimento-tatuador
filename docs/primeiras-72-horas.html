@@ -1,0 +1,657 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>As Primeiras 72 Horas</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Karla:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+:root{
+  --paper:#EFEBF3; --surface:#F8F6FB; --card:#FFFFFF;
+  --ink:#191424; --ink2:#57506B; --ink3:#8A82A0;
+  --line:#DBD3E7; --line2:#C7BCDA;
+  --stencil:#6636C4; --stencil-ink:#4E259C; --stencil-soft:#EDE4FC;
+  --hot:#B2521C; --hot-soft:#FBEADC;
+  --cold:#3F6A82; --cold-soft:#E2EEF4;
+  --ok:#2E7350; --ok-soft:#DFF1E7;
+  --shadow:0 1px 2px rgba(25,20,36,.05),0 8px 24px -12px rgba(25,20,36,.18);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#110E18; --surface:#181322; --card:#1D1729;
+    --ink:#EFEAF7; --ink2:#AAA1C0; --ink3:#7B7295;
+    --line:#2C2440; --line2:#3D3356;
+    --stencil:#A582F8; --stencil-ink:#C4AEFF; --stencil-soft:#271B44;
+    --hot:#E9995E; --hot-soft:#33210F;
+    --cold:#7DAFC9; --cold-soft:#152631;
+    --ok:#6FC79A; --ok-soft:#12261B;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px -14px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#110E18; --surface:#181322; --card:#1D1729;
+  --ink:#EFEAF7; --ink2:#AAA1C0; --ink3:#7B7295;
+  --line:#2C2440; --line2:#3D3356;
+  --stencil:#A582F8; --stencil-ink:#C4AEFF; --stencil-soft:#271B44;
+  --hot:#E9995E; --hot-soft:#33210F;
+  --cold:#7DAFC9; --cold-soft:#152631;
+  --ok:#6FC79A; --ok-soft:#12261B;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px -14px rgba(0,0,0,.7);
+}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:"Karla",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:16px;line-height:1.62;-webkit-font-smoothing:antialiased;
+  -webkit-text-size-adjust:100%;text-size-adjust:100%;overflow-wrap:break-word;
+}
+h1,h2,h3,h4{margin:0;text-wrap:balance}
+a{color:var(--stencil-ink)}
+:focus-visible{outline:2px solid var(--stencil);outline-offset:2px;border-radius:3px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+.wrap{max-width:840px;margin:0 auto;padding-inline:20px}
+
+/* nav */
+.nav{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--paper) 90%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav-in{max-width:840px;margin:0 auto;padding:0 20px;display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.nav-in::-webkit-scrollbar{display:none}
+.nav a{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);text-decoration:none;padding:13px 9px;white-space:nowrap;border-bottom:2px solid transparent}
+.nav a:hover{color:var(--ink)}
+.nav a.on{color:var(--stencil-ink);border-bottom-color:var(--stencil)}
+
+/* hero */
+.hero{padding-block:50px 38px;border-bottom:1px solid var(--line)}
+.eyebrow{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--stencil-ink);margin-bottom:16px}
+h1{font-family:"Anton",Impact,sans-serif;font-weight:400;text-transform:uppercase;font-size:clamp(40px,8.6vw,80px);line-height:.98;margin-bottom:20px}
+h1 em{font-style:normal;color:var(--stencil)}
+.lede{font-size:18.5px;line-height:1.55;color:var(--ink2);max-width:62ch}
+.lede strong{color:var(--ink);font-weight:700}
+
+/* sections */
+section{padding-block:52px;border-bottom:1px solid var(--line);scroll-margin-top:50px}
+section:last-of-type{border-bottom:0}
+.snum{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.16em;color:var(--stencil-ink);text-transform:uppercase;display:block;margin-bottom:10px}
+h2{font-family:"Anton",Impact,sans-serif;font-weight:400;text-transform:uppercase;font-size:clamp(27px,5.4vw,42px);line-height:1.04;margin-bottom:14px}
+h3{font-size:19px;font-weight:700;margin-top:34px;margin-bottom:10px;letter-spacing:-.01em}
+h4{font-size:15px;font-weight:700;margin:0 0 6px}
+p{margin:0 0 14px}
+.sub{color:var(--ink2);max-width:64ch;font-size:17px}
+ul,ol{margin:0 0 16px;padding-left:20px}
+li{margin-bottom:7px}
+li::marker{color:var(--ink3)}
+code{font-family:"JetBrains Mono",monospace;font-size:12.5px;background:var(--stencil-soft);color:var(--stencil-ink);padding:1px 5px;border-radius:3px}
+
+/* portas de entrada */
+.doors{display:grid;gap:11px;grid-template-columns:1fr;margin:20px 0}
+.door{background:var(--card);border:1px solid var(--line);border-radius:5px;padding:15px 17px;box-shadow:var(--shadow);display:grid;grid-template-columns:auto 1fr;gap:0 14px;align-items:start}
+.door .pct{
+  grid-row:1 / span 3;font-family:"Anton",sans-serif;font-size:26px;line-height:1;color:var(--stencil);
+  min-width:52px;padding-top:2px;font-variant-numeric:tabular-nums;
+}
+.door h4{grid-column:2}
+.door .says{grid-column:2;font-style:italic;color:var(--ink3);font-size:14.5px;margin:0 0 7px}
+.door .do{grid-column:2;font-size:14.5px;color:var(--ink2);margin:0;line-height:1.5}
+.door .do b{color:var(--ink)}
+
+/* linha do tempo */
+.tl{margin:26px 0 0;position:relative}
+.tstep{position:relative;padding:0 0 26px 0}
+.tclock{
+  font-family:"Anton",sans-serif;font-size:22px;text-transform:uppercase;line-height:1;color:var(--stencil);
+  margin-bottom:8px;display:flex;align-items:center;gap:9px;
+}
+.tclock .who{font-family:"JetBrains Mono",monospace;font-size:9.5px;letter-spacing:.1em;color:var(--ink3);border:1px solid var(--line2);border-radius:2px;padding:3px 6px;text-transform:uppercase}
+.tclock .who.r{color:var(--stencil-ink);border-color:var(--stencil)}
+.tcard{background:var(--card);border:1px solid var(--line);border-radius:5px;padding:16px 18px;box-shadow:var(--shadow)}
+.tcard h4{font-size:17px;margin-bottom:7px}
+.tcard p:last-child{margin-bottom:0}
+.tcard p{font-size:15.5px;color:var(--ink2)}
+.tcard p b{color:var(--ink)}
+@media (min-width:720px){
+  .tl::before{content:"";position:absolute;left:118px;top:6px;bottom:20px;border-left:1.5px dashed var(--line2)}
+  .tstep{display:grid;grid-template-columns:118px 1fr;gap:0}
+  .tclock{flex-direction:column;align-items:flex-start;gap:6px;margin:0;padding-right:16px;text-align:left}
+  .tbody{padding-left:26px;position:relative}
+  .tbody::before{content:"";position:absolute;left:-6px;top:15px;width:11px;height:11px;border-radius:50%;background:var(--stencil);border:2px solid var(--paper)}
+}
+
+/* blocos de copy */
+.copy{border:1.5px dashed var(--line2);border-radius:4px;background:var(--stencil-soft);margin:14px 0 4px;overflow:hidden}
+.copy-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 12px;border-bottom:1.5px dashed var(--line2)}
+.tag{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--stencil-ink)}
+.cbtn{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;background:var(--stencil);color:#fff;border:0;border-radius:3px;padding:5px 11px;cursor:pointer}
+.cbtn:hover{filter:brightness(1.1)}
+.cbtn.done{background:var(--cold)}
+.copy-body{padding:14px 16px;white-space:pre-line;font-size:15.5px;line-height:1.6;color:var(--ink)}
+
+/* desvios */
+.branch{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--hot);border-radius:4px;padding:16px 18px;margin:14px 0}
+.branch .said{font-style:italic;font-size:17px;color:var(--hot);margin:0 0 4px;line-height:1.35}
+.branch .freq{font-family:"JetBrains Mono",monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin:0 0 11px}
+.branch p{font-size:15.5px;color:var(--ink2);margin-bottom:10px}
+.branch p b{color:var(--ink)}
+.branch p:last-child{margin-bottom:0}
+
+/* callouts */
+.note,.warn,.good{padding:13px 16px;border-radius:0 4px 4px 0;margin:18px 0;font-size:15px}
+.note{border-left:3px solid var(--cold);background:var(--cold-soft)}
+.warn{border-left:3px solid var(--hot);background:var(--hot-soft)}
+.good{border-left:3px solid var(--ok);background:var(--ok-soft)}
+.note p:last-child,.warn p:last-child,.good p:last-child{margin-bottom:0}
+.note b,.warn b,.good b{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:4px}
+.note b{color:var(--cold)} .warn b{color:var(--hot)} .good b{color:var(--ok)}
+
+/* estrutura numerada da mensagem */
+.recipe{counter-reset:r;list-style:none;padding:0;margin:16px 0}
+.recipe li{counter-increment:r;position:relative;padding-left:38px;margin-bottom:12px;font-size:15.5px;color:var(--ink2)}
+.recipe li::before{
+  content:counter(r);position:absolute;left:0;top:1px;width:24px;height:24px;border-radius:50%;
+  background:var(--stencil-soft);color:var(--stencil-ink);display:grid;place-items:center;
+  font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:700;
+}
+.recipe li b{color:var(--ink)}
+
+/* regras / tabela */
+.tw{overflow-x:auto;margin:18px 0;border:1px solid var(--line);border-radius:4px;background:var(--card)}
+table{border-collapse:collapse;width:100%;min-width:540px;font-size:14.5px}
+th{text-align:left;font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);padding:10px 14px;border-bottom:1px solid var(--line);font-weight:500;background:var(--surface)}
+td{padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+.scroll-hint{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin:-10px 0 16px;display:flex;align-items:center;gap:6px}
+.scroll-hint::before{content:"↔";font-size:13px;color:var(--stencil)}
+
+/* ritual */
+.week{display:grid;gap:11px;grid-template-columns:1fr;margin:18px 0}
+.slot{background:var(--card);border:1px solid var(--line);border-radius:5px;padding:15px 17px;box-shadow:var(--shadow)}
+.slot .when{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--stencil-ink);margin-bottom:5px}
+.slot h4{font-size:16.5px}
+.slot p{font-size:14.5px;color:var(--ink2);margin:0}
+.slot .dur{font-family:"Anton",sans-serif;font-size:23px;color:var(--stencil);float:right;line-height:1;margin-left:10px}
+
+/* nunca */
+.never{list-style:none;padding:0;margin:16px 0}
+.never li{position:relative;padding-left:26px;margin-bottom:10px;font-size:15.5px;color:var(--ink2)}
+.never li::before{content:"✕";position:absolute;left:0;top:0;color:var(--hot);font-weight:700}
+.never li b{color:var(--ink)}
+
+.foot{padding-block:36px 56px;color:var(--ink3);font-size:14px}
+.foot a{color:var(--ink2)}
+
+@media (max-width:700px){
+  body{font-size:15.5px}
+  .wrap{padding-inline:18px}
+  .nav-in{padding:0 18px}
+  .hero{padding-block:34px 28px}
+  .lede{font-size:16.5px}
+  .sub{font-size:16px}
+  section{padding-block:40px;scroll-margin-top:47px}
+  h3{font-size:17.5px;margin-top:28px}
+  .tcard,.branch,.door,.slot{padding:14px 15px}
+  .tcard p,.branch p,.recipe li,.never li{font-size:14.8px}
+  .copy-body{font-size:14.8px;padding:13px 14px}
+  .door .pct{font-size:22px;min-width:44px}
+  .tclock{font-size:19px}
+  .note,.warn,.good{font-size:14.5px;padding:12px 14px}
+  table{font-size:13.5px} th,td{padding:9px 12px}
+  .foot{font-size:13.5px}
+}
+@media (max-width:400px){ .wrap{padding-inline:16px} .nav-in{padding:0 16px} }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="nav-in">
+    <a href="#portas">01 Portas</a>
+    <a href="#linha">02 As 72h</a>
+    <a href="#desvios">03 Desvios</a>
+    <a href="#mensagens">04 Mensagens</a>
+    <a href="#regras">05 Regras</a>
+    <a href="#ritual">06 Ritual</a>
+  </div>
+</nav>
+
+<header class="hero wrap">
+  <div class="eyebrow">Do "oi" até o sinal pago</div>
+  <h1>A pessoa<br>mandou DM.<br><em>E agora?</em></h1>
+  <p class="lede">O sistema só funciona se a coreografia do primeiro contato estiver definida antes de acontecer. Aqui está a sequência que eu proponho — <strong>com o que o cliente faz quando não segue o roteiro</strong>, que é a parte que geralmente derruba tudo.</p>
+</header>
+
+<!-- 01 -->
+<section id="portas" class="wrap">
+  <span class="snum">01 — De onde ele vem</span>
+  <h2>Quatro portas,<br>quatro aberturas</h2>
+  <p class="sub">"Entrou em contato pelo Instagram" é quatro situações diferentes. A resposta instantânea só cobre uma delas — as outras três precisam de um movimento do Russo.</p>
+
+  <div class="doors">
+    <div class="door">
+      <div class="pct">1</div>
+      <h4>DM direto — "oi" ou "quanto custa?"</h4>
+      <p class="says">O grosso do volume. Quase sempre uma linha só, sem contexto nenhum.</p>
+      <p class="do"><b>Automático.</b> A resposta instantânea do Instagram dispara sozinha e é a única coisa que acontece sem o Russo. Toda a seção 02 é sobre este caso.</p>
+    </div>
+    <div class="door">
+      <div class="pct">2</div>
+      <h4>Comentário no post — "quanto fica isso?" ou "eu quero"</h4>
+      <p class="says">Público. Todo mundo que abrir aquele post vê como o Russo responde. Nos perfis da Grande Vitória, o comentário de quem quer tatuar quase nunca pergunta preço: é "eu quero", "vou marcar a minha" ou "te mandei direct, aceita lá". É lead do mesmo jeito.</p>
+      <p class="do"><b>Duas ações, sempre nessa ordem.</b> Responde o comentário publicamente (curto, sem preço) e manda um direct. O comentário é vitrine: a resposta dele educa dezenas de pessoas que nunca vão perguntar.</p>
+    </div>
+    <div class="door">
+      <div class="pct">3</div>
+      <h4>Resposta de story</h4>
+      <p class="says">"Fechou demais isso" · "cara, que foda" · um emoji de fogo.</p>
+      <p class="do"><b>Mais quente que parece.</b> A pessoa estava vendo o trabalho agora. Aqui o Russo responde como gente, não com o link — e só depois, se der abertura, manda a ficha.</p>
+    </div>
+    <div class="door">
+      <div class="pct">4</div>
+      <h4>Link na bio</h4>
+      <p class="says">Chega já pela ficha, sem passar pelo direct.</p>
+      <p class="do"><b>Ninguém faz nada.</b> É o caminho ideal e o objetivo de longo prazo: quanto mais gente entra por aqui, menos DM existe pra responder.</p>
+    </div>
+  </div>
+
+  <h3>A copy do comentário público</h3>
+  <p>Curta, cordial, sem valor. O valor no comentário público vira âncora pra todo mundo que ler — e âncora errada, porque cada peça é uma peça.</p>
+  <div class="copy">
+    <div class="copy-head"><span class="tag">Resposta no comentário</span><button class="cbtn" type="button">copiar</button></div>
+    <div class="copy-body">Valeu! O valor muda bastante com tamanho e local. Te chamei no direct pra te falar certo 🤝</div>
+  </div>
+  <div class="copy">
+    <div class="copy-head"><span class="tag">Direct enviado logo em seguida</span><button class="cbtn" type="button">copiar</button></div>
+    <div class="copy-body">Fala! Vi seu comentário na peça [descrever a tattoo do post].
+
+Pra te dar o valor certo eu preciso ver o que você tem em mente e onde vai ser. Preenche minha ficha de ideia, leva uns 3 min: {{LINK_FICHA}}
+
+Aí eu te respondo com valor fechado e as datas que eu tenho. Tamo junto.</div>
+  </div>
+
+  <h3>A resposta de story</h3>
+  <div class="copy">
+    <div class="copy-head"><span class="tag">Resposta de story · humano primeiro</span><button class="cbtn" type="button">copiar</button></div>
+    <div class="copy-body">Valeu demaaais 🖤 essa foi divertida de fazer.
+
+Tá com alguma ideia na cabeça ou só curtindo o trampo mesmo?</div>
+  </div>
+  <div class="note">
+    <b>Por que não mandar o link aqui</b>
+    <p>Quem responde story não estava comprando — estava admirando. Jogar um formulário em cima disso mata o único momento em que a conversa é de graça e sem atrito. A pergunta no fim faz o trabalho: se a pessoa responder "tô sim, queria fazer X", <strong>aí</strong> vem o link, e ela já pediu por ele.</p>
+  </div>
+</section>
+
+<!-- 02 -->
+<section id="linha" class="wrap">
+  <span class="snum">02 — A sequência</span>
+  <h2>As primeiras<br>72 horas</h2>
+  <p class="sub">Do "oi" até a data travada. Os prazos abaixo são promessa pública — se o Russo não cumprir, o sistema inteiro vira mentira e é pior do que não ter nada.</p>
+
+  <div class="tl">
+    <div class="tstep">
+      <div class="tclock">0 seg <span class="who">Automático</span></div>
+      <div class="tbody"><div class="tcard">
+        <h4>A resposta instantânea dispara</h4>
+        <p>Ela tem três empregos e nenhum a mais: <b>confirmar que foi lido</b>, <b>declarar um prazo</b> e <b>dar uma única ação</b>. Toda frase extra reduz o clique. É o momento em que o cliente decide se você é sério ou se é mais um perfil que some.</p>
+      </div></div>
+    </div>
+
+    <div class="tstep">
+      <div class="tclock">30 seg <span class="who">Cliente</span></div>
+      <div class="tbody"><div class="tcard">
+        <h4>O momento que decide tudo</h4>
+        <p>Ela clica no link ou não clica. Não existe terceira opção, e nada depois disso compensa uma copy fraca aqui. É por isso que a mensagem promete <b>valor fechado</b> em troca de 2 minutos — a pessoa precisa saber o que ganha antes de gastar o tempo.</p>
+      </div></div>
+    </div>
+
+    <div class="tstep">
+      <div class="tclock">2–10 min <span class="who">Cliente</span></div>
+      <div class="tbody"><div class="tcard">
+        <h4>Ficha preenchida</h4>
+        <p>O n8n limpa o payload, calcula a pontuação, cria o card no Notion e avisa o Russo no WhatsApp. <b>Se for 🔥 quente, o aviso é imediato</b>; o resto chega no resumo das 9h — porque cliente com data marcada e verba definida esfria em horas, não em dias.</p>
+      </div></div>
+    </div>
+
+    <div class="tstep">
+      <div class="tclock">Até 48h <span class="who r">Russo</span></div>
+      <div class="tbody"><div class="tcard">
+        <h4>Ele responde. Não antes.</h4>
+        <p>Parece contraintuitivo, mas <b>o prazo protege o dia dele</b>. Responder na hora, no meio de uma sessão, é exatamente o hábito que criou o problema. A exceção é a ficha quente — essa entra no bloco do mesmo dia.</p>
+        <p>A resposta não é um valor solto: é a estrutura de sete partes da <a href="#mensagens">seção 04</a>. Um número sem opinião de artista em volta é uma cotação, e cotação a pessoa compara com o mais barato.</p>
+      </div></div>
+    </div>
+
+    <div class="tstep">
+      <div class="tclock">+1 dia <span class="who">Cliente</span></div>
+      <div class="tbody"><div class="tcard">
+        <h4>Ele volta com pergunta ou com "fechou"</h4>
+        <p>Se voltou com pergunta, ótimo — é o sinal mais confiável de intenção real. Se ficou em silêncio, o card fica em <code>💬 Orçado</code> e a fórmula <b>Parado há</b> começa a acender no Notion.</p>
+      </div></div>
+    </div>
+
+    <div class="tstep">
+      <div class="tclock">Dia 5 <span class="who r">Russo</span></div>
+      <div class="tbody"><div class="tcard">
+        <h4>O único follow-up</h4>
+        <p>Uma mensagem. <b>Uma.</b> O n8n não manda. Ele avisa o Russo no WhatsApp e o Russo escreve. Isso não é preciosismo: é a regra da Meta, e a <a href="#regras">seção 05</a> explica por quê.</p>
+        <p>Quem não responde ao follow-up vira <code>❌ Perdido</code> com motivo preenchido. Perseguir cliente é o jeito mais rápido de virar aquele perfil que a pessoa silencia.</p>
+      </div></div>
+    </div>
+
+    <div class="tstep">
+      <div class="tclock">Fechou <span class="who">Os dois</span></div>
+      <div class="tbody"><div class="tcard">
+        <h4>Sinal pago, data travada</h4>
+        <p>Chave Pix, valor do sinal, data e horário — na mesma mensagem, sem "te mando depois". <b>Cada mensagem a mais entre o "fechou" e o pagamento é uma chance de esfriar.</b> Card vai pra <code>📅 Agendado</code> e a data cai na view de calendário.</p>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="warn">
+    <b>A promessa é a parte frágil</b>
+    <p>Prometer 24h e responder em 3 dias é pior do que não prometer nada — vira prova documentada de que ele não cumpre. Melhor prometer 48h e responder em 24: sobra crédito em vez de dívida. Se o Russo tem semanas de convenção ou viagem, o texto da resposta instantânea muda naquela semana. É um campo de texto, leva 10 segundos.</p>
+  </div>
+</section>
+
+<!-- 03 -->
+<section id="desvios" class="wrap">
+  <span class="snum">03 — Quando sai do trilho</span>
+  <h2>O cliente não<br>segue o roteiro</h2>
+  <p class="sub">Esta é a seção que decide se o sistema sobrevive ao mundo real. O caminho feliz qualquer um desenha; o que quebra sistemas de atendimento são os seis casos abaixo.</p>
+
+  <div class="branch">
+    <p class="said">"Mas só me fala um valor aproximado, cara"</p>
+    <p class="freq">De longe o mais comum</p>
+    <p><b>Nunca ignore e nunca chute.</b> Ignorar cria o cliente revoltado; chutar cria a expectativa que vai quebrar no dia. O caminho do meio é dar uma âncora verdadeira — o valor da <b>sessão</b>, que ele sabe de cor — e não o valor da peça, que ele não tem como saber.</p>
+    <div class="copy">
+      <div class="copy-head"><span class="tag">Resposta salva · /valor</span><button class="cbtn" type="button">copiar</button></div>
+      <div class="copy-body">Te falo, mas com sinceridade: qualquer número que eu chutar agora vai estar errado, e aí a gente se estranha depois.
+
+O que dá pra adiantar: minhas sessões ficam entre R$ {{SESSAO_MIN}} e R$ {{SESSAO_MAX}}.
+
+Pra te dar o número do SEU projeto eu preciso ver a referência e o local. É pra isso que serve a ficha: {{LINK_FICHA}}. Uns 3 minutos e você sai com valor fechado, não com estimativa.</div>
+    </div>
+  </div>
+
+  <div class="branch">
+    <p class="said">[abriu o link, começou a ficha e sumiu]</p>
+    <p class="freq">Silencioso — só aparece se você medir</p>
+    <p>O Tally não avisa sobre ficha abandonada no plano gratuito, então <b>você não vai saber</b>. Não tente resolver isso: a resposta certa é estrutural, não de mensagem. Se muita gente abandonar, o problema está numa pergunta específica — corte ou reescreva ela. <b>Suspeite primeiro da faixa de investimento e do upload obrigatório.</b></p>
+  </div>
+
+  <div class="branch">
+    <p class="said">[não preencheu, não respondeu, sumiu]</p>
+    <p class="freq">Acontece com metade e tudo bem</p>
+    <p><b>Não faça nada.</b> Sério. Quem recebeu uma mensagem clara e não agiu não estava pronto — e mandar "oi, viu minha mensagem?" só ensina a pessoa a silenciar o perfil.</p>
+    <p>O que funciona é passivo: o story semanal com o link. Ela volta quando estiver pronta, e volta pelo caminho certo.</p>
+  </div>
+
+  <div class="branch">
+    <p class="said">[preencheu, mas a ficha veio fraca]</p>
+    <p class="freq">Ideia de duas palavras, sem foto do local</p>
+    <p><b>Uma pergunta cirúrgica no WhatsApp. Nunca mandar de volta pra ficha.</b> Reenviar o formulário é dizer "você preencheu errado" — e a pessoa some. Pergunte só a coisa que falta, no canal onde ela já está.</p>
+    <div class="copy">
+      <div class="copy-head"><span class="tag">Resposta salva · /faltou</span><button class="cbtn" type="button">copiar</button></div>
+      <div class="copy-body">Recebi sua ficha, valeu!
+
+Só falta uma coisa pra eu fechar o valor: me manda uma foto do local, com boa luz e um cartão do lado pra dar escala.
+
+Pode mandar aqui mesmo que eu já te respondo.</div>
+    </div>
+  </div>
+
+  <div class="branch">
+    <p class="said">"Faz 4 dias que te mandei mensagem e nada"</p>
+    <p class="freq">O caso que gera o cliente revoltado</p>
+    <p><b>Assume, mostra que leu, dá prazo curto e específico, oferece saída.</b> Não é hora de explicar que a agenda tá cheia — a pessoa não é obrigada a se importar com isso. Citar um detalhe da ideia dela é o que transforma a conversa: prova que existe uma pessoa do outro lado, não uma fila.</p>
+    <div class="copy">
+      <div class="copy-head"><span class="tag">Resposta salva · /demorei</span><button class="cbtn" type="button">copiar</button></div>
+      <div class="copy-body">Você tem razão, demorei. Não vou inventar desculpa.
+
+Sua ideia tá aqui comigo: [citar um detalhe específico do que ele pediu].
+
+Consigo te mandar o valor fechado hoje até [hora]. Se ainda estiver de pé, me fala.
+
+E se você já fechou com outro artista, tranquilo de verdade. Só me avisa que eu tiro da fila. Tamo junto de qualquer jeito.</div>
+    </div>
+  </div>
+
+  <div class="branch">
+    <p class="said">[voltou três meses depois: "e aí, ainda dá aquela ideia?"]</p>
+    <p class="freq">Raro, e o mais valioso de todos</p>
+    <p><b>Aqui o sistema paga a conta sozinho.</b> A ficha antiga está no Notion com a referência, a foto do local, o tamanho e o valor que ele orçou na época. O Russo abre o card e responde em trinta segundos com um nível de memória que nenhum tatuador tem.</p>
+    <div class="copy">
+      <div class="copy-head"><span class="tag">Resposta salva · /voltou</span><button class="cbtn" type="button">copiar</button></div>
+      <div class="copy-body">Claro que dá! Tenho tudo aqui: [a ideia], no [local], [tamanho].
+
+Na época a gente falou em R$ [valor]. [Segue valendo / mudou um pouco, hoje fica em R$ X].
+
+Quer que eu te mande as datas que eu tenho?</div>
+    </div>
+  </div>
+
+  <h3>O que nunca fazer</h3>
+  <ul class="never">
+    <li><b>Responder "oi" com "oi".</b> Duplica o tempo de todo mundo e não move nada.</li>
+    <li><b>Dar preço em comentário público.</b> Vira âncora errada pra todo mundo que ler o post depois.</li>
+    <li><b>Mandar a ficha duas vezes.</b> Na segunda vez ela lê como cobrança, não como processo.</li>
+    <li><b>Perseguir quem sumiu.</b> Um follow-up. Só um. Depois é o story que trabalha.</li>
+    <li><b>Prometer 24h respondendo em 48.</b> Prometa o prazo ruim que você cumpre, não o bom que você fura.</li>
+    <li><b>Deixar um lead frio sem nenhuma resposta.</b> Frio significa "responde sexta no bloco" — nunca "ignora".</li>
+  </ul>
+</section>
+
+<!-- 04 -->
+<section id="mensagens" class="wrap">
+  <span class="snum">04 — O que ele escreve de verdade</span>
+  <h2>Três mensagens<br>e mais nada</h2>
+  <p class="sub">Todo o resto é resposta salva. Estas três o Russo escreve com a mão, porque são as que carregam o trabalho dele.</p>
+
+  <h3>1. A resposta com o orçamento</h3>
+  <p>A parte que separa "cotação" de "proposta de artista" é o item 3. Sem ele, o cliente compara o preço com o do tatuador mais barato do bairro. Com ele, ele compara o <em>projeto</em> — e aí não tem com quem comparar.</p>
+  <ol class="recipe">
+    <li><b>Chama pelo nome e cita um detalhe da ideia.</b> Prova em uma linha que ele leu.</li>
+    <li><b>Devolve o projeto em uma frase.</b> "Então: cobra e punhal, old school com sombra pesada, no antebraço, uns 18 cm."</li>
+    <li><b>Dá uma opinião de artista.</b> O que ele mudaria e por quê. É isso que justifica o preço.</li>
+    <li><b>O valor, com sessões e tempo.</b> Fechado, sem "a partir de".</li>
+    <li><b>Duas datas concretas.</b> Nunca "me fala quando você pode" — isso devolve o trabalho pro cliente.</li>
+    <li><b>Como trava.</b> Sinal, valor, chave Pix. Tudo na mesma mensagem.</li>
+    <li><b>Uma pergunta no fim.</b> Mantém a conversa aberta em vez de encerrar num boleto.</li>
+  </ol>
+  <div class="copy">
+    <div class="copy-head"><span class="tag">Exemplo completo · orçamento</span><button class="cbtn" type="button">copiar</button></div>
+    <div class="copy-body">Fala [nome]! Curti demais sua ideia. [peça] é o tipo de trampo que eu amo fazer.
+
+Resumindo o que eu entendi: [peça], no [local], uns [X] cm, preto e cinza.
+
+Uma coisa que eu mudaria: [o que mudaria e por quê]. Fica mais bruto, que é o que você quer, e daqui a dez anos ainda vai dar pra ler o desenho.
+
+Valor: R$ [X], em [quantas] sessões de umas [X] horas.
+
+Tenho [dia] e [dia]. Qual encaixa melhor pra você?
+
+Pra travar a data é sinal de R$ {{SINAL_VALOR}} no Pix {{PIX}}, e ele abate do valor final.
+
+Qualquer coisa da ideia que você queira puxar mais pro seu lado, me fala antes de eu desenhar. Tamo junto.</div>
+  </div>
+
+  <h3>2. O "não é meu estilo"</h3>
+  <p>A mensagem mais difícil de escrever e a que mais rende. Um "não" bem dado com indicação transforma alguém que não ia comprar em alguém que fala bem do Russo pro resto da vida — e ainda constrói relação com o artista indicado.</p>
+  <div class="copy">
+    <div class="copy-head"><span class="tag">Resposta salva · /naoeomeu</span><button class="cbtn" type="button">copiar</button></div>
+    <div class="copy-body">[Nome], obrigado por ter pensado em mim, de verdade.
+
+Vou ser sincero: esse trampo não é o que eu faço melhor. Eu até faria, mas você merece alguém que faça isso todo dia e ame fazer. Tatuagem é pra vida toda, não dá pra ser "tá bom".
+
+Quem eu indicaria: [@artista], que é brabo demais em [estilo]. Fala que fui eu que mandei.
+
+E se um dia você quiser algo mais na minha linha, minha porta tá aberta. Tamo junto.</div>
+  </div>
+
+  <h3>3. O follow-up único</h3>
+  <p>Curto, sem culpa, com saída fácil. A frase que faz esse texto funcionar é a última: <b>oferecer a saída aumenta a taxa de resposta</b>, porque tira o peso de ter que se justificar.</p>
+  <div class="copy">
+    <div class="copy-head"><span class="tag">Resposta salva · /followup</span><button class="cbtn" type="button">copiar</button></div>
+    <div class="copy-body">E aí [nome]! Passando pra saber se a ideia da [peça] ainda tá de pé.
+
+Se sim, eu seguro uma data pra você essa semana.
+
+Se mudou de ideia ou já fechou com outro artista, sem problema nenhum. Só me fala que eu tiro da fila. Prefiro saber do que ficar te cobrando.</div>
+  </div>
+</section>
+
+<!-- 05 -->
+<section id="regras" class="wrap">
+  <span class="snum">05 — Limites da plataforma</span>
+  <h2>O que a Meta<br>deixa e não deixa</h2>
+  <p class="sub">Quatro regras que moldam o desenho acima. Ignorar qualquer uma delas quebra o fluxo em produção — e a terceira é a que mais gente descobre tarde.</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Regra</th><th>O que significa</th><th>Consequência no desenho</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>A resposta instantânea dispara uma vez só</strong></td>
+          <td>Ela vale para a <em>primeira</em> mensagem de cada pessoa. Quem já conversou antes não recebe de novo.</td>
+          <td>Por isso existe a resposta salva <code>/ficha</code>. Cliente antigo voltando não é atendido pelo automático — o Russo cola o atalho.</td>
+        </tr>
+        <tr>
+          <td><strong>Perguntas frequentes: 4 slots, 80 caracteres</strong></td>
+          <td>Limite duro da ferramenta nativa.</td>
+          <td>Escolha as quatro que mais aparecem. As outras quinze viram destaque no perfil e respostas salvas.</td>
+        </tr>
+        <tr>
+          <td><strong>Janela de 24 horas</strong></td>
+          <td>Vale para a <em>API</em> de mensagens, não para o Russo respondendo pelo app. A janela abre quando o cliente manda mensagem e reinicia a cada nova mensagem dele.</td>
+          <td>Hoje não te limita — o Russo responde na mão. Vira restrição de verdade na fase 2, se você automatizar o DM.</td>
+        </tr>
+        <tr>
+          <td><strong>Human Agent tag: 7 dias, só texto humano</strong></td>
+          <td>Estende a janela de 24h para 7 dias, mas exclusivamente para mensagens escritas por uma pessoa. Usar em automação viola a política.</td>
+          <td><strong>O follow-up do dia 5 nunca pode ser disparado pelo n8n.</strong> Por isso o cutucão vai no resumo das 9h, no WhatsApp do Russo, e ele manda com a mão.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="good">
+    <b>A restrição virou a decisão certa</b>
+    <p>Esse limite acabou desenhando o sistema melhor do que a versão sem limite. Follow-up automático de tatuador soa a cobrança de boleto, e é exatamente o oposto do que o Russo vende. A regra da Meta forçou a arquitetura em que <strong>a automação cuida da fila e o humano cuida da conversa</strong> — que era o desenho certo de qualquer jeito.</p>
+  </div>
+
+  <p style="font-size:14.5px;color:var(--ink3)">Políticas de plataforma mudam. Antes de construir a fase 2, confira a documentação oficial da Meta — o que está aqui vale para setembro de 2026.</p>
+</section>
+
+<!-- 06 -->
+<section id="ritual" class="wrap">
+  <span class="snum">06 — O lado do Russo</span>
+  <h2>Uma hora<br>por semana</h2>
+  <p class="sub">De nada adianta o fluxo estar certo se ele não couber na rotina de quem tatua oito horas por dia. O sistema inteiro se resume a três momentos fixos.</p>
+
+  <div class="week">
+    <div class="slot">
+      <div class="dur">10min</div>
+      <div class="when">Toda manhã · com o café</div>
+      <h4>Abre a view "Responder hoje"</h4>
+      <p>Olha só os 🔥 e responde só eles. Se não tiver nenhum quente, fecha o app e vai tatuar. Esta é a única tela que ele precisa conhecer.</p>
+    </div>
+    <div class="slot">
+      <div class="dur">15min</div>
+      <div class="when">Fim do dia · antes de sair</div>
+      <h4>O bloco dos mornos</h4>
+      <p>Responde a fila do dia com as respostas salvas e arrasta os cards que mudaram de estado. É o momento em que o pipeline fica honesto.</p>
+    </div>
+    <div class="slot">
+      <div class="dur">20min</div>
+      <div class="when">Sexta, fim da tarde</div>
+      <h4>Limpeza da semana</h4>
+      <p>O bloco dos frios, os follow-ups que o resumo das 9h cobrou, e marcar os perdidos <b>com o motivo preenchido</b>. Em três meses esse campo vale mais que o resto do painel junto.</p>
+    </div>
+  </div>
+
+  <div class="note">
+    <b>A comparação que vale fazer com ele</b>
+    <p>Quarenta e cinco minutos por semana, em blocos, com o celular na mão de propósito. Hoje ele gasta mais que isso <strong>por dia</strong>, picado, no meio de sessão, com a agulha na mão e alguém esperando — que é o jeito mais caro possível de fazer a mesma coisa, e pior feito.</p>
+  </div>
+
+  <h3>O que medir nos primeiros 30 dias</h3>
+  <p>Três números, contados na sexta-feira, sem ferramenta nenhuma além do próprio Notion:</p>
+  <ol>
+    <li><strong>Quantas fichas chegaram</strong> — e quantas vieram do link na bio em vez do direct. Essa proporção subindo é o sistema funcionando.</li>
+    <li><strong>Quanto tempo levou a primeira resposta</strong> — a diferença entre "Entrou em" e a data em que virou Orçado.</li>
+    <li><strong>Quantas viraram sinal pago.</strong> É o único número que paga a conta.</li>
+  </ol>
+</section>
+
+<footer class="foot wrap">
+  <p>Este é o roteiro do primeiro contato. A montagem das ferramentas está no kit de pré-atendimento, e o fluxo do cliente dá pra percorrer no protótipo da ficha — os dois estão na sua galeria de artifacts.</p>
+  <p>Regras de plataforma verificadas em setembro de 2026: <a href="https://sumgenius.ai/blog/instagram-24-hour-messaging-window-2026/">janela de 24h e Human Agent tag</a> · <a href="https://www.respondm.com/blog/mensagem-automatica-no-instagram">recursos nativos de mensagem automática</a>.</p>
+</footer>
+
+<script>
+document.addEventListener('click', function(e){
+  var btn = e.target.closest('.cbtn');
+  if(!btn) return;
+  var box = btn.closest('.copy');
+  if(!box) return;
+  var text = box.querySelector('.copy-body').textContent;
+  var done = function(){
+    var old = btn.textContent;
+    btn.textContent = 'copiado ✓';
+    btn.classList.add('done');
+    setTimeout(function(){ btn.textContent = old; btn.classList.remove('done'); }, 1600);
+  };
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(done, function(){ fallback(text, done); });
+  } else { fallback(text, done); }
+});
+function fallback(text, done){
+  var ta = document.createElement('textarea');
+  ta.value = text; ta.setAttribute('readonly','');
+  ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); done(); } catch(err) {}
+  document.body.removeChild(ta);
+}
+
+Array.prototype.forEach.call(document.querySelectorAll('.tw'), function(tw){
+  var check = function(){
+    var over = tw.scrollWidth > tw.clientWidth + 4;
+    var next = tw.nextElementSibling;
+    var hint = (next && next.classList.contains('scroll-hint')) ? next : null;
+    if(over && !hint){
+      hint = document.createElement('div');
+      hint.className = 'scroll-hint';
+      hint.textContent = 'arraste a tabela para o lado';
+      tw.parentNode.insertBefore(hint, tw.nextSibling);
+    } else if(!over && hint){ hint.remove(); }
+  };
+  check();
+  window.addEventListener('resize', check);
+  tw.addEventListener('scroll', function(){
+    var h = tw.nextElementSibling;
+    if(h && h.classList.contains('scroll-hint')) h.style.opacity = '0';
+  }, { once:true, passive:true });
+});
+
+var links = Array.prototype.slice.call(document.querySelectorAll('.nav a'));
+var secs = links.map(function(a){ return document.querySelector(a.getAttribute('href')); });
+if('IntersectionObserver' in window){
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(en){
+      if(!en.isIntersecting) return;
+      var i = secs.indexOf(en.target);
+      if(i < 0) return;
+      links.forEach(function(l){ l.classList.remove('on'); });
+      links[i].classList.add('on');
+      var bar = document.querySelector('.nav-in'), el = links[i];
+      if(bar && (el.offsetLeft < bar.scrollLeft || el.offsetLeft + el.offsetWidth > bar.scrollLeft + bar.clientWidth)){
+        bar.scrollTo({ left: Math.max(0, el.offsetLeft - 40), behavior:'smooth' });
+      }
+    });
+  }, { rootMargin:'-50px 0px -70% 0px' });
+  secs.forEach(function(s){ if(s) io.observe(s); });
+}
+</script>
+
+</body>
+</html>
