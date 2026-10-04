@@ -1,0 +1,605 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>O Estúdio Sem Atrito</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Karla:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+:root{
+  --paper:#EFEBF3; --surface:#F8F6FB; --card:#FFFFFF;
+  --ink:#191424; --ink2:#57506B; --ink3:#8A82A0;
+  --line:#DBD3E7; --line2:#C7BCDA;
+  --stencil:#6636C4; --stencil-ink:#4E259C; --stencil-soft:#EDE4FC;
+  --money:#B2521C; --money-soft:#FBEADC;
+  --time:#8A6A18; --time-soft:#FAF1D9;
+  --feel:#3F6A82; --feel-soft:#E2EEF4;
+  --ok:#2E7350; --ok-soft:#DFF1E7;
+  --shadow:0 1px 2px rgba(25,20,36,.05),0 8px 24px -12px rgba(25,20,36,.18);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#110E18; --surface:#181322; --card:#1D1729;
+    --ink:#EFEAF7; --ink2:#AAA1C0; --ink3:#7B7295;
+    --line:#2C2440; --line2:#3D3356;
+    --stencil:#A582F8; --stencil-ink:#C4AEFF; --stencil-soft:#271B44;
+    --money:#E9995E; --money-soft:#33210F;
+    --time:#D4B255; --time-soft:#2C2410;
+    --feel:#7DAFC9; --feel-soft:#152631;
+    --ok:#6FC79A; --ok-soft:#12261B;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px -14px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#110E18; --surface:#181322; --card:#1D1729;
+  --ink:#EFEAF7; --ink2:#AAA1C0; --ink3:#7B7295;
+  --line:#2C2440; --line2:#3D3356;
+  --stencil:#A582F8; --stencil-ink:#C4AEFF; --stencil-soft:#271B44;
+  --money:#E9995E; --money-soft:#33210F;
+  --time:#D4B255; --time-soft:#2C2410;
+  --feel:#7DAFC9; --feel-soft:#152631;
+  --ok:#6FC79A; --ok-soft:#12261B;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px -14px rgba(0,0,0,.7);
+}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:"Karla",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:16px;line-height:1.62;-webkit-font-smoothing:antialiased;
+  -webkit-text-size-adjust:100%;text-size-adjust:100%;overflow-wrap:break-word;
+}
+h1,h2,h3,h4{margin:0;text-wrap:balance}
+a{color:var(--stencil-ink)}
+:focus-visible{outline:2px solid var(--stencil);outline-offset:2px;border-radius:3px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.wrap{max-width:860px;margin:0 auto;padding-inline:20px}
+
+.nav{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--paper) 90%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav-in{max-width:860px;margin:0 auto;padding:0 20px;display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.nav-in::-webkit-scrollbar{display:none}
+.nav a{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);text-decoration:none;padding:13px 9px;white-space:nowrap;border-bottom:2px solid transparent}
+.nav a:hover{color:var(--ink)}
+.nav a.on{color:var(--stencil-ink);border-bottom-color:var(--stencil)}
+
+.hero{padding-block:50px 38px;border-bottom:1px solid var(--line)}
+.eyebrow{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--stencil-ink);margin-bottom:16px}
+h1{font-family:"Anton",Impact,sans-serif;font-weight:400;text-transform:uppercase;font-size:clamp(40px,8.4vw,78px);line-height:.99;margin-bottom:20px}
+h1 em{font-style:normal;color:var(--stencil)}
+.lede{font-size:18.5px;line-height:1.55;color:var(--ink2);max-width:62ch}
+.lede strong{color:var(--ink);font-weight:700}
+
+section{padding-block:52px;border-bottom:1px solid var(--line);scroll-margin-top:50px}
+section:last-of-type{border-bottom:0}
+.snum{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.16em;color:var(--stencil-ink);text-transform:uppercase;display:block;margin-bottom:10px}
+h2{font-family:"Anton",Impact,sans-serif;font-weight:400;text-transform:uppercase;font-size:clamp(27px,5.4vw,42px);line-height:1.04;margin-bottom:14px}
+h3{font-size:19px;font-weight:700;margin-top:34px;margin-bottom:10px;letter-spacing:-.01em}
+h4{font-size:15.5px;font-weight:700;margin:0 0 6px}
+p{margin:0 0 14px}
+.sub{color:var(--ink2);max-width:64ch;font-size:17px}
+ul,ol{margin:0 0 16px;padding-left:20px}
+li{margin-bottom:7px}
+li::marker{color:var(--ink3)}
+code{font-family:"JetBrains Mono",monospace;font-size:12.5px;background:var(--stencil-soft);color:var(--stencil-ink);padding:1px 5px;border-radius:3px}
+
+/* mapa de vazamentos */
+.leak{display:grid;grid-template-columns:auto 1fr;gap:0 14px;padding:14px 0;border-bottom:1px solid var(--line);align-items:start}
+.leak:last-child{border-bottom:0}
+.stage{
+  font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink3);grid-row:1 / span 3;min-width:78px;padding-top:4px;
+}
+.leak h4{grid-column:2;display:flex;flex-wrap:wrap;gap:8px;align-items:baseline}
+.kind{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase;border-radius:2px;padding:2px 6px;font-weight:500}
+.kind.m{background:var(--money-soft);color:var(--money)}
+.kind.t{background:var(--time-soft);color:var(--time)}
+.kind.f{background:var(--feel-soft);color:var(--feel)}
+.kind.ok{background:var(--ok-soft);color:var(--ok)}
+.leak p{grid-column:2;font-size:15px;color:var(--ink2);margin:5px 0 0}
+
+/* apostas */
+.bet{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:0;margin:22px 0;box-shadow:var(--shadow);overflow:hidden}
+.bet-h{padding:18px 20px 16px;border-bottom:1px solid var(--line);display:grid;grid-template-columns:auto 1fr;gap:0 16px;align-items:start}
+.bet-n{font-family:"Anton",sans-serif;font-size:44px;line-height:.85;color:var(--stencil);grid-row:1 / span 2;font-variant-numeric:tabular-nums}
+.bet-h h3{margin:0 0 3px;font-size:21px;grid-column:2}
+.bet-h .kicker{grid-column:2;font-size:14.5px;color:var(--ink3);margin:0;font-style:italic}
+.bet-b{padding:16px 20px 18px}
+.bet-b p{font-size:15.5px;color:var(--ink2)}
+.bet-b p b{color:var(--ink)}
+.bet-b p:last-child{margin-bottom:0}
+.how{list-style:none;padding:0;margin:14px 0;counter-reset:h}
+.how li{counter-increment:h;position:relative;padding-left:34px;margin-bottom:10px;font-size:15px;color:var(--ink2)}
+.how li::before{
+  content:counter(h);position:absolute;left:0;top:1px;width:22px;height:22px;border-radius:4px;
+  background:var(--stencil-soft);color:var(--stencil-ink);display:grid;place-items:center;
+  font-family:"JetBrains Mono",monospace;font-size:10.5px;font-weight:700;
+}
+.how li b{color:var(--ink)}
+.price{
+  display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;padding-top:14px;border-top:1px dashed var(--line2);
+}
+.price span{
+  font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.05em;
+  border:1px solid var(--line2);border-radius:3px;padding:5px 9px;color:var(--ink2);
+}
+.price span b{color:var(--ink);font-weight:700}
+
+/* segundo time */
+.idea{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--stencil);border-radius:4px;padding:15px 17px;margin:11px 0}
+.idea h4{font-size:16.5px;margin-bottom:5px}
+.idea p{font-size:15px;color:var(--ink2);margin:0 0 8px}
+.idea p:last-child{margin-bottom:0}
+.idea .kit{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink3);display:block;margin-top:8px;padding-top:8px;border-top:1px dashed var(--line2);line-height:1.5}
+.idea .kit b{color:var(--stencil-ink)}
+
+/* não faça */
+.no{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--money);border-radius:4px;padding:15px 17px;margin:11px 0}
+.no h4{color:var(--money);font-size:16.5px;display:flex;gap:8px;align-items:baseline}
+.no h4::before{content:"✕";font-weight:700}
+.no p{font-size:15px;color:var(--ink2);margin:6px 0 0}
+.no p b{color:var(--ink)}
+
+/* ondas */
+.wave{margin:22px 0}
+.wave-h{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+.wave-h b{font-family:"Anton",sans-serif;font-weight:400;text-transform:uppercase;font-size:24px;line-height:1;color:var(--stencil)}
+.wave-h span{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3)}
+.wave > p{font-size:15px;color:var(--ink2);margin:0 0 10px}
+.wave ul{margin:0;padding-left:20px}
+.wave li{font-size:15px;color:var(--ink2)}
+.wave li b{color:var(--ink)}
+
+.note,.warn,.good{padding:13px 16px;border-radius:0 4px 4px 0;margin:18px 0;font-size:15px}
+.note{border-left:3px solid var(--feel);background:var(--feel-soft)}
+.warn{border-left:3px solid var(--money);background:var(--money-soft)}
+.good{border-left:3px solid var(--ok);background:var(--ok-soft)}
+.note p:last-child,.warn p:last-child,.good p:last-child{margin-bottom:0}
+.note b,.warn b,.good b{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:4px}
+.note b{color:var(--feel)} .warn b{color:var(--money)} .good b{color:var(--ok)}
+
+.tw{overflow-x:auto;margin:18px 0;border:1px solid var(--line);border-radius:4px;background:var(--card)}
+table{border-collapse:collapse;width:100%;min-width:540px;font-size:14.5px}
+th{text-align:left;font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);padding:10px 14px;border-bottom:1px solid var(--line);font-weight:500;background:var(--surface)}
+td{padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+.num{font-variant-numeric:tabular-nums}
+.scroll-hint{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin:-10px 0 16px;display:flex;align-items:center;gap:6px}
+.scroll-hint::before{content:"↔";font-size:13px;color:var(--stencil)}
+
+.lowtech{display:grid;gap:11px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));margin:18px 0}
+.lowtech div{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:14px 16px;box-shadow:var(--shadow)}
+.lowtech h4{font-size:15.5px}
+.lowtech p{font-size:14.5px;color:var(--ink2);margin:0}
+
+.foot{padding-block:36px 56px;color:var(--ink3);font-size:14px}
+.foot a{color:var(--ink2)}
+
+@media (max-width:700px){
+  body{font-size:15.5px}
+  .wrap{padding-inline:18px}
+  .nav-in{padding:0 18px}
+  .hero{padding-block:34px 28px}
+  .lede{font-size:16.5px}
+  .sub{font-size:16px}
+  section{padding-block:40px;scroll-margin-top:47px}
+  h3{font-size:17.5px;margin-top:28px}
+  .leak{grid-template-columns:1fr;gap:0}
+  .stage{grid-row:auto;margin-bottom:4px}
+  .leak h4,.leak p{grid-column:1}
+  .bet-h,.bet-b{padding:15px 16px}
+  .bet-n{font-size:36px}
+  .bet-h h3{font-size:19px}
+  .idea,.no{padding:14px 15px}
+  .bet-b p,.idea p,.no p,.how li,.wave li{font-size:14.8px}
+  .lowtech{grid-template-columns:1fr}
+  .note,.warn,.good{font-size:14.5px;padding:12px 14px}
+  table{font-size:13.5px} th,td{padding:9px 12px}
+  .foot{font-size:13.5px}
+}
+@media (max-width:400px){ .wrap{padding-inline:16px} .nav-in{padding:0 16px} }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="nav-in">
+    <a href="#vaza">01 Onde vaza</a>
+    <a href="#apostas">02 As 3 apostas</a>
+    <a href="#segundo">03 Segundo time</a>
+    <a href="#nao">04 Onde não ir</a>
+    <a href="#baixa">05 Baixa tecnologia</a>
+    <a href="#ordem">06 A ordem</a>
+  </div>
+</nav>
+
+<header class="hero wrap">
+  <div class="eyebrow">Brainstorm · além do primeiro contato</div>
+  <h1>O gargalo<br>nunca foi<br><em>responder DM.</em></h1>
+  <p class="lede">Responder DM era o sintoma mais barulhento. Mapeando a jornada inteira — da descoberta ao cliente que volta dois anos depois — <strong>o dinheiro vaza em outros lugares, e a experiência do cliente quebra num vão que ninguém olha</strong>: as cinco semanas entre o sinal pago e a agulha encostando na pele.</p>
+</header>
+
+<!-- 01 -->
+<section id="vaza" class="wrap">
+  <span class="snum">01 — O mapa</span>
+  <h2>Onde vaza<br>dinheiro, tempo<br>e paciência</h2>
+  <p class="sub">Nove estágios. O primeiro contato já está resolvido — os outros oito é que decidem se o Russo trabalha muito ou trabalha bem.</p>
+
+  <div style="margin-top:22px">
+    <div class="leak">
+      <div class="stage">01 · Descoberta</div>
+      <h4>O trabalho dele só existe dentro do Instagram <span class="kind t">Tempo</span></h4>
+      <p>Dez anos de portfólio reféns de uma conta que pode cair, de um algoritmo que decide quem vê, e de uma busca que ninguém faz. Quem procura "tatuador [estilo] em [cidade]" no Google não encontra o Russo.</p>
+    </div>
+
+    <div class="leak">
+      <div class="stage">02 · Contato</div>
+      <h4>DM não respondida <span class="kind ok">Resolvido</span></h4>
+      <p>É o que o kit de pré-atendimento e as primeiras 72 horas cobrem. Sai da lista.</p>
+    </div>
+
+    <div class="leak">
+      <div class="stage">03 · Orçamento</div>
+      <h4>Preço no feeling <span class="kind m">Dinheiro</span></h4>
+      <p>Sem piso calculado, ele cobra pelo humor do dia. Peça complexa em local difícil sai pelo mesmo valor de uma fácil — e o prejuízo só aparece na sexta sessão, quando ele já está cansado e arrependido.</p>
+    </div>
+
+    <div class="leak">
+      <div class="stage">04 · Fechamento</div>
+      <h4>Sinal combinado no boca a boca <span class="kind m">Dinheiro</span></h4>
+      <p>Chave Pix colada na conversa, print de comprovante, conferência manual, e uma agenda que só existe na cabeça dele. É onde nasce a dupla marcação.</p>
+    </div>
+
+    <div class="leak">
+      <div class="stage">05 · A espera</div>
+      <h4>Cinco semanas de silêncio absoluto <span class="kind f">Experiência</span> <span class="kind m">Dinheiro</span></h4>
+      <p><strong>O maior vão da jornada inteira, e o menos olhado.</strong> A pessoa pagou e sumiu do radar. É aqui que ela esfria, esquece a data, arruma outro compromisso — e é daqui que o no-show nasce. Uma cadeira vazia de seis horas não volta nunca.</p>
+    </div>
+
+    <div class="leak">
+      <div class="stage">06 · Desenho</div>
+      <h4>Horas de criação não remuneradas <span class="kind t">Tempo</span> <span class="kind m">Dinheiro</span></h4>
+      <p>Ele desenha à noite, de graça, às vezes para um cliente que vai sumir. E quando o cliente pede a quarta revisão, não existe combinado que diga que aquilo já passou do limite.</p>
+    </div>
+
+    <div class="leak">
+      <div class="stage">07 · Sessão</div>
+      <h4>Papel que some e foto ruim <span class="kind f">Experiência</span></h4>
+      <p>Termo de consentimento e anamnese em papel, guardados numa gaveta. E no fim, a foto do trabalho sai no celular, com luz de estúdio ruim, vermelha e brilhando de pomada — a pior versão possível da melhor peça dele.</p>
+    </div>
+
+    <div class="leak">
+      <div class="stage">08 · Cicatrização</div>
+      <h4>O cliente evapora <span class="kind f">Experiência</span></h4>
+      <p>Ninguém acompanha. O Russo não vê o resultado final do próprio trabalho, e quando algo cicatriza mal ele só descobre meses depois — pelo pior caminho possível.</p>
+    </div>
+
+    <div class="leak">
+      <div class="stage">09 · Retorno</div>
+      <h4>Cliente antigo tratado como estranho <span class="kind m">Dinheiro</span></h4>
+      <p>Quem já tatuou com ele é o cliente mais barato e mais provável de fechar de novo — e entra na mesma fila do "oi, quanto custa?". Ninguém no mercado trabalha isso, o que torna esse o espaço mais fácil de ocupar.</p>
+    </div>
+
+    <div class="leak">
+      <div class="stage">10 · Negócio</div>
+      <h4>Ele não sabe o próprio lucro <span class="kind m">Dinheiro</span></h4>
+      <p>Faturamento ele sabe. Quanto sobra depois de material, percentual do estúdio e imposto, e quanto vale a hora dele de verdade — não. Sem esse número, toda decisão de preço é chute.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 02 -->
+<section id="apostas" class="wrap">
+  <span class="snum">02 — O que eu construiria primeiro</span>
+  <h2>Três apostas</h2>
+  <p class="sub">De tudo que dá pra fazer, estas três pagam o esforço em semanas. As duas primeiras atacam dinheiro que já está vazando; a terceira devolve tempo de vida.</p>
+
+  <div class="bet">
+    <div class="bet-h">
+      <div class="bet-n">1</div>
+      <h3>Matar o no-show</h3>
+      <p class="kicker">O buraco mais caro do negócio — e o mais fácil de tapar</p>
+    </div>
+    <div class="bet-b">
+      <p>Cadeira vazia não se recupera: o dia passou. Três peças resolvem quase tudo, e a terceira é a que transforma um cancelamento em receita em vez de prejuízo.</p>
+      <ol class="how">
+        <li><b>Sinal por Pix com confirmação automática.</b> O n8n gera uma cobrança com valor e identificador únicos, o cliente paga, o webhook do provedor volta, o card vira <code>📅 Agendado</code>, a data entra no Google Calendar e a régua de lembretes arma sozinha. Some a conferência de comprovante, some a dupla marcação.</li>
+        <li><b>Régua de lembretes: D-7, D-2, D-1 e a manhã do dia.</b> Cada um com conteúdo próprio — o D-2 leva os pré-cuidados, o D-0 leva endereço e o que trazer. Não é spam se cada mensagem serve pra alguma coisa.</li>
+        <li><b>Confirmação ativa em D-2.</b> "Confirma respondendo SIM." Quem não confirma em 24h perde o horário para a fila. É o que clínica e restaurante fazem há décadas, e o motivo de funcionar é psicológico: um compromisso reconfirmado é muito mais difícil de furar.</li>
+        <li><b>Lista de espera com disparo automático.</b> Cancelou? O n8n varre o Notion por quem está <code>💰 Aguardando sinal</code> na mesma faixa de tamanho, e dispara: <em>"vagou dia 18, 14h — quem responder primeiro leva"</em>. <b>O cancelamento vira uma venda no mesmo dia</b>, em vez de um dia perdido.</li>
+      </ol>
+      <div class="warn">
+        <b>O custo real, sem enfeite</b>
+        <p>Cobrança Pix com QR dinâmico — a única que permite a confirmação automática — <strong>não entra na cota gratuita</strong>. No Asaas, por exemplo, não há mensalidade, mas cada cobrança sai por volta de R$ 1,99; a isenção das primeiras 100 transações vale só para chave e QR estático. Num sinal de R$ 300 isso é 0,7%, e vale muito a pena. Mas se você quiser custo zero absoluto, dá pra rodar com chave Pix estática e o Russo confirmando na mão — perde a automação, mantém a régua.</p>
+      </div>
+      <div class="price">
+        <span>Custo: <b>~R$ 2 por sinal</b></span>
+        <span>Esforço: <b>1 fim de semana</b></span>
+        <span>Retorno: <b>o primeiro no-show evitado</b></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="bet">
+    <div class="bet-h">
+      <div class="bet-n">2</div>
+      <h3>O passaporte da tattoo</h3>
+      <p class="kicker">Uma página por cliente — a ideia mais diferenciada da lista</p>
+    </div>
+    <div class="bet-b">
+      <p>Cada cliente recebe um link único e permanente. Não é dashboard, não é app, não exige cadastro: é <b>uma página que existe pra ele</b>, e que responde sozinha todas as perguntas que hoje viram mensagem.</p>
+      <ol class="how">
+        <li><b>O projeto.</b> A ideia dele, as referências que mandou, o local, o tamanho, o valor fechado e quantas sessões.</li>
+        <li><b>A data</b>, com contagem regressiva e um botão de adicionar ao calendário do celular.</li>
+        <li><b>O desenho</b>, publicado quando ficar pronto — com aviso automático. Esse momento é o pico de emoção da jornada inteira e hoje ele acontece num anexo de WhatsApp que some.</li>
+        <li><b>Pré e pós-cuidados</b>, sempre no mesmo lugar. Nunca mais "me manda de novo aqueles cuidados?".</li>
+        <li><b>O botão de mandar foto da cicatrização</b>, que alimenta o Notion e fecha o ciclo do estágio 08.</li>
+        <li><b>O histórico</b>: todas as peças que ele já fez com o Russo, com data e foto. Para o cliente antigo, isso é um objeto afetivo — e é o que faz ele mandar o link pros amigos sem você pedir.</li>
+      </ol>
+      <p>Tecnicamente é a sua praia: página estática por token, dados puxados do Notion via API, hospedada de graça. <b>E aqui está o pulo do gato</b> — a página é o único lugar onde a experiência do Russo pode ser visivelmente melhor que a de qualquer outro tatuador. Preço todo mundo compara. Isso ninguém tem.</p>
+      <div class="price">
+        <span>Custo: <b>R$ 0</b></span>
+        <span>Esforço: <b>o maior dos três</b></span>
+        <span>Retorno: <b>diferenciação + fim do vão de 5 semanas</b></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="bet">
+    <div class="bet-h">
+      <div class="bet-n">3</div>
+      <h3>O copiloto do Russo</h3>
+      <p class="kicker">IA em tudo, menos no traço</p>
+    </div>
+    <div class="bet-b">
+      <p>Um node de LLM no n8n, rodando <b>depois</b> da ficha chegar e <b>antes</b> do Russo abrir o card. Ele não decide nada — prepara o terreno pra decisão ser rápida.</p>
+      <ol class="how">
+        <li><b>Resumo em uma linha.</b> Transforma um parágrafo desencontrado em "cobra e punhal old school, antebraço, 18cm, PB, primeira tattoo".</li>
+        <li><b>Flags automáticas.</b> "Referência é trabalho autoral de outro tatuador — cuidado com cópia." "Quer cobrir tattoo com nome." "Prazo apertado para o tamanho pedido." São exatamente os avisos que o Russo daria pra si mesmo se tivesse tempo de ler com calma.</li>
+        <li><b>Rascunho de resposta na voz dele.</b> Alimentado com os textos que ele mesmo escreveu. Ele lê, corta metade, manda. <b>Escrever do zero é o que consome o tempo — corrigir é rápido.</b></li>
+        <li><b>Transcrição de áudio.</b> Cliente manda três minutos de áudio no WhatsApp? Whisper transcreve e o texto entra no card. Tatuador nenhum gosta de ouvir áudio no meio de uma sessão.</li>
+        <li><b>Classificação de estilo por visão.</b> As imagens de referência viram tags no Notion, e as tags viram dados: em seis meses ele sabe qual estilo mais pedem, qual ele mais fecha e qual mais dá dor de cabeça.</li>
+      </ol>
+      <div class="note">
+        <b>A regra que mantém isso honesto</b>
+        <p>O copiloto toca <strong>texto e organização</strong>. Nunca toca em desenho, nunca decide preço, e nunca fala com o cliente sem o Russo ler antes. A seção 04 explica por que essa fronteira não é firula — é o que separa "tatuador com processo moderno" de "tatuador que terceirizou a arte".</p>
+      </div>
+      <div class="price">
+        <span>Custo: <b>centavos por ficha</b></span>
+        <span>Esforço: <b>2 nodes no n8n</b></span>
+        <span>Retorno: <b>tempo de escrita</b></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 -->
+<section id="segundo" class="wrap">
+  <span class="snum">03 — Depois das três</span>
+  <h2>O segundo time</h2>
+  <p class="sub">Nada aqui é menos importante — é só menos urgente. Várias dessas encaixam em cima da estrutura que já existe e custam uma tarde cada.</p>
+
+  <div class="idea">
+    <h4>Portfólio próprio que alimenta a ficha</h4>
+    <p>Um site estático gerado a partir de um database "Trabalhos" no Notion. Resolve dois problemas de uma vez: tira o acervo dele da dependência do Instagram e aparece na busca do Google, onde hoje ele não existe.</p>
+    <p><b>E a sacada:</b> a ficha de ideia passa a oferecer as peças <em>dele</em> como referência. O cliente escolhe "quero algo tipo essa" apontando pro acervo do Russo — o que reduz drasticamente a referência de trabalho alheio, que é a maior fonte de atrito criativo do meio.</p>
+    <span class="kit"><b>Stack:</b> Astro ou Next na Vercel · Notion API · revalidação por webhook</span>
+  </div>
+
+  <div class="idea">
+    <h4>Books open: agenda em janelas, não em fluxo</h4>
+    <p>Em vez de agenda perpétua, o Russo abre blocos: "agenda de novembro abre dia 15". Fora da janela, a resposta é uma só — "entra na fila, aviso quando abrir".</p>
+    <p>É o modelo que os tatuadores mais disputados usam, e ele resolve o "tem vaga?" de forma estrutural: <b>não existe pergunta a fazer quando a resposta é uma data pública</b>. De quebra, concentra o esforço de atendimento em dois dias por mês em vez de espalhar por trinta.</p>
+    <span class="kit"><b>Stack:</b> campo de data no Notion · disparo em massa pela fila de espera</span>
+  </div>
+
+  <div class="idea">
+    <h4>O número que muda o comportamento: R$/hora real</h4>
+    <p>Cada sessão feita gera uma linha com valor recebido, material estimado, percentual do estúdio e horas na cadeira. O painel mensal mostra faturamento, ticket médio e — o único que importa — <b>quanto a hora dele vale de verdade</b>.</p>
+    <p>Esse número costuma ser desconfortável e é exatamente por isso que funciona: ele mostra, com evidência, que a peça pequena feita "por camaradagem" no sábado à tarde está subsidiando o resto da agenda.</p>
+    <span class="kit"><b>Stack:</b> campos no Notion + view agrupada por mês · nenhuma ferramenta nova. <b>Fiscal com contador</b>, não com planilha.</span>
+  </div>
+
+  <div class="idea">
+    <h4>Conteúdo que se escreve sozinho</h4>
+    <p>Sessão marcada como <code>🖤 Feito</code> dispara uma pergunta no WhatsApp dele: "quer postar essa?". Se sim, o LLM gera três legendas a partir da ficha — usando a história que o próprio cliente contou sobre a ideia. Ele escolhe uma, ajusta e posta.</p>
+    <p>Resolve o "não tenho o que postar" com o material que já foi coletado. A autorização de imagem sai assinada no dia, junto com o termo.</p>
+    <span class="kit"><b>Stack:</b> n8n + LLM · campo "autoriza imagem" no termo de consentimento</span>
+  </div>
+
+  <div class="idea">
+    <h4>Papelada que não some</h4>
+    <p>Termo de consentimento, anamnese e autorização de imagem assinados num tablet no dia, arquivados automaticamente. <b>Fica num banco separado, com acesso restrito</b> — anamnese contém dado de saúde, que é dado sensível pela LGPD e não pode morar no mesmo Notion que o pipeline comercial.</p>
+    <p>DocuSeal e Documenso são AGPL e rodam self-hosted de graça, mas manter um servidor de assinatura para uma pessoa é overkill. Para o volume dele, um formulário seu com assinatura em canvas e PDF gerado no n8n resolve melhor e com menos manutenção.</p>
+    <span class="kit"><b>Stack:</b> form próprio + canvas · PDF no n8n · storage separado com retenção definida</span>
+  </div>
+
+  <div class="idea">
+    <h4>Guest spots usando um campo que você já coleta</h4>
+    <p>A ficha pergunta a cidade do cliente desde o começo. Em seis meses isso vira um mapa: quando aparecerem oito pessoas de Floripa no Notion, existe uma semana de trabalho esperando lá — e <b>uma lista de convidados pronta antes de anunciar</b>.</p>
+    <p>Cada guest ganha sua própria ficha com prazo fechado, o que cria urgência real em vez de fabricada.</p>
+    <span class="kit"><b>Stack:</b> view agrupada por cidade · disparo segmentado</span>
+  </div>
+
+  <div class="idea">
+    <h4>O cliente antigo tem fila própria — e sabe disso</h4>
+    <p>Quem já tatuou com ele responde a ficha em três campos, não dezessete (o resto o Notion já sabe), entra numa fila prioritária, e é avisado primeiro quando a agenda abre.</p>
+    <p>Custa quase nada implementar e é o ativo mais subaproveitado do negócio: <b>vender pra quem já confia é sempre mais barato do que convencer um estranho</b>. Aniversário de primeira tattoo e convite pra fechar um braço que já tem três peças são disparos que rodam sozinhos.</p>
+    <span class="kit"><b>Stack:</b> match por @ do Instagram na entrada da ficha · ficha curta condicional</span>
+  </div>
+
+  <div class="idea">
+    <h4>Piso de preço calculado</h4>
+    <p>Uma calculadora interna, só pra ele: horas estimadas × R$/hora alvo + material + fator de complexidade + fator de local difícil. Ele não precisa obedecer — precisa <b>saber quando está cobrando abaixo do piso e decidir isso de propósito</b>, em vez de por cansaço.</p>
+    <span class="kit"><b>Stack:</b> fórmula no Notion ou uma página sua de duas telas</span>
+  </div>
+</section>
+
+<!-- 04 -->
+<section id="nao" class="wrap">
+  <span class="snum">04 — As linhas que eu não cruzaria</span>
+  <h2>Onde não ir,<br>por mais<br>moderno que pareça</h2>
+  <p class="sub">Material de ponta também é saber o que deixar de fora. Estas quatro parecem inovação e são risco — três de reputação, uma de segurança.</p>
+
+  <div class="no">
+    <h4>IA generativa criando o desenho</h4>
+    <p>É a primeira coisa que todo mundo pensa e é a pior. <b>O ativo do Russo é o traço dele</b> — no momento em que a arte vem de um modelo, ele vira um operador de máquina que cobra preço de artista. No meio, "usa IA pra desenhar" é acusação, não elogio.</p>
+    <p>Há ainda o lado prático: imagem de IA quase sempre é intatuável — detalhe demais, contraste que não existe em pele, e nenhuma noção de como aquilo envelhece em dez anos. Você não estaria acelerando o trabalho dele, estaria criando expectativa impossível de cumprir.</p>
+  </div>
+
+  <div class="no">
+    <h4>IA avaliando foto de cicatrização</h4>
+    <p>Tecnicamente dá. <b>Não faça.</b> Diferenciar cicatrização normal de infecção é ato clínico, e um falso negativo aqui não é um bug — é alguém que não procurou médico porque um sistema disse que estava tudo bem.</p>
+    <p>A foto entra no Notion e vai direto pro Russo. Se ele achar estranho, a resposta é sempre a mesma: procura um médico. O sistema organiza, o humano olha, o profissional de saúde decide.</p>
+  </div>
+
+  <div class="no">
+    <h4>Bot conversando sozinho sobre preço e agenda</h4>
+    <p>Um assistente que responde o FAQ dele é seguro e útil. Um que negocia valor ou promete data, não: erra uma vez e o Russo herda o combinado. <b>Preço e data são a assinatura dele</b> — saem da boca dele ou não saem.</p>
+    <p>A regra prática: o bot pode responder o que já está escrito no FAQ, e no instante em que a conversa sai desse roteiro ele entrega pro humano dizendo isso claramente.</p>
+  </div>
+
+  <div class="no">
+    <h4>Agenda self-service aberta ao público</h4>
+    <p>Cal.com self-hosted é ótimo e gratuito, mas agenda aberta é o modelo errado para tatuagem: cada trabalho tem duração diferente e precisa ser aprovado antes. Agenda pública vira gente marcando duas horas para um fechamento de costas.</p>
+    <p>O uso certo é depois do orçamento aprovado — um link de uso único com as duas ou três janelas que o Russo escolheu. <b>Self-service dentro de uma cerca que ele desenhou.</b></p>
+  </div>
+</section>
+
+<!-- 05 -->
+<section id="baixa" class="wrap">
+  <span class="snum">05 — Sem código nenhum</span>
+  <h2>Baixa tecnologia,<br>alto impacto</h2>
+  <p class="sub">Nada disso precisa de n8n, e várias dessas mudam mais a percepção do cliente do que qualquer automação da lista. Vale mencionar pro Russo justamente porque são coisas que ele controla sozinho.</p>
+
+  <div class="lowtech">
+    <div>
+      <h4>Um softbox e um fundo neutro</h4>
+      <p>A melhor peça do ano fotografada com luz vermelha de estúdio e pomada brilhando é a pior propaganda possível. Cem reais em iluminação e um fundo liso mudam o feed inteiro — e o cliente ganha uma foto que ele realmente quer postar.</p>
+    </div>
+    <div>
+      <h4>Mandar a foto tratada no mesmo dia</h4>
+      <p>O cliente vai postar de qualquer jeito. A pergunta é se ele posta a foto boa (marcando o Russo) ou a foto tremida do celular dele. Custo: cinco minutos.</p>
+    </div>
+    <div>
+      <h4>Conforto declarado</h4>
+      <p>Água, lanche, cobertor, apoio pros pés, playlist compartilhada e pausa avisada a cada hora. Sessão de seis horas é maratona — quem sai inteiro volta, e conta pros amigos por que voltou.</p>
+    </div>
+    <div>
+      <h4>Timelapse da sessão</h4>
+      <p>Um celular velho num tripé. Vira conteúdo, vira prova do trabalho, e vira presente pro cliente. Zero esforço durante a sessão.</p>
+    </div>
+    <div>
+      <h4>Um canal só, depois da ficha</h4>
+      <p>Hoje a conversa se espalha por direct, comentário e WhatsApp. Depois da ficha, tudo migra para o WhatsApp e fica lá. Menos lugar pra procurar é menos coisa pra esquecer.</p>
+    </div>
+    <div>
+      <h4>O desenho não sai antes do sinal</h4>
+      <p>Não é tecnologia, é política — e resolve o estágio 06 inteiro. Junto com "duas revisões inclusas", acaba com o trabalho criativo não remunerado sem precisar de nenhuma ferramenta.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 06 -->
+<section id="ordem" class="wrap">
+  <span class="snum">06 — Como eu faria</span>
+  <h2>A ordem<br>importa mais<br>que a lista</h2>
+  <p class="sub">Entregar tudo de uma vez com um sócio que já torce contra é a receita para ele desistir na segunda semana. Três ondas, cada uma provando a anterior.</p>
+
+  <div class="wave">
+    <div class="wave-h"><b>Onda 1</b><span>Agora · o que já está pronto</span></div>
+    <p>O pré-atendimento e o primeiro contato. Roda 30 dias, mede os quatro números, e só então propõe qualquer coisa nova. <b>Nada da lista acima entra antes do Russo dizer que a onda 1 valeu a pena.</b></p>
+  </div>
+
+  <div class="wave">
+    <div class="wave-h"><b>Onda 2</b><span>30 a 90 dias · o dinheiro</span></div>
+    <p>Aqui entra a aposta 1 inteira, porque é a que ele sente no bolso — e sentir no bolso é o que compra as próximas.</p>
+    <ul>
+      <li><b>Sinal por Pix com confirmação automática</b> e a agenda no Google Calendar</li>
+      <li><b>Régua de lembretes e confirmação em D-2</b></li>
+      <li><b>Lista de espera com disparo</b> — a primeira vez que um cancelamento virar venda, ele vira sócio da ideia</li>
+      <li><b>O copiloto</b> (aposta 3), que são dois nodes e economiza tempo desde o primeiro dia</li>
+    </ul>
+  </div>
+
+  <div class="wave">
+    <div class="wave-h"><b>Onda 3</b><span>Quando fizer sentido · a experiência</span></div>
+    <p>A parte que diferencia — e que só faz sentido depois que o básico está estável.</p>
+    <ul>
+      <li><b>O passaporte da tattoo</b> (aposta 2), começando pequeno: só projeto, data e cuidados</li>
+      <li><b>Portfólio próprio</b> alimentando as referências da ficha</li>
+      <li><b>Books open</b> e a fila de espera com posição</li>
+      <li><b>R$/hora real</b> e o piso de preço</li>
+      <li><b>Papelada digital</b> em banco separado</li>
+    </ul>
+  </div>
+
+  <h3>O custo somado</h3>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Item</th><th>Custo mensal</th><th>Observação</th></tr></thead>
+      <tbody>
+        <tr><td>Tally · Notion</td><td class="num">R$ 0</td><td>Planos gratuitos, sem pegadinha</td></tr>
+        <tr><td>Aviso no WhatsApp do Russo</td><td class="num">~R$ 2</td><td>API oficial da Meta, ~R$ 0,035 por aviso (tabela de 1º/out/2026) + chip pré-pago uma vez</td></tr>
+        <tr><td>n8n self-hosted</td><td class="num">R$ 0 a 30</td><td>Oracle Always Free, ou VPS se quiser sossego</td></tr>
+        <tr><td>Cobrança Pix por API</td><td class="num">~R$ 2 por sinal</td><td>Só o QR dinâmico; chave estática é grátis mas não automatiza</td></tr>
+        <tr><td>LLM para o copiloto</td><td class="num">centavos por ficha</td><td>Só resumo e rascunho — texto curto, modelo pequeno resolve</td></tr>
+        <tr><td>Hospedagem do portfólio e do passaporte</td><td class="num">R$ 0</td><td>Vercel ou Netlify, plano gratuito</td></tr>
+        <tr><td>Iluminação e tripé</td><td class="num">~R$ 150, uma vez</td><td>O melhor retorno por real da lista inteira</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="good">
+    <b>A pergunta que organiza tudo</b>
+    <p>Antes de construir qualquer coisa daqui, uma pergunta resolve a priorização: <strong>isso devolve tempo pro Russo, dinheiro pro Russo, ou tranquilidade pro cliente?</strong> Se não faz nenhuma das três com clareza, é firula bonita — e firula bonita é exatamente o que faz um sócio cético desistir do projeto inteiro.</p>
+  </div>
+</section>
+
+<footer class="foot wrap">
+  <p>Brainstorm, não plano fechado. Escolhe as que fazem sentido pro Russo de verdade e a gente detalha: fluxo de nodes, copy, esquema de dados e o que medir.</p>
+  <p>Custos verificados em setembro de 2026: <a href="https://blog.asaas.com/taxas-asaas/">taxas do Asaas</a> · <a href="https://www.esign.ai/blog/open-source-e-signature-api">assinatura eletrônica open source</a> · <a href="https://ossalt.com/guides/self-host-cal-com-calendly-2026">Cal.com self-hosted</a>. Preço de serviço muda — reconfira antes de fechar qualquer decisão.</p>
+</footer>
+
+<script>
+Array.prototype.forEach.call(document.querySelectorAll('.tw'), function(tw){
+  var check = function(){
+    var over = tw.scrollWidth > tw.clientWidth + 4;
+    var n = tw.nextElementSibling;
+    var hint = (n && n.classList.contains('scroll-hint')) ? n : null;
+    if(over && !hint){
+      hint = document.createElement('div');
+      hint.className = 'scroll-hint';
+      hint.textContent = 'arraste a tabela para o lado';
+      tw.parentNode.insertBefore(hint, tw.nextSibling);
+    } else if(!over && hint){ hint.remove(); }
+  };
+  check();
+  window.addEventListener('resize', check);
+  tw.addEventListener('scroll', function(){
+    var h = tw.nextElementSibling;
+    if(h && h.classList.contains('scroll-hint')) h.style.opacity = '0';
+  }, { once:true, passive:true });
+});
+
+var links = Array.prototype.slice.call(document.querySelectorAll('.nav a'));
+var secs = links.map(function(a){ return document.querySelector(a.getAttribute('href')); });
+if('IntersectionObserver' in window){
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(en){
+      if(!en.isIntersecting) return;
+      var i = secs.indexOf(en.target);
+      if(i < 0) return;
+      links.forEach(function(l){ l.classList.remove('on'); });
+      links[i].classList.add('on');
+      var bar = document.querySelector('.nav-in'), el = links[i];
+      if(bar && (el.offsetLeft < bar.scrollLeft || el.offsetLeft + el.offsetWidth > bar.scrollLeft + bar.clientWidth)){
+        bar.scrollTo({ left: Math.max(0, el.offsetLeft - 40), behavior:'smooth' });
+      }
+    });
+  }, { rootMargin:'-50px 0px -70% 0px' });
+  secs.forEach(function(s){ if(s) io.observe(s); });
+}
+</script>
+
+</body>
+</html>
