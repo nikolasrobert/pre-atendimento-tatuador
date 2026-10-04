@@ -4,7 +4,7 @@
     {
       "parameters": {
         "httpMethod": "POST",
-        "path": "pre-atendimento-russo",
+        "path": "russo-tattoer",
         "responseMode": "responseNode",
         "options": {}
       },
