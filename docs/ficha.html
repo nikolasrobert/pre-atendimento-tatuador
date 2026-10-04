@@ -1,0 +1,862 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Ficha de Ideia</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Karla:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+/* ===== chrome da página (light/dark do visualizador) ===== */
+:root{
+  --paper:#EFEBF3; --surface:#F8F6FB; --card:#FFFFFF;
+  --ink:#191424; --ink2:#57506B; --ink3:#8A82A0;
+  --line:#DBD3E7; --line2:#C7BCDA;
+  --stencil:#6636C4; --stencil-ink:#4E259C; --stencil-soft:#EDE4FC;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#100D17; --surface:#171221; --card:#1C1628;
+    --ink:#EFEAF7; --ink2:#AAA1C0; --ink3:#7B7295;
+    --line:#2C2440; --line2:#3D3356;
+    --stencil:#A582F8; --stencil-ink:#C4AEFF; --stencil-soft:#271B44;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#100D17; --surface:#171221; --card:#1C1628;
+  --ink:#EFEAF7; --ink2:#AAA1C0; --ink3:#7B7295;
+  --line:#2C2440; --line2:#3D3356;
+  --stencil:#A582F8; --stencil-ink:#C4AEFF; --stencil-soft:#271B44;
+}
+/* ===== a tela do cliente: sempre estúdio, sempre escura ===== */
+:root{
+  --s-bg:#0B0910; --s-card:#15111E; --s-card2:#1B1626; --s-line:#2B2439;
+  --s-text:#F3EFF9; --s-dim:#9A91AE; --s-accent:#AE86FF; --s-accent-2:#7C4DFF;
+  --s-ok:#5BC48A; --s-warn:#E8A85C;
+}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:"Karla",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;
+  -webkit-text-size-adjust:100%;text-size-adjust:100%;overflow-wrap:break-word;
+}
+h1,h2,h3{margin:0;text-wrap:balance}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--s-accent);outline-offset:2px;border-radius:4px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ===== topo ===== */
+.top{
+  position:sticky;top:0;z-index:60;background:var(--paper);border-bottom:1px solid var(--line);
+}
+.top-in{
+  max-width:1180px;margin:0 auto;padding:10px 16px;
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+}
+.brand{display:flex;flex-direction:column;gap:1px;margin-right:auto;min-width:0}
+.brand b{font-family:"Anton",Impact,sans-serif;font-weight:400;text-transform:uppercase;font-size:19px;letter-spacing:.01em;line-height:1}
+.brand span{font-family:"JetBrains Mono",monospace;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3)}
+.seg{display:flex;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px;gap:2px}
+.seg button{
+  border:0;background:transparent;color:var(--ink2);cursor:pointer;border-radius:999px;
+  font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;padding:7px 12px;
+}
+.seg button[aria-pressed="true"]{background:var(--stencil);color:#fff}
+.ghost{
+  border:1px solid var(--line2);background:transparent;color:var(--ink2);border-radius:999px;cursor:pointer;
+  font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;padding:8px 13px;
+}
+.ghost:hover{color:var(--ink);border-color:var(--ink3)}
+
+/* ===== layout ===== */
+.stage{max-width:1180px;margin:0 auto;padding:0}
+.cols{display:block}
+.rail{display:none}
+
+/* ===== o telefone ===== */
+.device{background:var(--s-bg);color:var(--s-text)}
+.screen{
+  display:flex;flex-direction:column;min-height:calc(100dvh - 58px);
+  background:var(--s-bg);color:var(--s-text);
+}
+.bar{padding:16px 20px 2px;flex:0 0 auto}
+.pwrap{display:flex;align-items:center;gap:11px}
+.ptrack{flex:1;height:5px;background:#2E2640;border-radius:99px;overflow:hidden}
+.pfill{height:100%;background:var(--s-accent);border-radius:99px;transition:width .35s cubic-bezier(.4,0,.2,1);box-shadow:0 0 10px rgba(174,134,255,.45)}
+.pnum{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.08em;color:#B6ACCB;white-space:nowrap;font-variant-numeric:tabular-nums}
+.body{flex:1 1 auto;padding:26px 20px 14px;display:flex;flex-direction:column}
+.eyebrow{
+  font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--s-accent);margin-bottom:12px;
+}
+.qtitle{
+  font-family:"Anton",Impact,sans-serif;font-weight:400;text-transform:uppercase;
+  font-size:clamp(27px,7.4vw,34px);line-height:1.04;letter-spacing:.005em;margin-bottom:10px;
+}
+.qmicro{color:var(--s-dim);font-size:14.5px;font-style:italic;line-height:1.5;margin:0 0 20px}
+.foot{flex:0 0 auto;padding:12px 20px calc(18px + env(safe-area-inset-bottom));display:flex;gap:10px;align-items:center;border-top:1px solid var(--s-line)}
+.back{
+  border:1px solid var(--s-line);background:transparent;color:var(--s-dim);border-radius:8px;cursor:pointer;
+  font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:13px 15px;
+}
+.back:hover{color:var(--s-text);border-color:var(--s-dim)}
+.next{
+  flex:1;border:0;background:var(--s-accent);color:#100C1C;border-radius:8px;cursor:pointer;font-weight:700;
+  font-size:16px;padding:14px 18px;letter-spacing:.01em;
+}
+.next:hover{filter:brightness(1.08)}
+.next:disabled{opacity:.32;cursor:not-allowed}
+.err{color:var(--s-warn);font-size:13.5px;margin:0 0 12px;font-family:"JetBrains Mono",monospace}
+
+/* controles */
+.field{
+  width:100%;background:var(--s-card);border:1px solid var(--s-line);border-radius:9px;
+  color:var(--s-text);font-family:inherit;font-size:16.5px;padding:14px 15px;
+}
+.field::placeholder{color:#635A78}
+.field:focus{border-color:var(--s-accent);outline:none}
+textarea.field{min-height:150px;resize:vertical;line-height:1.55}
+.count{font-family:"JetBrains Mono",monospace;font-size:10.5px;color:var(--s-dim);text-align:right;margin-top:7px}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{
+  display:flex;align-items:center;gap:12px;width:100%;text-align:left;cursor:pointer;
+  background:var(--s-card);border:1px solid var(--s-line);border-radius:9px;padding:14px 15px;
+  color:var(--s-text);font-size:16px;font-family:inherit;line-height:1.35;
+}
+.opt:hover{border-color:#463A5E}
+.opt .dot{
+  flex:0 0 auto;width:20px;height:20px;border-radius:50%;border:1.5px solid #4A3F60;
+  display:grid;place-items:center;font-size:11px;color:transparent;
+}
+.opt.sq .dot{border-radius:5px}
+.opt[aria-pressed="true"]{border-color:var(--s-accent);background:#1E1533}
+.opt[aria-pressed="true"] .dot{background:var(--s-accent);border-color:var(--s-accent);color:#100C1C}
+.drop{
+  border:1.5px dashed #453A5C;border-radius:10px;background:var(--s-card);padding:24px 18px;text-align:center;cursor:pointer;
+  display:block;
+}
+.drop:hover{border-color:var(--s-accent)}
+.drop b{display:block;font-size:16px;margin-bottom:5px}
+.drop span{color:var(--s-dim);font-size:13.5px;line-height:1.45;display:block}
+.drop input{display:none}
+.thumbs{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.thumbs img{width:66px;height:66px;object-fit:cover;border-radius:7px;border:1px solid var(--s-line)}
+.privacy{font-family:"JetBrains Mono",monospace;font-size:9.5px;letter-spacing:.06em;color:#5E5573;margin-top:10px;text-transform:uppercase}
+
+/* telas de recado */
+.said{background:var(--s-card);border-left:2px solid var(--s-accent);border-radius:0 9px 9px 0;padding:16px 17px;margin-bottom:14px}
+.said p{margin:0 0 10px;font-size:15.5px;line-height:1.55}
+.said p:last-child{margin-bottom:0}
+.said .lead{font-family:"Anton",sans-serif;text-transform:uppercase;font-size:19px;line-height:1.1;margin-bottom:12px}
+.bullets{list-style:none;padding:0;margin:0 0 14px}
+.bullets li{position:relative;padding-left:20px;margin-bottom:10px;font-size:15.5px;line-height:1.5;color:var(--s-text)}
+.bullets li::before{content:"—";position:absolute;left:0;color:var(--s-accent)}
+
+/* ===== tela do card gerado ===== */
+.demo-flag{
+  background:#241A0C;border:1px solid #4A3616;color:var(--s-warn);border-radius:8px;padding:11px 13px;
+  font-size:13px;line-height:1.45;margin-bottom:18px;
+}
+.demo-flag b{display:block;font-family:"JetBrains Mono",monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px}
+.ncard{background:var(--s-card);border:1px solid var(--s-line);border-radius:11px;overflow:hidden;margin-bottom:16px}
+.ncard-h{padding:14px 16px;border-bottom:1px solid var(--s-line);display:flex;align-items:center;gap:10px}
+.ncard-h .em{font-size:22px}
+.ncard-h b{font-size:17px}
+.nrow{display:flex;gap:12px;padding:9px 16px;border-bottom:1px solid var(--s-line);font-size:14px;align-items:flex-start}
+.nrow:last-child{border-bottom:0}
+.nrow dt{
+  flex:0 0 116px;font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--s-dim);margin:0;padding-top:2px;
+}
+.nrow dd{margin:0;flex:1;min-width:0;color:var(--s-text);line-height:1.45}
+.chip{
+  display:inline-block;border-radius:5px;padding:2px 8px;font-size:12.5px;font-weight:700;
+  background:#1E1533;color:var(--s-accent);
+}
+.chip.hot{background:#33210F;color:var(--s-warn)}
+.chip.cold{background:#14242C;color:#7DAFC9}
+.tg{background:#0B1F17;border:1px solid #1C3B2D;border-radius:10px;padding:14px 15px;margin-bottom:16px}
+.tg .wbtn{margin-top:10px;border-top:1px solid #1C3B2D;padding-top:9px;text-align:center;color:#53BDEB;font-family:"Karla",sans-serif;font-size:14px}
+.tg .who{font-family:"JetBrains Mono",monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:#6FBF97;margin-bottom:8px}
+.tg pre{margin:0;white-space:pre-wrap;font-family:"Karla",sans-serif;font-size:14.5px;line-height:1.5;color:#E3EFE8}
+.breakdown{background:var(--s-card);border:1px solid var(--s-line);border-radius:10px;overflow:hidden;margin-bottom:16px}
+.breakdown .bh{padding:11px 15px;border-bottom:1px solid var(--s-line);font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--s-dim)}
+.brow{display:flex;justify-content:space-between;gap:12px;padding:8px 15px;border-bottom:1px solid var(--s-line);font-size:14px}
+.brow:last-child{border-bottom:0}
+.brow b{font-family:"JetBrains Mono",monospace;font-variant-numeric:tabular-nums}
+.brow b.p{color:var(--s-accent)}
+.brow b.m{color:var(--s-warn)}
+.stat{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.stat div{flex:1 1 90px;background:var(--s-card);border:1px solid var(--s-line);border-radius:9px;padding:11px 13px}
+.stat dt{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:.09em;text-transform:uppercase;color:var(--s-dim);margin-bottom:2px}
+.stat dd{margin:0;font-family:"Anton",sans-serif;font-size:21px;text-transform:uppercase;line-height:1}
+
+/* ===== mapa do fluxo ===== */
+.map{padding:26px 18px 60px;max-width:760px;margin:0 auto}
+.map h2{font-family:"Anton",Impact,sans-serif;font-weight:400;text-transform:uppercase;font-size:clamp(26px,6.4vw,38px);line-height:1.04;margin-bottom:10px}
+.map .lede{color:var(--ink2);font-size:16px;max-width:60ch;margin:0 0 22px}
+.mstats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:1px;background:var(--line2);border:1px solid var(--line2);border-radius:3px;overflow:hidden;margin-bottom:26px}
+.mstats div{background:var(--card);padding:12px 14px}
+.mstats dt{font-family:"JetBrains Mono",monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:3px}
+.mstats dd{margin:0;font-family:"Anton",sans-serif;font-size:21px;text-transform:uppercase;line-height:1}
+.mrow{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);align-items:flex-start}
+.mrow.cond{padding-left:20px;border-left:2px dashed var(--stencil);margin-left:8px;background:var(--stencil-soft)}
+.mn{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:700;color:var(--stencil-ink);flex:0 0 26px;padding-top:2px}
+.mb{flex:1;min-width:0}
+.mb b{display:block;font-size:15.5px;line-height:1.3;margin-bottom:2px}
+.mb .lbl{font-family:"JetBrains Mono",monospace;font-size:10.5px;color:var(--ink3);display:block;margin-top:3px}
+.mb .cnd{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--stencil-ink);display:block;margin-top:4px;line-height:1.45}
+.mtype{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3);border:1px solid var(--line2);border-radius:2px;padding:2px 5px;flex:0 0 auto;margin-top:2px}
+.mnote{border-left:3px solid var(--stencil);background:var(--stencil-soft);padding:13px 15px;border-radius:0 4px 4px 0;margin:24px 0 0;font-size:14.5px;color:var(--ink2)}
+.mnote b{display:block;font-family:"JetBrains Mono",monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--stencil-ink);margin-bottom:4px}
+
+/* ===== desktop: moldura de celular + trilho ===== */
+@media (min-width:900px){
+  .cols{display:grid;grid-template-columns:minmax(0,1fr) 390px minmax(0,1fr);gap:0;align-items:start;padding:34px 20px 60px}
+  .cols > .spacer{}
+  .device{
+    grid-column:2;border-radius:38px;border:1px solid var(--line2);
+    box-shadow:0 30px 60px -30px rgba(25,20,36,.55);overflow:hidden;position:sticky;top:82px;
+  }
+  .screen{min-height:0;height:740px;overflow-y:auto;scrollbar-width:thin}
+  .rail{
+    display:block;grid-column:3;padding:6px 0 0 28px;position:sticky;top:82px;
+  }
+  .rail h3{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:12px}
+  .rlist{list-style:none;padding:0;margin:0 0 22px;max-height:420px;overflow-y:auto}
+  .rlist li{display:flex;gap:9px;font-size:13.5px;color:var(--ink3);padding:3px 0;line-height:1.35}
+  .rlist li .rn{font-family:"JetBrains Mono",monospace;font-size:10.5px;flex:0 0 22px;padding-top:2px}
+  .rlist li.now{color:var(--ink);font-weight:700}
+  .rlist li.now .rn{color:var(--stencil-ink)}
+  .rlist li.done{color:var(--ink2)}
+  .rlist li.branch .rn::after{content:"↳";color:var(--stencil)}
+  .rlist li.branch{color:var(--stencil-ink)}
+  .fired{border:1px solid var(--line);background:var(--card);border-radius:6px;padding:12px 14px;font-size:13px;color:var(--ink2)}
+  .fired b{display:block;font-family:"JetBrains Mono",monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--stencil-ink);margin-bottom:6px}
+  .fired ul{margin:0;padding-left:16px}
+  .fired li{margin-bottom:5px;line-height:1.4}
+  .fired .none{color:var(--ink3);font-style:italic}
+  .map{padding-top:34px}
+}
+@media (min-width:900px) and (max-width:1080px){
+  .cols{grid-template-columns:0 390px minmax(0,1fr)}
+}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="top-in">
+    <div class="brand"><b>Ficha de ideia</b><span>Protótipo · @russo.tattooer</span></div>
+    <div class="seg" role="group" aria-label="Modo de visualização">
+      <button type="button" id="tab-form" aria-pressed="true">Ficha ao vivo</button>
+      <button type="button" id="tab-map" aria-pressed="false">Mapa do fluxo</button>
+    </div>
+    <button type="button" class="ghost" id="restart">Reiniciar</button>
+  </div>
+</div>
+
+<div class="stage">
+  <div class="cols" id="view-form">
+    <div class="spacer"></div>
+    <div class="device">
+      <div class="screen">
+        <div class="bar">
+          <div class="pwrap">
+            <div class="ptrack"><div class="pfill" id="pfill" style="width:0%"></div></div>
+            <div class="pnum" id="pnum">início</div>
+          </div>
+        </div>
+        <div class="body" id="body"></div>
+        <div class="foot" id="foot"></div>
+      </div>
+    </div>
+    <aside class="rail">
+      <h3>Por onde ele passa</h3>
+      <ul class="rlist" id="rlist"></ul>
+      <div class="fired" id="fired"></div>
+    </aside>
+  </div>
+
+  <div class="map" id="view-map" hidden></div>
+</div>
+
+<script>
+/* ================= dados do fluxo ================= */
+var LOCAIS = ["Antebraço (interno)","Antebraço (externo)","Braço","Ombro","Peito","Costas (parte)","Costas (fechamento)","Costela","Barriga","Coxa","Panturrilha","Pé","Mão","Pescoço","Rosto","Outro"];
+var EXPOSTO = ["Mão","Pescoço","Rosto"];
+
+var GROUPS = {"nome": "Quem é você", "insta": "Quem é você", "whats": "Quem é você", "cidade": "Quem é você", "cidadeOutra": "Quem é você", "exp": "Quem é você", "ideia": "A ideia", "refs": "A ideia", "local": "Onde e como", "fotoLocal": "Onde e como", "tam": "Onde e como", "cover": "Onde e como", "coverFoto": "Onde e como", "coverIdade": "Onde e como", "cor": "Onde e como", "faixa": "Valor e agenda", "prazo": "Valor e agenda", "data": "Valor e agenda", "disp": "Valor e agenda", "origem": "Pra fechar", "quem": "Pra fechar", "ok": "Pra fechar"};
+
+var STEPS = [
+  { id:"intro", kind:"intro", title:"Ficha de ideia",
+    lines:["Aqui é onde tudo começa. Leva uns 3 minutos.",
+           "Quanto melhor você preencher, mais rápido eu te respondo, e menos ida e volta a gente tem.",
+           "Não é robô. Sou eu que leio, uma por uma."],
+    cta:"Bora" },
+
+  { id:"nome", q:true, kind:"text", label:"Como te chamo?", title:"Como te chamo?", ph:"Seu nome", req:true },
+
+  { id:"insta", q:true, kind:"text", label:"Seu @ do Instagram", title:"Seu @ do Instagram", ph:"@seuperfil", req:true,
+    micro:"Sem o @ eu não consigo te achar depois. Se seu perfil é fechado, me segue que eu aceito." },
+
+  { id:"whats", q:true, kind:"tel", label:"WhatsApp", title:"Seu WhatsApp", ph:"(00) 00000-0000", req:true,
+    micro:"Com DDD. É por aqui que eu confirmo data e mando o desenho." },
+
+  { id:"cidade", q:true, kind:"choice", label:"De onde você vem?", title:"De onde você vem?", req:true,
+    opts:["Vitória","Vila Velha","Serra","Cariacica","Viana","Guarapari","Fundão","Fora da Grande Vitória"] },
+
+  { id:"cidadeOutra", q:true, kind:"text", label:"Qual cidade?", title:"Qual cidade?", req:true,
+    when:function(a){ return a.cidade === "Fora da Grande Vitória"; },
+    ph:"Linhares, ES · Belo Horizonte, MG" },
+
+  { id:"exp", q:true, kind:"choice", label:"É sua primeira tatuagem?", title:"É sua primeira tatuagem?", req:true,
+    opts:["É a primeira","Tenho uma ou duas","Sou bem tatuado(a)","Você já me tatuou"] },
+
+  { id:"acolhe", kind:"said", when:function(a){ return a.exp === "É a primeira"; },
+    lead:"Primeira, então. Massa.",
+    intro:"Só pra você ficar tranquilo antes de continuar:",
+    bullets:["Dói, mas é suportável, e a gente para quantas vezes você precisar.",
+             "Não existe pergunta boba. Pergunta tudo.",
+             "Eu não te empurro desenho. Se sua ideia não ficar boa na pele, eu te falo antes, não depois."],
+    cta:"Continuar" },
+
+  { id:"ideia", q:true, kind:"textarea", label:"Me conta a ideia", title:"Me conta a ideia", req:true,
+    ph:"Uma cobra enrolada num punhal, meio old school mas com sombra pesada...",
+    micro:"Escreve como se estivesse me contando num boteco. Se tem significado, fala. Se é só porque você achou foda, fala também. As duas respostas são válidas." },
+
+  { id:"refs", q:true, kind:"file", label:"Referências", title:"Manda referências", multiple:true,
+    micro:"Print de anime, frame de episódio, página de mangá, foto, tattoo de outro artista, desenho torto no guardanapo. Não precisa ser bonito, precisa ser o que você tem na cabeça.",
+    extra:{ id:"refLink", ph:"Link de pasta ou Pinterest (opcional)" } },
+
+  { id:"local", q:true, kind:"choice", label:"Onde no corpo?", title:"Onde no corpo?", req:true, opts:LOCAIS, scroll:true },
+
+  { id:"exposto", kind:"said", when:function(a){ return EXPOSTO.indexOf(a.local) >= 0; },
+    lead:"Mão e dedo eu faço muito.",
+    intro:"É uma das coisas que eu mais gosto. Mas tem regra e eu prefiro te falar agora:",
+    bullets:["Essas regiões rejeitam mais tinta que o resto do corpo. Retoque ali já entra no combinado desde o começo.",
+             "Se você nunca tatuou, eu vou te perguntar duas vezes se tem certeza. Não é pra te desanimar, é pra você não se arrepender.",
+             "Rosto eu só fecho pessoalmente, olho no olho."],
+    cta:"Entendi, continuar" },
+
+  { id:"fotoLocal", q:true, kind:"file", label:"Foto do local", title:"Manda uma foto do local", req:true, multiple:false,
+    micro:"Boa luz, sem filtro, com um cartão ou uma nota de R$ 10 do lado pra dar escala. É o que me deixa te dar o valor certo já na primeira resposta." },
+
+  { id:"freehand", kind:"said",
+    lead:"Como eu desenho.",
+    intro:"Boa parte dos meus trampos eu faço no freehand: desenho direto na sua pele, na hora.",
+    bullets:["Você não vai receber um desenho pronto por WhatsApp dias antes. O desenho nasce no seu corpo, encaixado no seu músculo e no seu movimento.",
+             "Antes de começar a agulha a gente olha junto e ajusta o que precisar. Você nunca vai ser tatuado em dúvida.",
+             "Se você precisa aprovar um desenho antes pra ficar tranquilo, me fala que a gente resolve isso antes de fechar qualquer coisa."],
+    cta:"Entendi, continuar" },
+
+  { id:"tam", q:true, kind:"choice", label:"Tamanho aproximado", title:"Que tamanho, mais ou menos?", req:true,
+    opts:["Até 5 cm","5 a 10 cm","10 a 15 cm","15 a 25 cm","Mais de 25 cm","Fechamento (braço · perna · costas)","Não sei · me ajuda"] },
+
+  { id:"cover", q:true, kind:"choice", label:"É cobertura de uma tattoo antiga?", title:"É cobertura de uma tattoo antiga?", req:true,
+    opts:["Não","Sim"] },
+
+  { id:"coverFoto", q:true, kind:"file", label:"Foto da tattoo que vai ser coberta", title:"Foto da tattoo atual", req:true, multiple:true,
+    when:function(a){ return a.cover === "Sim"; },
+    micro:"Precisa de luz boa. É pelo tanto de preto que já tem ali que eu sei o que dá pra fazer." },
+
+  { id:"coverIdade", q:true, kind:"choice", label:"Há quanto tempo ela foi feita?", title:"Há quanto tempo ela foi feita?", req:true,
+    when:function(a){ return a.cover === "Sim"; },
+    opts:["Menos de 1 ano","1 a 5 anos","Mais de 5 anos","Já tentei clarear a laser"] },
+
+  { id:"cor", q:true, kind:"choice", label:"Preto e cinza ou colorido?", title:"Preto e cinza ou colorido?", req:true,
+    opts:["Preto e cinza","Colorido","Confio em você"] },
+
+  { id:"corAviso", kind:"said", when:function(a){ return a.cor === "Colorido"; },
+    lead:"Sobre cor, pra já alinhar.",
+    intro:"Quase tudo que eu faço é preto e cinza. Cor eu faço pontual, dentro de peça preta.",
+    bullets:["Se sua ideia depende de cor cheia, eu vou ser sincero e te indicar alguém melhor pra isso.",
+             "Mas segue preenchendo mesmo assim que eu te falo o que dá."],
+    cta:"Beleza, continuar" },
+
+  { id:"faixa", q:true, kind:"choice", label:"Quanto você tem pra investir nesse projeto?", title:"Quanto você tem pra investir?", req:true,
+    micro:"Não é pra eu te cobrar esse valor. É pra eu te propor algo que caiba. Tattoo boa não é a mais barata — é a que você não vai querer cobrir daqui a cinco anos.",
+    opts:["Até R$ 500","R$ 500 a 1.000","R$ 1.000 a 2.000","R$ 2.000 a 4.000","Acima de R$ 4.000","Prefiro que você me diga"] },
+
+  { id:"prazo", q:true, kind:"choice", label:"Quando você quer fazer?", title:"Quando você quer fazer?", req:true,
+    opts:["Sem pressa · quero fazer bem feito","Nos próximos 30 dias","Tenho data marcada"] },
+
+  { id:"data", q:true, kind:"date", label:"Qual a data?", title:"Qual a data?", req:true,
+    when:function(a){ return a.prazo === "Tenho data marcada"; },
+    micro:"Tattoo precisa de tempo pra cicatrizar antes do evento. Melhor eu saber agora." },
+
+  { id:"disp", q:true, kind:"multi", label:"Quando você consegue vir?", title:"Quando você consegue vir?", req:true,
+    micro:"Pode marcar mais de uma.",
+    opts:["Manhã de semana","Tarde de semana","Sábado","Dia inteiro, sem pressa","Sou flexível"] },
+
+  { id:"origem", q:true, kind:"choice", label:"Como você chegou até mim?", title:"Como você chegou até mim?", req:true,
+    opts:["Instagram","Indicação","Convenção / evento","Passei no estúdio","Outro"] },
+
+  { id:"quem", q:true, kind:"text", label:"Quem te indicou?", title:"Quem te indicou?", ph:"Nome ou @", req:true,
+    when:function(a){ return a.origem === "Indicação"; },
+    micro:"Gosto de agradecer quem manda gente boa pra cá." },
+
+  { id:"ok", q:true, kind:"checks", label:"Combinado?", title:"Combinado?", req:true,
+    micro:"Marca tudo pra gente começar certo.",
+    opts:["Tenho 18 anos ou mais e levo documento com foto",
+          "Sei que a data só trava com o sinal de {{SINAL_PCT}}%, e que o sinal não volta se eu desmarcar em cima da hora",
+          "Sei que o desenho é fechado com o Russo e pode não ficar idêntico à referência. Ele não copia trabalho de outro tatuador",
+          "Sei que a resposta pode levar até {{PRAZO_RESPOSTA}} úteis"] },
+
+  { id:"fim", kind:"said", final:true,
+    lead:"Fechou. Tá na minha lista.",
+    intro:"",
+    paras:["Obrigado pela confiança de já sair mandando tudo. Isso me economiza um tempo que eu não tenho.",
+           "Eu olho pessoalmente, uma por uma. Se for um trampo que eu faça bem, te chamo no WhatsApp em até {{PRAZO_RESPOSTA}} com valor, quantas sessões e as datas que eu tenho.",
+           "Se não for meu estilo eu também te respondo, e te indico alguém que faça melhor que eu. Prefiro te mandar pro cara certo do que fazer meia-boca.",
+           "Tamo junto."],
+    cta:"Ver o que chegou pro Russo →" },
+
+  { id:"card", kind:"card" }
+];
+
+/* ================= estado ================= */
+var A = {};            // respostas
+var FILES = {};        // previews locais
+var idx = 0;
+var seen = 0;
+
+function visible(){
+  return STEPS.filter(function(s){ return !s.when || s.when(A); });
+}
+function qList(){ return visible().filter(function(s){ return s.q; }); }
+
+function score(){
+  var s = 0, why = [];
+  function add(p, m){ s += p; why.push({p:p, m:m}); }
+  if(A.exp === "Você já me tatuou") add(3, "já é cliente");
+  if(A.origem === "Indicação") add(2, "veio por indicação");
+  if((FILES.refs && FILES.refs.length) || A.refLink) add(2, "mandou referência");
+  if(FILES.fotoLocal && FILES.fotoLocal.length) add(2, "mandou foto do local");
+
+  if(A.faixa === "Acima de R$ 4.000" || A.faixa === "R$ 2.000 a 4.000") add(3, "faixa alta");
+  else if(A.faixa === "R$ 1.000 a 2.000") add(2, "faixa média");
+  else if(A.faixa === "R$ 500 a 1.000") add(1, "faixa inicial");
+
+  if(A.prazo === "Tenho data marcada") add(2, "tem data marcada");
+  else if(A.prazo === "Nos próximos 30 dias") add(1, "quer nos próximos 30 dias");
+
+  var len = (A.ideia || "").length;
+  if(len > 120) add(1, "descreveu bem a ideia");
+  if(len > 0 && len < 40) add(-1, "ideia vaga");
+  if(A.cover === "Sim" && !(FILES.coverFoto && FILES.coverFoto.length)) add(-2, "cobertura sem foto");
+  if(A.faixa === "Até R$ 500" && ["15 a 25 cm","Mais de 25 cm","Fechamento (braço · perna · costas)"].indexOf(A.tam) >= 0) add(-2, "orçamento x tamanho incompatível");
+
+  return { s:s, why:why, t: s >= 8 ? "🔥 Quente" : (s >= 4 ? "🌤 Morno" : "❄️ Frio") };
+}
+
+/* ================= render ================= */
+var body = document.getElementById('body');
+var foot = document.getElementById('foot');
+
+function el(tag, cls, txt){
+  var e = document.createElement(tag);
+  if(cls) e.className = cls;
+  if(txt != null) e.textContent = txt;
+  return e;
+}
+
+function render(){
+  var vis = visible();
+  if(idx >= vis.length) idx = vis.length - 1;
+  var s = vis[idx];
+  body.innerHTML = '';
+  foot.innerHTML = '';
+
+  /* progresso */
+  var qs = qList();
+  var qi = s.q ? qs.indexOf(s) + 1 : 0;
+  var pf = document.getElementById('pfill');
+  var pn = document.getElementById('pnum');
+  if(s.kind === 'card'){ pf.style.width = '100%'; pn.textContent = 'bastidor'; }
+  else if(s.kind === 'intro'){ pf.style.width = '0%'; pn.textContent = 'início'; }
+  else if(s.final){ pf.style.width = '100%'; pn.textContent = 'enviado'; }
+  else if(qi){ pf.style.width = Math.round(qi / qs.length * 100) + '%'; pn.textContent = qi + ' de ' + qs.length; }
+  else { pf.style.width = Math.round((idx / vis.length) * 100) + '%'; pn.textContent = 'recado'; }
+
+  if(s.kind === 'card'){ renderCard(); renderRail(); return; }
+
+  if(s.kind === 'intro' || s.kind === 'said'){
+    if(s.kind === 'intro'){
+      body.appendChild(el('div','eyebrow','@russo.tattooer'));
+      body.appendChild(el('h2','qtitle', s.title));
+      s.lines.forEach(function(l){ var p = el('p','qmicro', l); p.style.fontStyle='normal'; p.style.marginBottom='12px'; body.appendChild(p); });
+    } else {
+      var box = el('div','said');
+      box.appendChild(el('div','lead', s.lead));
+      if(s.intro) box.appendChild(el('p', null, s.intro));
+      if(s.paras) s.paras.forEach(function(p){ box.appendChild(el('p', null, p)); });
+      body.appendChild(box);
+      if(s.bullets){
+        var ul = el('ul','bullets');
+        s.bullets.forEach(function(b){ ul.appendChild(el('li', null, b)); });
+        body.appendChild(ul);
+      }
+    }
+  } else {
+    body.appendChild(el('div','eyebrow', GROUPS[s.id] || 'Ficha de ideia'));
+    body.appendChild(el('h2','qtitle', s.title));
+    if(s.micro) body.appendChild(el('p','qmicro', s.micro));
+    var errBox = el('p','err');
+    errBox.id = 'err'; errBox.hidden = true;
+    body.appendChild(errBox);
+    body.appendChild(control(s));
+  }
+
+  /* rodapé */
+  if(idx > 0){
+    var b = el('button','back','Voltar');
+    b.type = 'button';
+    b.onclick = function(){ idx--; render(); };
+    foot.appendChild(b);
+  }
+  var n = el('button','next', s.cta || (s.kind === 'card' ? 'Fim' : 'Continuar'));
+  n.type = 'button';
+  n.onclick = advance;
+  foot.appendChild(n);
+
+  renderRail();
+  var sc = document.querySelector('.screen');
+  if(sc && sc.scrollTop) sc.scrollTop = 0;
+}
+
+function control(s){
+  var wrap = el('div');
+
+  if(s.kind === 'text' || s.kind === 'tel' || s.kind === 'date'){
+    var i = document.createElement('input');
+    i.className = 'field'; i.id = 'in-' + s.id;
+    i.type = s.kind === 'date' ? 'date' : (s.kind === 'tel' ? 'tel' : 'text');
+    if(s.ph) i.placeholder = s.ph;
+    i.value = A[s.id] || '';
+    i.oninput = function(){ A[s.id] = i.value; hideErr(); };
+    i.onkeydown = function(e){ if(e.key === 'Enter') advance(); };
+    wrap.appendChild(i);
+    return wrap;
+  }
+
+  if(s.kind === 'textarea'){
+    var t = document.createElement('textarea');
+    t.className = 'field'; t.id = 'in-' + s.id;
+    t.placeholder = s.ph || '';
+    t.value = A[s.id] || '';
+    var c = el('div','count', (t.value.length) + ' caracteres');
+    t.oninput = function(){
+      A[s.id] = t.value;
+      c.textContent = t.value.length + ' caracteres' + (t.value.length > 120 ? '  ·  boa, isso ajuda muito' : '');
+      hideErr();
+    };
+    wrap.appendChild(t); wrap.appendChild(c);
+    return wrap;
+  }
+
+  if(s.kind === 'choice' || s.kind === 'multi' || s.kind === 'checks'){
+    var box = el('div','opts');
+    if(s.scroll){ box.style.maxHeight = '46vh'; box.style.overflowY = 'auto'; box.style.paddingRight = '4px'; }
+    s.opts.forEach(function(o){
+      var b = el('button', s.kind === 'choice' ? 'opt' : 'opt sq');
+      b.type = 'button';
+      var d = el('span','dot','✓');
+      b.appendChild(d);
+      b.appendChild(el('span', null, o));
+      var on;
+      if(s.kind === 'choice') on = A[s.id] === o;
+      else on = (A[s.id] || []).indexOf(o) >= 0;
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      b.onclick = function(){
+        hideErr();
+        if(s.kind === 'choice'){
+          A[s.id] = o;
+          Array.prototype.forEach.call(box.children, function(x){ x.setAttribute('aria-pressed','false'); });
+          b.setAttribute('aria-pressed','true');
+          setTimeout(advance, 170);
+        } else {
+          var cur = A[s.id] || [];
+          var at = cur.indexOf(o);
+          if(at >= 0) cur.splice(at,1); else cur.push(o);
+          A[s.id] = cur;
+          b.setAttribute('aria-pressed', at >= 0 ? 'false' : 'true');
+        }
+      };
+      box.appendChild(b);
+    });
+    wrap.appendChild(box);
+    return wrap;
+  }
+
+  if(s.kind === 'file'){
+    var lab = document.createElement('label');
+    lab.className = 'drop';
+    lab.appendChild(el('b', null, s.multiple ? 'Escolher imagens' : 'Escolher imagem'));
+    lab.appendChild(el('span', null, s.multiple ? 'até 5 arquivos · JPG ou PNG' : 'uma foto basta · JPG ou PNG'));
+    var inp = document.createElement('input');
+    inp.type = 'file'; inp.accept = 'image/*'; inp.id = 'in-' + s.id;
+    if(s.multiple) inp.multiple = true;
+    var th = el('div','thumbs');
+    (FILES[s.id] || []).forEach(function(u){ var im = document.createElement('img'); im.src = u; im.alt=''; th.appendChild(im); });
+    inp.onchange = function(){
+      var list = Array.prototype.slice.call(inp.files).slice(0,5);
+      FILES[s.id] = list.map(function(f){ return URL.createObjectURL(f); });
+      th.innerHTML = '';
+      FILES[s.id].forEach(function(u){ var im = document.createElement('img'); im.src = u; im.alt=''; th.appendChild(im); });
+      hideErr();
+    };
+    lab.appendChild(inp);
+    wrap.appendChild(lab);
+    wrap.appendChild(th);
+    if(s.extra){
+      var ex = document.createElement('input');
+      ex.className = 'field'; ex.type = 'url'; ex.placeholder = s.extra.ph;
+      ex.style.marginTop = '12px';
+      ex.value = A[s.extra.id] || '';
+      ex.oninput = function(){ A[s.extra.id] = ex.value; };
+      wrap.appendChild(ex);
+    }
+    wrap.appendChild(el('div','privacy','Protótipo · as imagens ficam só no seu aparelho'));
+    return wrap;
+  }
+
+  return wrap;
+}
+
+function hideErr(){ var e = document.getElementById('err'); if(e) e.hidden = true; }
+function showErr(msg){ var e = document.getElementById('err'); if(e){ e.textContent = msg; e.hidden = false; } }
+
+function valid(s){
+  if(!s.req) return true;
+  if(s.kind === 'file'){
+    if(!(FILES[s.id] && FILES[s.id].length)) { showErr('↑ Preciso dessa foto pra te responder direito.'); return false; }
+    return true;
+  }
+  if(s.kind === 'multi'){
+    if(!(A[s.id] && A[s.id].length)) { showErr('↑ Marca pelo menos uma.'); return false; }
+    return true;
+  }
+  if(s.kind === 'checks'){
+    if(!A[s.id] || A[s.id].length < s.opts.length) { showErr('↑ Precisa marcar todas.'); return false; }
+    return true;
+  }
+  if(!A[s.id] || !String(A[s.id]).trim()) { showErr('↑ Essa aqui eu preciso.'); return false; }
+  return true;
+}
+
+function advance(){
+  var vis = visible();
+  var s = vis[idx];
+  if(s.q && !valid(s)) return;
+  seen++;
+  var after = visible();
+  var pos = after.indexOf(s);
+  if(pos < 0) pos = idx;
+  if(pos < after.length - 1){ idx = pos + 1; render(); }
+}
+
+/* ================= tela do card ================= */
+function renderCard(){
+  var r = score();
+  var cls = r.s >= 8 ? 'hot' : (r.s >= 4 ? '' : 'cold');
+
+  var flag = el('div','demo-flag');
+  flag.appendChild(el('b', null, 'Fim do que o cliente vê'));
+  flag.appendChild(el('span', null, 'Daqui pra baixo é bastidor: o card que o n8n cria no Notion e o aviso que chega no celular do Russo. O cliente nunca vê esta tela.'));
+  body.appendChild(flag);
+
+  var st = el('div','stat');
+  [['Perguntas', String(qList().length)], ['Pontuação', String(r.s)], ['Termômetro', r.t.split(' ')[0]]].forEach(function(p){
+    var d = el('div'); d.appendChild(el('dt', null, p[0])); d.appendChild(el('dd', null, p[1])); st.appendChild(d);
+  });
+  body.appendChild(st);
+
+  var card = el('div','ncard');
+  var h = el('div','ncard-h');
+  h.appendChild(el('span','em', r.s >= 8 ? '🔥' : (r.s >= 4 ? '🌤' : '❄️')));
+  h.appendChild(el('b', null, A.nome || 'Sem nome'));
+  card.appendChild(h);
+
+  var waNum = String(A.whats || '').replace(/\D/g,'');
+  var rows = [
+    ['Termômetro', r.t, true],
+    ['Instagram', A.insta ? '@' + String(A.insta).replace(/^@/,'') : '—'],
+    ['WhatsApp', waNum ? 'wa.me/55' + waNum : '—'],
+    ['Cidade', A.cidade ? (A.cidadeOutra || A.cidade) + ' · ' + (A.cidade === 'Fora da Grande Vitória' ? '🚗 Fora da Grande Vitória' : '🏠 Grande Vitória') : '—'],
+    ['Ideia', A.ideia || '—'],
+    ['Local', A.local || '—'],
+    ['Tamanho', A.tam || '—'],
+    ['Cor', A.cor || '—'],
+    ['Cobertura', A.cover === 'Sim' ? 'Sim' : 'Não'],
+    ['Investimento', A.faixa || '—'],
+    ['Prazo', (A.prazo || '—') + (A.data ? ' · ' + A.data : '')],
+    ['Disponibilidade', (A.disp || []).join(', ') || '—'],
+    ['Origem', (A.origem || '—') + (A.quem ? ' (' + A.quem + ')' : '')],
+    ['Anexos', (function(){ var n = (FILES.refs||[]).length + (FILES.fotoLocal||[]).length + (FILES.coverFoto||[]).length;
+      return (n === 0 ? 'nenhuma imagem' : n === 1 ? '1 imagem' : n + ' imagens') + (A.refLink ? ' + link' : ''); })()],
+    ['Status', '🆕 Novo']
+  ];
+  rows.forEach(function(rw){
+    var d = el('div','nrow');
+    d.appendChild(el('dt', null, rw[0]));
+    var dd = el('dd');
+    if(rw[2]){ var c = el('span','chip ' + cls, rw[1]); dd.appendChild(c); }
+    else dd.textContent = rw[1];
+    d.appendChild(dd);
+    card.appendChild(d);
+  });
+  body.appendChild(card);
+
+  var bd = el('div','breakdown');
+  bd.appendChild(el('div','bh','Como a nota saiu'));
+  if(!r.why.length) bd.appendChild(el('div','brow','Nenhum critério pontuou'));
+  r.why.forEach(function(w){
+    var row = el('div','brow');
+    row.appendChild(el('span', null, w.m));
+    row.appendChild(el('b', w.p > 0 ? 'p' : 'm', (w.p > 0 ? '+' : '') + w.p));
+    bd.appendChild(row);
+  });
+  var tot = el('div','brow');
+  tot.appendChild(el('span', null, 'Total'));
+  tot.appendChild(el('b','p', String(r.s)));
+  bd.appendChild(tot);
+  body.appendChild(bd);
+
+  var tg = el('div','tg');
+  var quente = r.s >= 8;
+  tg.appendChild(el('div','who', quente ? 'WhatsApp do Russo · agora' : 'WhatsApp do Russo · resumo das 9h'));
+  var pre = document.createElement('pre');
+  var prim = String(A.nome || 'Sem nome').split(' ')[0];
+  var faixaC = String(A.faixa || 'sem faixa').replace('Prefiro que você me diga','sem faixa').replace(/R\$ ?/g,'R$');
+  var prazoC = A.prazo === 'Tenho data marcada' ? ('data ' + (A.data || 'marcada')) : (/30 dias/.test(A.prazo || '') ? '30 dias' : 'sem pressa');
+  var cidadeC = A.cidadeOutra || A.cidade || '';
+  var nRefs = (FILES.refs || []).length;
+  var detalhes = [A.tam, A.cor, A.cover === 'Sim' ? 'COBERTURA' : '', cidadeC, A.insta ? '@' + String(A.insta).replace(/^@/,'') : '',
+    nRefs + (nRefs === 1 ? ' referência' : ' referências') + ((FILES.fotoLocal || []).length ? ' + foto do local' : ' · SEM foto do local')].filter(Boolean).join(' · ');
+  var ideiaC = String(A.ideia || '-').replace(/\s+/g,' ');
+  pre.textContent = quente
+    ? '🔥 Ficha quente: ' + [prim, faixaC, prazoC, A.local].filter(Boolean).join(' · ') + '\n\n' +
+      'Ideia: ' + (ideiaC.length > 220 ? ideiaC.slice(0,219) + '…' : ideiaC) + '\n' +
+      'Detalhes: ' + detalhes + '\n\n' +
+      'Nota e motivos estão no card.'
+    : 'Bom dia. Fichas esperando resposta: 1\n\n' +
+      r.t.split(' ')[0] + ' ' + prim + (A.local ? ' (' + A.local + ')' : '') + '\n\n' +
+      'Orçados pra cutucar: ninguém\n\n' +
+      'Abre a aba Responder hoje no Notion.';
+  tg.appendChild(pre);
+  tg.appendChild(el('div','wbtn', quente ? '↗ Abrir card' : '↗ Abrir Notion'));
+  body.appendChild(tg);
+
+  var again = el('button','next','Preencher de novo');
+  again.type = 'button';
+  again.onclick = reset;
+  foot.appendChild(again);
+}
+
+/* ================= trilho lateral ================= */
+function renderRail(){
+  var list = document.getElementById('rlist');
+  var fired = document.getElementById('fired');
+  if(!list) return;
+  var vis = visible();
+  list.innerHTML = '';
+  vis.forEach(function(s, i){
+    var li = el('li');
+    li.className = (i === idx ? 'now ' : (i < idx ? 'done ' : '')) + (s.when ? 'branch' : '');
+    li.appendChild(el('span','rn', s.when ? '' : (s.q ? String(qList().indexOf(s) + 1) : '·')));
+    li.appendChild(el('span', null, s.title || s.lead || (s.kind === 'card' ? 'Card no Notion' : s.id)));
+    list.appendChild(li);
+  });
+  var now = list.querySelector('.now');
+  if(now && now.scrollIntoView) now.scrollIntoView({ block:'nearest' });
+
+  var on = [];
+  if(A.exp === 'É a primeira') on.push('Primeira tattoo → tela de acolhimento');
+  if(EXPOSTO.indexOf(A.local) >= 0) on.push('Local exposto (' + A.local + ') → aviso extra');
+  if(A.cover === 'Sim') on.push('Cobertura → foto da tattoo atual + idade dela');
+  if(A.prazo === 'Tenho data marcada') on.push('Data marcada → campo de data');
+  if(A.origem === 'Indicação') on.push('Indicação → quem indicou');
+  fired.innerHTML = '';
+  fired.appendChild(el('b', null, 'Regras ativas agora'));
+  if(!on.length){ fired.appendChild(el('div','none','Nenhuma ainda — o caminho está no mínimo, ' + qList().length + ' perguntas.')); }
+  else { var ul = el('ul'); on.forEach(function(x){ ul.appendChild(el('li', null, x)); }); fired.appendChild(ul); }
+}
+
+/* ================= mapa ================= */
+function renderMap(){
+  var m = document.getElementById('view-map');
+  if(m.dataset.done) return;
+  m.dataset.done = '1';
+
+  m.appendChild(el('h2', null, 'O caminho inteiro, com os desvios'));
+  m.appendChild(el('p','lede','As telas com fio roxo só aparecem se a resposta anterior pedir. É o que evita perguntar sobre cobertura pra quem não vai cobrir nada — e é o motivo de ninguém responder a ficha inteira.'));
+
+  var stats = el('div','mstats');
+  var base = STEPS.filter(function(x){ return x.q && !x.when; }).length;
+  var todas = STEPS.filter(function(x){ return x.q; }).length;
+  var recados = STEPS.filter(function(x){ return !x.q && x.kind !== 'card'; }).length;
+  [['Perguntas base','' + base],['Com os desvios','até ' + todas],['Telas de recado','' + recados],['Tempo de preenchimento','~3 min']]
+    .forEach(function(x){
+      var d = el('div'); d.appendChild(el('dt', null, x[0])); d.appendChild(el('dd', null, x[1])); stats.appendChild(d);
+    });
+  m.appendChild(stats);
+
+  var qn = 0;
+  STEPS.forEach(function(s){
+    if(s.kind === 'card') return;
+    if(s.q) qn++;
+    var row = el('div','mrow' + (s.when ? ' cond' : ''));
+    row.appendChild(el('div','mn', s.q ? String(qn) : '·'));
+    var b = el('div','mb');
+    b.appendChild(el('b', null, s.title || s.lead));
+    if(s.label) b.appendChild(el('span','lbl','rótulo no Tally: ' + s.label));
+    if(s.when) b.appendChild(el('span','cnd', CONDS[s.id] || 'condicional'));
+    row.appendChild(b);
+    row.appendChild(el('div','mtype', TYPES[s.kind] || s.kind));
+    m.appendChild(row);
+  });
+
+  var note = el('div','mnote');
+  note.appendChild(el('b', null, 'Por que isso importa'));
+  note.appendChild(el('span', null, 'Os rótulos acima são exatamente as strings que o node "Normalizar e pontuar" procura no n8n. Se você reescrever uma pergunta no Tally, o rótulo tem que continuar igual — ou atualize os dois no mesmo commit.'));
+  m.appendChild(note);
+}
+var CONDS = {
+  cidadeOutra:'se Fora da Grande Vitória',
+  acolhe:'se "É sua primeira tatuagem?" = É a primeira',
+  exposto:'se local = Mão, Pescoço ou Rosto',
+  coverFoto:'se cobertura = Sim',
+  coverIdade:'se cobertura = Sim',
+  data:'se prazo = Tenho data marcada',
+  quem:'se origem = Indicação'
+};
+var TYPES = {
+  intro:'capa', said:'recado', text:'texto', tel:'telefone', date:'data',
+  textarea:'texto longo', choice:'escolha', multi:'múltipla', checks:'confirmação', file:'upload'
+};
+
+/* ================= controles ================= */
+function reset(){
+  A = {}; FILES = {}; idx = 0; seen = 0;
+  render();
+}
+document.getElementById('restart').onclick = function(){ reset(); showForm(true); };
+
+function showForm(on){
+  document.getElementById('view-form').hidden = !on;
+  document.getElementById('view-map').hidden = on;
+  document.getElementById('tab-form').setAttribute('aria-pressed', on ? 'true' : 'false');
+  document.getElementById('tab-map').setAttribute('aria-pressed', on ? 'false' : 'true');
+  if(!on) renderMap();
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+document.getElementById('tab-form').onclick = function(){ showForm(true); };
+document.getElementById('tab-map').onclick = function(){ showForm(false); };
+
+render();
+</script>
+
+</body>
+</html>
