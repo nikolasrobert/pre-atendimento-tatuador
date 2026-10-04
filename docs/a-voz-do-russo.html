@@ -1,0 +1,621 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>A Voz do Russo</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Karla:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+:root{
+  --paper:#EFEBF3; --surface:#F8F6FB; --card:#FFFFFF;
+  --ink:#191424; --ink2:#57506B; --ink3:#8A82A0;
+  --line:#DBD3E7; --line2:#C7BCDA;
+  --stencil:#6636C4; --stencil-ink:#4E259C; --stencil-soft:#EDE4FC;
+  --old:#B2521C; --old-soft:#FBEADC;
+  --new:#2E7350; --new-soft:#DFF1E7;
+  --shadow:0 1px 2px rgba(25,20,36,.05),0 8px 24px -12px rgba(25,20,36,.18);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#110E18; --surface:#181322; --card:#1D1729;
+    --ink:#EFEAF7; --ink2:#AAA1C0; --ink3:#7B7295;
+    --line:#2C2440; --line2:#3D3356;
+    --stencil:#A582F8; --stencil-ink:#C4AEFF; --stencil-soft:#271B44;
+    --old:#E9995E; --old-soft:#33210F;
+    --new:#6FC79A; --new-soft:#12261B;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px -14px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#110E18; --surface:#181322; --card:#1D1729;
+  --ink:#EFEAF7; --ink2:#AAA1C0; --ink3:#7B7295;
+  --line:#2C2440; --line2:#3D3356;
+  --stencil:#A582F8; --stencil-ink:#C4AEFF; --stencil-soft:#271B44;
+  --old:#E9995E; --old-soft:#33210F;
+  --new:#6FC79A; --new-soft:#12261B;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px -14px rgba(0,0,0,.7);
+}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:"Karla",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:16px;line-height:1.62;-webkit-font-smoothing:antialiased;
+  -webkit-text-size-adjust:100%;text-size-adjust:100%;overflow-wrap:break-word;
+}
+h1,h2,h3,h4{margin:0;text-wrap:balance}
+a{color:var(--stencil-ink)}
+:focus-visible{outline:2px solid var(--stencil);outline-offset:2px;border-radius:3px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.wrap{max-width:840px;margin:0 auto;padding-inline:20px}
+
+.nav{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--paper) 90%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav-in{max-width:840px;margin:0 auto;padding:0 20px;display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.nav-in::-webkit-scrollbar{display:none}
+.nav a{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);text-decoration:none;padding:13px 9px;white-space:nowrap;border-bottom:2px solid transparent}
+.nav a:hover{color:var(--ink)}
+.nav a.on{color:var(--stencil-ink);border-bottom-color:var(--stencil)}
+
+.hero{padding-block:50px 38px;border-bottom:1px solid var(--line)}
+.eyebrow{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--stencil-ink);margin-bottom:16px}
+h1{font-family:"Anton",Impact,sans-serif;font-weight:400;text-transform:uppercase;font-size:clamp(38px,8vw,74px);line-height:1;margin-bottom:20px}
+h1 em{font-style:normal;color:var(--stencil)}
+.lede{font-size:18.5px;line-height:1.55;color:var(--ink2);max-width:62ch}
+.lede strong{color:var(--ink);font-weight:700}
+
+section{padding-block:52px;border-bottom:1px solid var(--line);scroll-margin-top:50px}
+section:last-of-type{border-bottom:0}
+.snum{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.16em;color:var(--stencil-ink);text-transform:uppercase;display:block;margin-bottom:10px}
+h2{font-family:"Anton",Impact,sans-serif;font-weight:400;text-transform:uppercase;font-size:clamp(27px,5.4vw,42px);line-height:1.04;margin-bottom:14px}
+h3{font-size:19px;font-weight:700;margin-top:34px;margin-bottom:10px;letter-spacing:-.01em}
+h4{font-size:15.5px;font-weight:700;margin:0 0 6px}
+p{margin:0 0 14px}
+.sub{color:var(--ink2);max-width:64ch;font-size:17px}
+ul,ol{margin:0 0 16px;padding-left:20px}
+li{margin-bottom:7px}
+li::marker{color:var(--ink3)}
+code{font-family:"JetBrains Mono",monospace;font-size:12.5px;background:var(--stencil-soft);color:var(--stencil-ink);padding:1px 5px;border-radius:3px}
+
+/* achados */
+.find{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--old);border-radius:4px;padding:15px 17px;margin:12px 0}
+.find h4{font-size:17px;color:var(--old);margin-bottom:6px}
+.find p{font-size:15.5px;color:var(--ink2);margin:0 0 9px}
+.find p:last-child{margin-bottom:0}
+.find p b{color:var(--ink)}
+.find .ev{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink3);background:var(--surface);border-radius:3px;padding:7px 10px;line-height:1.5;display:block;margin-bottom:9px}
+
+/* regras da voz */
+.rule{display:grid;grid-template-columns:auto 1fr;gap:0 14px;padding:14px 0;border-bottom:1px solid var(--line);align-items:start}
+.rule:last-of-type{border-bottom:0}
+.rn{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:700;color:var(--stencil-ink);grid-row:1 / span 2;padding-top:3px;min-width:24px}
+.rule h4{grid-column:2}
+.rule .ev{grid-column:2;font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--ink2);margin:4px 0 0;line-height:1.55}
+.rule .ev b{color:var(--stencil-ink);font-weight:700}
+
+/* antes / depois */
+.ab{display:grid;gap:11px;grid-template-columns:1fr;margin:16px 0}
+.ab > div{border-radius:4px;padding:14px 16px;border:1px solid var(--line)}
+.ab .before{background:var(--old-soft);border-color:var(--old)}
+.ab .after{background:var(--new-soft);border-color:var(--new)}
+.ab .lab{font-family:"JetBrains Mono",monospace;font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;margin-bottom:8px;display:block}
+.ab .before .lab{color:var(--old)}
+.ab .after .lab{color:var(--new)}
+.ab p{font-size:15px;margin:0;white-space:pre-line;line-height:1.55;color:var(--ink)}
+@media (min-width:760px){ .ab{grid-template-columns:1fr 1fr} }
+
+/* copy */
+.copy{border:1.5px dashed var(--line2);border-radius:4px;background:var(--stencil-soft);margin:14px 0 20px;overflow:hidden}
+.copy-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 12px;border-bottom:1.5px dashed var(--line2)}
+.tag{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--stencil-ink)}
+.cbtn{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;background:var(--stencil);color:#fff;border:0;border-radius:3px;padding:5px 11px;cursor:pointer}
+.cbtn:hover{filter:brightness(1.1)}
+.cbtn.done{background:var(--new)}
+.copy-body{padding:14px 16px;white-space:pre-line;font-size:15.5px;line-height:1.6;color:var(--ink)}
+.copy.prompt{background:var(--card);border-style:solid;border-color:var(--line)}
+.copy.prompt .copy-head{border-bottom-style:solid;border-bottom-color:var(--line)}
+.copy.prompt .copy-body{font-family:"JetBrains Mono",monospace;font-size:12.5px;line-height:1.65}
+
+/* passo zero */
+.step{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:15px 17px;margin:11px 0;display:grid;grid-template-columns:auto 1fr;gap:0 15px;box-shadow:var(--shadow)}
+.step .k{font-family:"Anton",sans-serif;font-size:30px;line-height:.9;color:var(--stencil);grid-row:1 / span 3;font-variant-numeric:tabular-nums;padding-top:3px;min-width:34px}
+.step h4{grid-column:2;font-size:16.5px}
+.step p{grid-column:2;font-size:15px;color:var(--ink2);margin:0 0 7px}
+.step p:last-child{margin-bottom:0}
+.step p b{color:var(--ink)}
+.step .eff{grid-column:2;font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);margin-top:7px}
+
+.note,.warn,.good{padding:13px 16px;border-radius:0 4px 4px 0;margin:18px 0;font-size:15px}
+.note{border-left:3px solid var(--stencil);background:var(--stencil-soft)}
+.warn{border-left:3px solid var(--old);background:var(--old-soft)}
+.good{border-left:3px solid var(--new);background:var(--new-soft)}
+.note p:last-child,.warn p:last-child,.good p:last-child{margin-bottom:0}
+.note b,.warn b,.good b{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:4px}
+.note b{color:var(--stencil-ink)} .warn b{color:var(--old)} .good b{color:var(--new)}
+
+.mono{font-family:"JetBrains Mono",monospace;font-size:12.5px;line-height:1.9}
+.foot{padding-block:36px 56px;color:var(--ink3);font-size:14px}
+
+@media (max-width:700px){
+  body{font-size:15.5px}
+  .wrap{padding-inline:18px}
+  .nav-in{padding:0 18px}
+  .hero{padding-block:34px 28px}
+  .lede{font-size:16.5px}
+  .sub{font-size:16px}
+  section{padding-block:40px;scroll-margin-top:47px}
+  h3{font-size:17.5px;margin-top:28px}
+  .find,.step{padding:14px 15px}
+  .find p,.step p,.ab p{font-size:14.8px}
+  .copy-body{font-size:14.8px;padding:13px 14px}
+  .copy.prompt .copy-body{font-size:11.5px}
+  .rule{grid-template-columns:auto 1fr}
+  .step .k{font-size:25px;min-width:28px}
+  .note,.warn,.good{font-size:14.5px;padding:12px 14px}
+  .foot{font-size:13.5px}
+}
+@media (max-width:400px){ .wrap{padding-inline:16px} .nav-in{padding:0 16px} }
+.tw{overflow-x:auto;margin:18px 0;border:1px solid var(--line);border-radius:4px;background:var(--card)}.tw table{border-collapse:collapse;width:100%;min-width:520px;font-size:14.5px}.tw th{text-align:left;font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);padding:10px 14px;border-bottom:1px solid var(--line);font-weight:500;background:var(--surface)}.tw td{padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}.tw tr:last-child td{border-bottom:0}@media (max-width:700px){.tw table{font-size:13.5px}.tw th,.tw td{padding:9px 12px}}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="nav-in">
+    <a href="#derrubou">01 O que caiu</a>
+    <a href="#regras">02 A voz</a>
+    <a href="#copy">03 Copy nova</a>
+    <a href="#ficha">04 A ficha</a>
+    <a href="#zero">05 Passo zero</a>
+  </div>
+</nav>
+
+<header class="hero wrap">
+  <div class="eyebrow">Correções a partir do dossiê · 10/09/2026</div>
+  <h1>Ele já tem<br>um processo.<br><em>Só não sabe.</em></h1>
+  <p class="lede">Vinte e uma legendas seguidas com a mesma estrutura milimétrica: peça → cliente → agradecimento → ponto → cidade → "Orçamentos via DM" → ponto → <strong>exatamente cinco hashtags</strong>. Quem repete isso vinte e uma vezes sem falhar não é anti-processo. É anti-processo-que-não-parece-dele. Aqui está a copy reescrita na voz que ele realmente usa.</p>
+</header>
+
+<!-- 01 -->
+<section id="derrubou" class="wrap">
+  <span class="snum">01 — O que o dossiê derrubou</span>
+  <h2>Cinco premissas<br>minhas que<br>estavam erradas</h2>
+  <p class="sub">Material bom é material corrigido por dado real. Isto aqui não é ajuste fino — são coisas que estavam factualmente erradas nas três páginas anteriores.</p>
+
+  <div class="find">
+    <h4>1. Ele trabalha no freehand. Isso muda a ficha inteira.</h4>
+    <span class="ev">"Feito 100% no freehand, em uma única sessão de 15 horas" · "Desenvolvemos todo o desenho no freehand para um melhor encaixe" · aparece em 6 dos 24 posts</span>
+    <p>Eu escrevi no FAQ que "ele fecha o desenho perto da data e mostra na véspera". <b>Está errado.</b> No freehand o desenho nasce na pele, na hora — não existe arquivo pra mandar antes.</p>
+    <p>Isso é ao mesmo tempo o maior diferencial dele e a maior fonte possível de ansiedade do cliente. Uma pessoa que espera aprovar um desenho por WhatsApp e chega no estúdio sem ter visto nada tem todo o direito de surtar. <b>A ficha precisa de uma tela só pra isso</b>, e ela está na seção 04.</p>
+  </div>
+
+  <div class="find">
+    <h4>2. Não existe link na bio. Nenhum.</h4>
+    <span class="ev">"Link da bio: não encontrei. Não existe link externo nenhum."</span>
+    <p>Toda a arquitetura que eu montei aponta pra um link na bio que <b>não existe hoje</b>. Boa notícia: é a correção de trinta segundos com maior impacto do projeto inteiro. Má notícia: sem ela, nada do resto tem pra onde apontar.</p>
+  </div>
+
+  <div class="find">
+    <h4>3. A bio diz RJ. O trabalho todo é Vitória.</h4>
+    <span class="ev">Bio: "021 RJ x 027 ES" · Legendas: "Vitória ES" em 100% dos posts, RJ em zero</span>
+    <p>Quem descobre o perfil não sabe em que cidade ele atende. <b>Isso é perder cliente por confusão de endereço</b>, que é o jeito mais bobo possível de perder cliente.</p>
+  </div>
+
+  <div class="find">
+    <h4>4. Cor: 96% preto e cinza. Um post colorido em 24.</h4>
+    <p>Minha pergunta "preto e cinza ou colorido?" tratava as duas como equivalentes. Não são. A opção precisa dizer a verdade — e quem escolher colorido merece um aviso antes, não uma negativa depois.</p>
+  </div>
+
+  <div class="find">
+    <h4>5. Mão e dedo não é exceção. É especialidade dele.</h4>
+    <span class="ev">4 dos 24 posts · "Mão robótica", "Dedos robóticos", "tatuagemnamao", "FEITIÇO" em lettering na mão</span>
+    <p>Eu tratei local exposto como caso raro com tela de "tem certeza?". Pra ele é carro-chefe. <b>O aviso continua existindo — mas com tom de quem faz muito, não de quem desencoraja.</b></p>
+  </div>
+
+  <div class="warn">
+    <b>E uma recalibragem honesta do discurso</b>
+    <p>5.217 seguidores e <strong>zero perguntas</strong> nos comentários dos três últimos posts. Isso não é um problema de volume — é um problema de conversão. O sistema continua valendo a pena, mas o argumento pro Russo muda: não é "você recebe mensagem demais", é <strong>"chegam poucos, e você está perdendo esses poucos"</strong>. Vender volume pra quem não tem volume é a forma mais rápida de perder credibilidade na primeira conversa.</p>
+    <p>Some a isso a frequência caindo — 6 posts em março, 4 em abril, 4 em maio, <strong>zero em junho</strong>, 3 em julho, 2 em agosto, 1 em setembro. É o perfil esfriando enquanto o inbox afoga.</p>
+  </div>
+</section>
+
+<!-- 02 -->
+<section id="regras" class="wrap">
+  <span class="snum">02 — Como ele escreve</span>
+  <h2>Onze regras,<br>todas com prova</h2>
+  <p class="sub">Destiladas das 24 legendas e das respostas em comentário. Cada uma vem com a evidência literal — é o que faz isso ser a voz dele e não a minha imitação da voz dele.</p>
+
+  <div style="margin-top:20px">
+    <div class="rule"><div class="rn">01</div><h4>Nunca abre com saudação. Abre pelo nome da peça.</h4>
+      <p class="ev"><b>"Mão robótica para meu brother"</b> · <b>"FEITIÇO para a mais braba do expurgo"</b> · <b>"Lilica para"</b> · <b>"daRRRRRRRk ornamental para meu brother"</b></p></div>
+
+    <div class="rule"><div class="rn">02</div><h4>"brabo" e "braba" são a palavra-assinatura.</h4>
+      <p class="ev"><b>"você é BRABO"</b> · <b>"a mais braba do expurgo"</b> · <b>"Oldschool para a braba"</b> · <b>"a mais braba das brabas"</b></p></div>
+
+    <div class="rule"><div class="rn">03</div><h4>Trata todo mundo por parentesco.</h4>
+      <p class="ev"><b>meu mano</b> · <b>brother</b> · <b>meu brother</b> · <b>irmão</b> · <b>irmãooo</b> · <b>amg</b> · <b>querida</b></p></div>
+
+    <div class="rule"><div class="rn">04</div><h4>"Obrigado pela confiança" é o bordão dele.</h4>
+      <p class="ev">Aparece em quase toda legenda, com variações: <b>"Obrigado pela confiança e resistência"</b> · <b>"Obrigado pela confiança em dobro"</b> · <b>"Obrigadiiiissimo a confiança"</b></p></div>
+
+    <div class="rule"><div class="rn">05</div><h4>Estica letra quando se empolga. É o traço mais forte.</h4>
+      <p class="ev"><b>Darrrrrrk</b> · <b>daRRRRRRRk</b> · <b>suminagashhhhh</b> · <b>demaaaais</b> · <b>Obrigadiiiissimo</b> · <b>tatuarrrr</b> · <b>Tamo juntaaaassoooooooo</b> · <b>enoixxxxx</b></p></div>
+
+    <div class="rule"><div class="rn">06</div><h4>Quase não usa emoji. Dois em 24 legendas.</h4>
+      <p class="ev">Só nos posts afetivos: <b>🥹🫶🏻</b> na primeira tattoo de uma cliente e <b>🥺❤️</b> na tattoo da namorada. Emoji nele é sinal de emoção real, não decoração.</p></div>
+
+    <div class="rule"><div class="rn">07</div><h4>Frase curta. Mediana de 110 caracteres.</h4>
+      <p class="ev">Duas a quatro linhas de texto real. Só o post fixado de 2024 passa de 300 caracteres. <b>Se o texto ficou longo, não é ele.</b></p></div>
+
+    <div class="rule"><div class="rn">08</div><h4>Não faz pergunta e não faz call-to-action.</h4>
+      <p class="ev">Uma única pergunta em 24 posts: <b>"E ai? Você aguentaria?"</b>. O texto sempre termina em agradecimento ao cliente, nunca em "chama no direct".</p></div>
+
+    <div class="rule"><div class="rn">09</div><h4>Caixa alta só pro nome da peça.</h4>
+      <p class="ev"><b>FEITIÇO</b> · <b>BROOK</b> · <b>V3N0M</b> · <b>BRABO</b> · <b>ORÇAMENTOS VIA DM</b>. O resto é pontuação normal — ele não escreve tudo minúsculo.</p></div>
+
+    <div class="rule"><div class="rn">10</div><h4>Fala com a pessoa, nunca sobre a peça.</h4>
+      <p class="ev"><b>"Você foi forte demais irmão"</b> · <b>"Obrigado por aguentar firme amor"</b> · <b>"Ansioso para darmos continuidade nesse braço"</b>. Nunca explica significado, nunca vende.</p></div>
+
+    <div class="rule"><div class="rn">11</div><h4>Zero palavrão em texto público.</h4>
+      <p class="ev">Em 24 legendas, nenhum. Em comentário, leve e raro: <b>pqp</b>. Risada característica: <b>KKKKKSKSKSKSKKSKDKDKF</b>. Na copy do atendimento: nenhum.</p></div>
+  </div>
+
+  <h3>Isso vira o prompt do copiloto</h3>
+  <p>As onze regras acima não são só um guia pra você escrever — são literalmente o que alimenta o node de LLM do n8n, pra que os rascunhos de resposta já saiam na voz dele.</p>
+  <div class="copy prompt">
+    <div class="copy-head"><span class="tag">System prompt · node de LLM no n8n</span><button class="cbtn" type="button">copiar</button></div>
+    <div class="copy-body">Você escreve rascunhos de mensagem como o tatuador Vinicius Russo (@russo.tattooer),
+de Vitória/ES. Regras de voz, todas extraídas do que ele realmente escreve:
+
+- Abra pelo assunto, nunca por saudação formal. Nada de "Olá" ou "Prezado".
+- Trate a pessoa por: mano, meu mano, brother, meu brother, irmão, amg, querida.
+- Use "brabo"/"braba" como elogio. É a palavra-assinatura dele.
+- Agradeça com "obrigado pela confiança". é o bordão dele.
+- Estique letras quando houver empolgação real: "demaaaais", "valeu demaaais",
+  "tamo juntaaasso". Com moderação: no máximo uma por mensagem.
+- Quase nenhum emoji. Só em momento genuinamente afetivo, no máximo um.
+- Frases curtas. O texto todo em 2 a 4 linhas sempre que possível.
+- Não faça perguntas retóricas nem call-to-action publicitário.
+- CAIXA ALTA só para destacar o nome de uma peça ou uma palavra.
+- Fale COM a pessoa, em segunda pessoa. Não descreva a peça em terceira.
+- Sem palavrão.
+- NUNCA use travessão. Ele escreve com ponto, vírgula e dois pontos.
+- Nada de simetria "não é X, é Y".
+- Feche com "Tamo junto" quando couber.
+
+Ele trabalha muito no FREEHAND (desenha direto na pele, na hora) e faz
+majoritariamente PRETO E CINZA. Estilos: dark ornamental, suminagashi, blackwork,
+anime/geek, cyber, floral, lettering. Atende em Vitória e Vila Velha, ES.
+
+Nunca invente preço, prazo, data ou disponibilidade. Se a informação não foi dada,
+deixe [entre colchetes] para o Russo preencher.</div>
+  </div>
+</section>
+
+<!-- 03 -->
+<section id="copy" class="wrap">
+  <span class="snum">03 — Reescrita</span>
+  <h2>A copy,<br>agora na voz dele</h2>
+  <p class="sub">Substitui o que está publicado no kit e nas primeiras 72 horas. A diferença não é cosmética: a versão antiga soa como consultor, e é exatamente o que faria o Russo dizer "isso não sou eu".</p>
+
+  <div class="note">
+    <b>REF e convenção de marcadores</b>
+    <p><strong>REF:</strong> dossiê de @russo.tattooer coletado em 10/09/2026, 24 legendas, 3 destaques e comentários de 3 posts. É de onde saiu cada uma das 11 regras da seção anterior.</p>
+    <p>Dois tipos de marcador na copy, de propósitos diferentes. Confundir os dois é o que faz um valor errado ir pro ar.</p>
+  </div>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Marcador</th><th>O que é</th><th>Preenche</th><th>Bloqueia publicação?</th></tr></thead>
+      <tbody>
+        <tr><td><code>{{TOKEN}}</code></td><td>Dado fixo do Russo. Vale pra sempre depois de preenchido</td><td>Uma vez, com busca e substituição</td><td><strong>Sim.</strong> Token no ar é promessa quebrada</td></tr>
+        <tr><td><code>[campo]</code></td><td>Variável por atendimento: nome, peça, local, data, hora</td><td>O Russo, na hora de responder</td><td>Não. É assim mesmo que a peça vive</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Os 10 tokens, e quem responde</h3>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Token</th><th>O que é</th><th>Quem responde</th></tr></thead>
+      <tbody>
+        <tr><td><code>{{LINK_FICHA}}</code></td><td>URL da ficha publicada no Tally</td><td>Você, ao montar</td></tr>
+        <tr><td><code>{{PRAZO_RESPOSTA}}</code></td><td>Prazo de primeira resposta. O ruim que ele cumpre, não o bom que ele fura</td><td>Russo</td></tr>
+        <tr><td><code>{{SESSAO_MIN}}</code> · <code>{{SESSAO_MAX}}</code></td><td>Faixa da sessão. É a âncora de preço inteira</td><td>Russo</td></tr>
+        <tr><td><code>{{SINAL_PCT}}</code></td><td>Percentual do sinal</td><td>Russo</td></tr>
+        <tr><td><code>{{SINAL_VALOR}}</code></td><td>Valor do sinal daquela peça</td><td>Calculado na hora, a partir do percentual</td></tr>
+        <tr><td><code>{{REMARCA_DIAS}}</code></td><td>Antecedência mínima para remarcar sem perder o sinal</td><td>Russo</td></tr>
+        <tr><td><code>{{PIX}}</code></td><td>Chave Pix</td><td>Russo</td></tr>
+        <tr><td><code>{{PAGAMENTO}}</code></td><td>Formas de pagamento e parcelamento</td><td>Russo</td></tr>
+        <tr><td><code>{{CIDADE}}</code> · <code>{{ENDERECO}}</code> · <code>{{ESTACIONAMENTO}}</code></td><td>Onde fica o Expurgo Tattoo</td><td>Russo. Não está indexado em busca nenhuma</td></tr>
+        <tr><td><code>{{RETOQUE_PRAZO}}</code></td><td>Prazo do retoque sem cobrar, e o que vira retrabalho</td><td>Russo</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="warn">
+    <b>A regra que impede o acidente</b>
+    <p>Monta tudo com token, publica só sem nenhum. Antes de ligar qualquer peça, roda <code>grep -o "{{[A-Z_]*}}" *.html</code> e o resultado tem que vir vazio. Token é feito pra ser impossível de passar despercebido: se escapar um pro ar, o cliente lê <code>{{SESSAO_MIN}}</code> e você descobre na hora, em vez de descobrir um preço errado três semanas depois.</p>
+  </div>
+
+  <h3>Resposta instantânea do Instagram</h3>
+  <div class="ab">
+    <div class="before"><span class="lab">Antes · minha versão genérica</span><p>Salve! Aqui é o Russo.
+
+Eu leio tudo, mas tatuo o dia inteiro — respondo em blocos, normalmente em até 48h (seg a qui).
+
+Quem manda só "oi" entra na fila. Quem preenche a ficha, eu respondo primeiro. É justo assim.</p></div>
+    <div class="after"><span class="lab">Depois · na voz dele</span><p>Fala! Aqui é o Russo.
+
+Eu leio todas as mensagens, mas tatuo o dia inteiro — então respondo em bloco, normalmente em até 48h.
+
+Me conta sua ideia aqui que fica mais rápido pros dois: [LINK]
+
+São 2 minutos. Quando eu abrir sua mensagem já chego sabendo o que você quer, e te respondo com valor e agenda de uma vez.
+
+Tamo junto.</p></div>
+  </div>
+  <div class="note">
+    <b>O que mudou e por quê</b>
+    <p>Saiu o "quem manda oi entra na fila" — é uma frase de consultor punindo o cliente, e nada nas 24 legendas dele tem esse tom. Entrou "Tamo junto", que é literalmente como ele fecha conversa. E o texto encurtou, porque frase longa não é ele.</p>
+  </div>
+
+  <h3>Capa da ficha</h3>
+  <div class="copy">
+    <div class="copy-head"><span class="tag">Tela 1 · abertura</span><button class="cbtn" type="button">copiar</button></div>
+    <div class="copy-body">FICHA DE IDEIA
+
+Aqui é onde tudo começa. Leva uns 3 minutos.
+
+Quanto melhor você preencher, mais rápido eu te respondo, e menos ida e volta a gente tem.
+
+Não é robô. Sou eu que leio, uma por uma.
+
+Bora.</div>
+  </div>
+
+  <h3>Tela final da ficha</h3>
+  <div class="copy">
+    <div class="copy-head"><span class="tag">Tela final · agradecimento</span><button class="cbtn" type="button">copiar</button></div>
+    <div class="copy-body">Fechou. Tá na minha lista.
+
+Obrigado pela confiança de já sair mandando tudo. Isso me economiza um tempo que eu não tenho.
+
+Eu olho pessoalmente, uma por uma. Se for um trampo que eu faça bem, te chamo no WhatsApp em até {{PRAZO_RESPOSTA}} com valor, quantas sessões e as datas que eu tenho.
+
+Se não for meu estilo eu também te respondo, e te indico alguém que faça melhor que eu. Prefiro te mandar pro cara certo do que fazer meia-boca.
+
+Tamo junto.</div>
+  </div>
+
+  <h3>Orçamento</h3>
+  <div class="copy">
+    <div class="copy-head"><span class="tag">Mensagem de orçamento · exemplo completo</span><button class="cbtn" type="button">copiar</button></div>
+    <div class="copy-body">Fala [nome]! Curti demais sua ideia. [peça] é o tipo de trampo que eu amo fazer.
+
+Resumindo o que eu entendi: [peça], no [local], uns [X] cm, preto e cinza.
+
+Uma coisa que eu mudaria: [o que mudaria e por quê]. Fica mais bruto, que é o que você quer, e daqui a dez anos ainda vai dar pra ler o desenho.
+
+Valor: R$ [X], em [quantas] sessões de umas [X] horas.
+
+Tenho [dia] e [dia]. Qual encaixa melhor pra você?
+
+Pra travar a data é sinal de R$ {{SINAL_VALOR}} no Pix {{PIX}}, e ele abate do valor final.
+
+Qualquer coisa da ideia que você queira puxar mais pro seu lado, me fala antes de eu desenhar. Tamo junto.</div>
+  </div>
+
+  <h3>"Só me fala um valor aproximado"</h3>
+  <div class="copy">
+    <div class="copy-head"><span class="tag">Resposta salva · /valor</span><button class="cbtn" type="button">copiar</button></div>
+    <div class="copy-body">Te falo, mas com sinceridade: qualquer número que eu chutar agora vai estar errado, e aí a gente se estranha depois.
+
+O que dá pra adiantar: minhas sessões ficam entre R$ {{SESSAO_MIN}} e R$ {{SESSAO_MAX}}.
+
+Pra te dar o número do SEU projeto eu preciso ver a referência e o local. É pra isso que serve a ficha: {{LINK_FICHA}}. Uns 3 minutos e você sai com valor fechado, não com estimativa.</div>
+  </div>
+
+  <h3>"Faz dias que te mandei mensagem"</h3>
+  <div class="copy">
+    <div class="copy-head"><span class="tag">Resposta salva · /demorei</span><button class="cbtn" type="button">copiar</button></div>
+    <div class="copy-body">Você tem razão, demorei. Não vou inventar desculpa.
+
+Sua ideia tá aqui comigo: [citar um detalhe específico do que ele pediu].
+
+Consigo te mandar o valor fechado hoje até [hora]. Se ainda estiver de pé, me fala.
+
+E se você já fechou com outro artista, tranquilo de verdade. Só me avisa que eu tiro da fila. Tamo junto de qualquer jeito.</div>
+  </div>
+
+  <h3>"Não é meu estilo"</h3>
+  <div class="copy">
+    <div class="copy-head"><span class="tag">Resposta salva · /naoeomeu</span><button class="cbtn" type="button">copiar</button></div>
+    <div class="copy-body">[Nome], obrigado por ter pensado em mim, de verdade.
+
+Vou ser sincero: esse trampo não é o que eu faço melhor. Eu até faria, mas você merece alguém que faça isso todo dia e ame fazer. Tatuagem é pra vida toda, não dá pra ser "tá bom".
+
+Quem eu indicaria: [@artista], que é brabo demais em [estilo]. Fala que fui eu que mandei.
+
+E se um dia você quiser algo mais na minha linha, minha porta tá aberta. Tamo junto.</div>
+  </div>
+
+  <h3>Follow-up único</h3>
+  <div class="copy">
+    <div class="copy-head"><span class="tag">Resposta salva · /followup</span><button class="cbtn" type="button">copiar</button></div>
+    <div class="copy-body">E aí [nome]! Passando pra saber se a ideia da [peça] ainda tá de pé.
+
+Se sim, eu seguro uma data pra você essa semana.
+
+Se mudou de ideia ou já fechou com outro artista, sem problema nenhum. Só me fala que eu tiro da fila. Prefiro saber do que ficar te cobrando.</div>
+  </div>
+</section>
+
+<!-- 04 -->
+<section id="ficha" class="wrap">
+  <span class="snum">04 — Ajustes de conteúdo</span>
+  <h2>O que muda<br>nas perguntas</h2>
+  <p class="sub">Não é tom — é conteúdo. Quatro mudanças que vêm direto do que o dossiê mostrou sobre o trabalho dele.</p>
+
+  <h3>Nova tela obrigatória: o freehand</h3>
+  <p>Entra logo depois da foto do local, antes do tamanho. <b>É a tela mais importante da ficha inteira</b>, porque transforma a maior fonte possível de frustração no maior argumento de venda dele.</p>
+  <div class="copy">
+    <div class="copy-head"><span class="tag">Tela nova · como eu trabalho</span><button class="cbtn" type="button">copiar</button></div>
+    <div class="copy-body">COMO EU DESENHO
+
+Boa parte dos meus trampos eu faço no freehand: desenho direto na sua pele, na hora.
+
+Isso quer dizer que você não vai receber um desenho pronto por WhatsApp dias antes. O desenho nasce no seu corpo, encaixado no seu músculo e no seu movimento, e é exatamente por isso que meus trabalhos encaixam do jeito que encaixam.
+
+Antes de começar a agulha a gente olha junto e ajusta o que precisar. Você nunca vai ser tatuado em dúvida.
+
+Se você precisa aprovar um desenho antes pra ficar tranquilo, me fala na hora que eu te respondo. A gente resolve isso antes de fechar qualquer coisa.</div>
+  </div>
+
+  <h3>A pergunta de cor passa a dizer a verdade</h3>
+  <div class="ab">
+    <div class="before"><span class="lab">Antes</span><p>Preto e cinza ou colorido?
+→ Preto e cinza
+→ Colorido
+→ Confio em você</p></div>
+    <div class="after"><span class="lab">Depois</span><p>Preto e cinza ou colorido?
+→ Preto e cinza
+→ Colorido
+→ Confio em você
+
+CONDICIONAL: se "Colorido" →
+"Só pra alinhar: quase tudo que eu faço é preto e cinza. Cor eu faço pontual, dentro de peça preta. Se sua ideia depende de cor cheia, eu vou ser sincero e te indicar alguém melhor pra isso. Mas manda mesmo assim que eu te falo."</p></div>
+  </div>
+
+  <h3>Local exposto muda de tom</h3>
+  <p>Mão e dedo aparecem em quatro dos vinte e quatro posts. <b>Ele não desencoraja — ele é conhecido por isso.</b> O aviso continua, mas como quem explica, não como quem duvida.</p>
+  <div class="copy">
+    <div class="copy-head"><span class="tag">Condicional · mão, dedo, pescoço, rosto</span><button class="cbtn" type="button">copiar</button></div>
+    <div class="copy-body">MÃO E DEDO EU FAÇO MUITO
+
+É uma das coisas que eu mais gosto. Mas tem regra e eu prefiro te falar agora:
+
+Essas regiões rejeitam mais tinta que o resto do corpo. Retoque ali já entra no combinado desde o começo.
+
+E rosto eu só fecho pessoalmente, olho no olho.
+
+Fora isso, tamo junto.</div>
+  </div>
+
+  <h3>A pergunta de referência ganha o público real dele</h3>
+  <p>Anime e geek dominam o feed: Levi, Gojo, Kakashi, Brook, Marceline, Venom, Death Note. A referência do cliente dele não vem de tattoo de outro artista — vem de mangá, de print, de frame de episódio. A microcopy precisa dizer isso, senão a pessoa acha que "não tem referência boa".</p>
+  <div class="copy">
+    <div class="copy-head"><span class="tag">Microcopy · referências</span><button class="cbtn" type="button">copiar</button></div>
+    <div class="copy-body">Manda o que te fez pensar nisso. Print de anime, frame de episódio, página de mangá, foto, tattoo de outro artista, desenho torto no guardanapo. Não precisa ser bonito, precisa ser o que você tem na cabeça.</div>
+  </div>
+
+  <div class="good">
+    <b>E uma oportunidade que o dossiê revelou</b>
+    <p>O destaque <strong>DISPONIVEL</strong> tem cards de três anos atrás ainda marcados como disponíveis, sem preço, sem tamanho e sem indicação do que já foi feito. É uma vitrine muda. Um catálogo de flash com <strong>preço, tamanho e status (disponível / já feito)</strong> é provavelmente o quick win de maior retorno do projeto inteiro: ele já produz os desenhos, já tem a demanda, e flash com preço na etiqueta é a única coisa que uma pessoa consegue comprar sem precisar falar com ele.</p>
+  </div>
+</section>
+
+<!-- 05 -->
+<section id="zero" class="wrap">
+  <span class="snum">05 — Antes de qualquer automação</span>
+  <h2>Seis correções<br>no perfil</h2>
+  <p class="sub">Nenhuma envolve código, n8n ou Notion. Se ele fizer só estas seis e mais nada, já melhora — e é justamente por isso que são a melhor primeira conversa que você pode ter com ele.</p>
+
+  <div class="step">
+    <div class="k">1</div>
+    <h4>Colocar um link na bio</h4>
+    <p>Não existe nenhum hoje. <b>É a mudança de trinta segundos com maior impacto do projeto inteiro</b>, e sem ela o resto não tem pra onde apontar. Enquanto a ficha não estiver pronta, aponta pro WhatsApp — qualquer coisa é melhor que vazio.</p>
+    <p class="eff">30 segundos</p>
+  </div>
+
+  <div class="step">
+    <div class="k">2</div>
+    <h4>Resolver o "021 RJ x 027 ES"</h4>
+    <p>Cem por cento das legendas dizem Vitória ou Vila Velha. Zero dizem RJ. Quem lê a bio não sabe em que estado ele atende — e ninguém manda DM pra perguntar isso, simplesmente vai embora.</p>
+    <p class="eff">1 minuto</p>
+  </div>
+
+  <div class="step">
+    <div class="k">3</div>
+    <h4>Ativar o botão de contato</h4>
+    <p>A conta já é profissional (exibe a categoria "Artista"), mas <b>não tem botão de contato nenhum</b>. Ativar WhatsApp no perfil é um clique e cria uma segunda porta que hoje não existe.</p>
+    <p class="eff">2 minutos</p>
+  </div>
+
+  <div class="step">
+    <div class="k">4</div>
+    <h4>Ligar a resposta instantânea</h4>
+    <p>Provavelmente nunca foi configurada. É o Meta Business Suite, é grátis, e é a peça que sozinha resolve o problema do cliente que acha que foi ignorado. A copy está na seção 03.</p>
+    <p class="eff">5 minutos</p>
+  </div>
+
+  <div class="step">
+    <div class="k">5</div>
+    <h4>Limpar o destaque DISPONIVEL</h4>
+    <p>Tem flash de 152 semanas atrás ainda marcado como disponível. Hoje ninguém sabe o que ainda está de pé — e uma vitrine que mente é pior que vitrine nenhuma. Tirar o que já foi feito é meia hora.</p>
+    <p class="eff">30 minutos</p>
+  </div>
+
+  <div class="step">
+    <div class="k">6</div>
+    <h4>Criar o destaque COMO AGENDAR</h4>
+    <p>Quatro stories: o que eu faço · como funciona o freehand · como agendar · o link. Hoje a única linha operacional do perfil inteiro está enterrada dentro de um card do destaque de flashes: <b>"Para agendamentos, só dar um salve na dm! :)"</b>.</p>
+    <p class="eff">1 hora</p>
+  </div>
+
+  <div class="note">
+    <b>Por que começar por aqui, e não pelo n8n</b>
+    <p>Estas seis correções são a melhor primeira conversa possível com ele porque <strong>nenhuma é sobre automação</strong> — são sobre o perfil dele, que é território dele. Ele faz as seis num sábado, sozinho, sem depender de você. E quando as fichas começarem a chegar por causa do link na bio, aí sim existe um problema de organização que o Notion resolve — e a ideia vira dele, não sua.</p>
+  </div>
+</section>
+
+<footer class="foot wrap">
+  <p>Baseado no dossiê de @russo.tattooer coletado em 10/09/2026: 24 legendas, 3 destaques, comentários de 3 posts. As três páginas anteriores do projeto ainda têm a copy antiga — é só falar que eu propago tudo isso pra elas.</p>
+</footer>
+
+<script>
+document.addEventListener('click', function(e){
+  var btn = e.target.closest('.cbtn');
+  if(!btn) return;
+  var box = btn.closest('.copy');
+  if(!box) return;
+  var text = box.querySelector('.copy-body').textContent;
+  var done = function(){
+    var old = btn.textContent;
+    btn.textContent = 'copiado ✓';
+    btn.classList.add('done');
+    setTimeout(function(){ btn.textContent = old; btn.classList.remove('done'); }, 1600);
+  };
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(done, function(){ fallback(text, done); });
+  } else { fallback(text, done); }
+});
+function fallback(text, done){
+  var ta = document.createElement('textarea');
+  ta.value = text; ta.setAttribute('readonly','');
+  ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); done(); } catch(err) {}
+  document.body.removeChild(ta);
+}
+var links = Array.prototype.slice.call(document.querySelectorAll('.nav a'));
+var secs = links.map(function(a){ return document.querySelector(a.getAttribute('href')); });
+if('IntersectionObserver' in window){
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(en){
+      if(!en.isIntersecting) return;
+      var i = secs.indexOf(en.target);
+      if(i < 0) return;
+      links.forEach(function(l){ l.classList.remove('on'); });
+      links[i].classList.add('on');
+      var bar = document.querySelector('.nav-in'), el = links[i];
+      if(bar && (el.offsetLeft < bar.scrollLeft || el.offsetLeft + el.offsetWidth > bar.scrollLeft + bar.clientWidth)){
+        bar.scrollTo({ left: Math.max(0, el.offsetLeft - 40), behavior:'smooth' });
+      }
+    });
+  }, { rootMargin:'-50px 0px -70% 0px' });
+  secs.forEach(function(s){ if(s) io.observe(s); });
+}
+</script>
+
+</body>
+</html>
