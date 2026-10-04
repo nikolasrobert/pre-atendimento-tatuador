@@ -9,5 +9,11 @@
     "sync:check": "node scripts/sync-code.js --check",
     "placeholders": "node scripts/check-placeholders.js"
   },
-  "engines": { "node": ">=20" }
+  "engines": {
+    "node": ">=20"
+  },
+  "type": "commonjs",
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0"
+  }
 }
