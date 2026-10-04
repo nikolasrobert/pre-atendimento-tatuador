@@ -1,0 +1,1032 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Pré-Atendimento Russo</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Karla:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+:root{
+  --paper:#EFEBF3;
+  --surface:#F8F6FB;
+  --card:#FFFFFF;
+  --ink:#191424;
+  --ink2:#57506B;
+  --ink3:#8A82A0;
+  --line:#DBD3E7;
+  --line2:#C7BCDA;
+  --stencil:#6636C4;
+  --stencil-ink:#4E259C;
+  --stencil-soft:#EDE4FC;
+  --hot:#B2521C;
+  --hot-soft:#FBEADC;
+  --warm:#8A6A18;
+  --warm-soft:#FAF1D9;
+  --cold:#3F6A82;
+  --cold-soft:#E2EEF4;
+  --shadow:0 1px 2px rgba(25,20,36,.05),0 8px 24px -12px rgba(25,20,36,.18);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#110E18;
+    --surface:#181322;
+    --card:#1D1729;
+    --ink:#EFEAF7;
+    --ink2:#AAA1C0;
+    --ink3:#7B7295;
+    --line:#2C2440;
+    --line2:#3D3356;
+    --stencil:#A582F8;
+    --stencil-ink:#C4AEFF;
+    --stencil-soft:#271B44;
+    --hot:#E9995E;
+    --hot-soft:#33210F;
+    --warm:#D4B255;
+    --warm-soft:#2C2410;
+    --cold:#7DAFC9;
+    --cold-soft:#152631;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px -14px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#110E18;
+  --surface:#181322;
+  --card:#1D1729;
+  --ink:#EFEAF7;
+  --ink2:#AAA1C0;
+  --ink3:#7B7295;
+  --line:#2C2440;
+  --line2:#3D3356;
+  --stencil:#A582F8;
+  --stencil-ink:#C4AEFF;
+  --stencil-soft:#271B44;
+  --hot:#E9995E;
+  --hot-soft:#33210F;
+  --warm:#D4B255;
+  --warm-soft:#2C2410;
+  --cold:#7DAFC9;
+  --cold-soft:#152631;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px -14px rgba(0,0,0,.7);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:"Karla",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:16px;line-height:1.62;-webkit-font-smoothing:antialiased;
+  -webkit-text-size-adjust:100%;text-size-adjust:100%;overflow-wrap:break-word;
+}
+.wrap{max-width:920px;margin:0 auto;padding-inline:20px}
+h1,h2,h3,h4{text-wrap:balance;margin:0}
+a{color:var(--stencil-ink);text-decoration-thickness:1px;text-underline-offset:2px}
+:focus-visible{outline:2px solid var(--stencil);outline-offset:2px;border-radius:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ---------- nav ---------- */
+.nav{
+  position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--paper) 88%,transparent);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line);
+}
+.nav-in{max-width:920px;margin:0 auto;padding:0 20px;display:flex;gap:4px;align-items:center;overflow-x:auto;scrollbar-width:none}
+.nav-in::-webkit-scrollbar{display:none}
+.nav a{
+  font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--ink3);text-decoration:none;padding:13px 9px;white-space:nowrap;border-bottom:2px solid transparent;
+}
+.nav a:hover{color:var(--ink)}
+.nav a.on{color:var(--stencil-ink);border-bottom-color:var(--stencil)}
+
+/* ---------- hero ---------- */
+.hero{padding-block:52px 40px;border-bottom:1px solid var(--line)}
+.eyebrow{
+  font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--stencil-ink);margin-bottom:18px;
+}
+h1{
+  font-family:"Anton",Impact,sans-serif;font-weight:400;text-transform:uppercase;
+  font-size:clamp(42px,9vw,86px);line-height:.96;letter-spacing:-.005em;margin-bottom:22px;
+}
+h1 em{font-style:normal;color:var(--stencil)}
+.lede{font-size:19px;line-height:1.55;color:var(--ink2);max-width:62ch}
+.lede strong{color:var(--ink);font-weight:700}
+.specs{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:1px;
+  margin:32px 0 0;background:var(--line2);border:1px solid var(--line2);border-radius:3px;overflow:hidden;
+}
+.spec{padding:14px 16px;background:var(--card)}
+.spec dt{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:4px}
+.spec dd{margin:0;font-family:"Anton",sans-serif;font-size:22px;line-height:1.1;text-transform:uppercase}
+
+/* ---------- sections ---------- */
+section{padding-block:56px;border-bottom:1px solid var(--line);scroll-margin-top:52px}
+section:last-of-type{border-bottom:0}
+.snum{
+  font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.16em;color:var(--stencil-ink);
+  text-transform:uppercase;display:block;margin-bottom:10px;
+}
+h2{font-family:"Anton",Impact,sans-serif;font-weight:400;text-transform:uppercase;font-size:clamp(28px,5.4vw,44px);line-height:1.04;margin-bottom:14px}
+h3{font-size:19px;font-weight:700;margin-top:36px;margin-bottom:10px;letter-spacing:-.01em}
+h4{font-size:15px;font-weight:700;margin-top:22px;margin-bottom:6px}
+p{margin:0 0 14px}
+.sub{color:var(--ink2);max-width:64ch;font-size:17px}
+ul,ol{margin:0 0 16px;padding-left:20px}
+li{margin-bottom:7px}
+li::marker{color:var(--ink3)}
+strong{font-weight:700}
+.mono{font-family:"JetBrains Mono",monospace;font-size:13px}
+
+/* ---------- copy blocks (papel de decalque) ---------- */
+.copy{
+  border:1.5px dashed var(--line2);border-radius:4px;background:var(--stencil-soft);
+  margin:16px 0 22px;overflow:hidden;
+}
+.copy-head{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:8px 12px;border-bottom:1.5px dashed var(--line2);
+}
+.tag{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--stencil-ink)}
+.cbtn{
+  font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  background:var(--stencil);color:#fff;border:0;border-radius:3px;padding:5px 11px;cursor:pointer;
+}
+.cbtn:hover{filter:brightness(1.1)}
+.cbtn.done{background:var(--cold)}
+.copy-body{padding:14px 16px;white-space:pre-line;font-size:15.5px;line-height:1.6;color:var(--ink)}
+
+/* ---------- cards ---------- */
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));margin:18px 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:16px 18px;box-shadow:var(--shadow)}
+.card h4{margin-top:0}
+.card p:last-child{margin-bottom:0}
+.card small{color:var(--ink2);font-size:14px;display:block;line-height:1.5}
+
+/* ---------- flow ---------- */
+.flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px;margin:22px 0}
+.step{
+  flex:1 1 130px;background:var(--card);border:1px solid var(--line);border-radius:4px;padding:12px 13px;
+  display:flex;flex-direction:column;gap:4px;position:relative;
+}
+.step b{font-family:"Anton",sans-serif;font-weight:400;text-transform:uppercase;font-size:17px;letter-spacing:.01em;line-height:1.1}
+.step span{font-size:13px;color:var(--ink2);line-height:1.4}
+.step .price{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.08em;color:var(--stencil-ink);text-transform:uppercase;margin-top:2px}
+.arrow{display:flex;align-items:center;color:var(--line2);font-size:18px;flex:0 0 auto}
+@media(max-width:700px){.arrow{transform:rotate(90deg);width:100%;justify-content:center;height:12px;font-size:15px}}
+
+/* ---------- tables ---------- */
+.tw{overflow-x:auto;margin:18px 0;border:1px solid var(--line);border-radius:4px;background:var(--card)}
+table{border-collapse:collapse;width:100%;min-width:520px;font-size:14.5px}
+th{
+  text-align:left;font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink3);padding:10px 14px;border-bottom:1px solid var(--line);font-weight:500;background:var(--surface);
+}
+td{padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td code,p code,li code{font-family:"JetBrains Mono",monospace;font-size:12.5px;background:var(--stencil-soft);color:var(--stencil-ink);padding:1px 5px;border-radius:3px}
+.num{font-variant-numeric:tabular-nums}
+
+/* ---------- question cards ---------- */
+.q{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--stencil);border-radius:4px;padding:14px 16px;margin:10px 0}
+.q-top{display:flex;flex-wrap:wrap;gap:8px;align-items:baseline;margin-bottom:6px}
+.q-n{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--stencil-ink);font-weight:700}
+.q-t{font-weight:700;font-size:16.5px;flex:1 1 200px}
+.q-type{font-family:"JetBrains Mono",monospace;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);border:1px solid var(--line2);border-radius:2px;padding:2px 6px}
+.q-micro{font-style:italic;color:var(--ink2);font-size:14.5px;margin:0 0 8px}
+.q-opts{font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--ink2);margin:0 0 8px;line-height:1.55}
+.q-why{font-size:14px;color:var(--ink2);border-top:1px dashed var(--line2);padding-top:8px;margin:0}
+.q-why b{color:var(--stencil-ink);font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:2px}
+.q-logic{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--hot);background:var(--hot-soft);border-radius:3px;padding:6px 9px;margin:0 0 8px;line-height:1.5}
+
+/* ---------- callouts ---------- */
+.note{border-left:3px solid var(--cold);background:var(--cold-soft);padding:13px 16px;border-radius:0 4px 4px 0;margin:18px 0;font-size:15px}
+.warn{border-left:3px solid var(--hot);background:var(--hot-soft);padding:13px 16px;border-radius:0 4px 4px 0;margin:18px 0;font-size:15px}
+.note p:last-child,.warn p:last-child{margin-bottom:0}
+.note b,.warn b{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:4px}
+.note b{color:var(--cold)}
+.warn b{color:var(--hot)}
+
+/* ---------- faq ---------- */
+details{border-bottom:1px solid var(--line);padding:2px 0}
+details summary{
+  cursor:pointer;padding:13px 30px 13px 0;font-weight:700;font-size:16px;list-style:none;position:relative;
+}
+details summary::-webkit-details-marker{display:none}
+details summary::after{content:"+";position:absolute;right:4px;top:11px;font-family:"JetBrains Mono",monospace;color:var(--stencil);font-size:18px}
+details[open] summary::after{content:"–"}
+details .ans{padding:0 0 16px;color:var(--ink2);font-size:15.5px}
+details .ans p:last-child{margin-bottom:0}
+.faq-cat{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);margin:28px 0 4px}
+
+/* ---------- score ---------- */
+.score{display:grid;gap:0;border:1px solid var(--line);border-radius:4px;overflow:hidden;margin:18px 0;background:var(--card)}
+.score-row{display:flex;justify-content:space-between;gap:14px;padding:9px 14px;border-bottom:1px solid var(--line);font-size:14.5px;align-items:center}
+.score-row:last-child{border-bottom:0}
+.pts{font-family:"JetBrains Mono",monospace;font-weight:700;font-size:14px;flex:0 0 auto;font-variant-numeric:tabular-nums}
+.pts.p{color:var(--stencil-ink)}
+.pts.m{color:var(--hot)}
+.bands{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0}
+.band{flex:1 1 160px;border-radius:4px;padding:12px 14px;border:1px solid transparent}
+.band b{display:block;font-family:"Anton",sans-serif;font-weight:400;text-transform:uppercase;font-size:19px;margin-bottom:2px}
+.band span{font-size:14px;line-height:1.45;display:block}
+.band.h{background:var(--hot-soft);border-color:var(--hot);color:var(--hot)}
+.band.w{background:var(--warm-soft);border-color:var(--warm);color:var(--warm)}
+.band.c{background:var(--cold-soft);border-color:var(--cold);color:var(--cold)}
+
+/* ---------- objections ---------- */
+.obj{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:16px 18px;margin:12px 0}
+.obj .said{font-family:"Anton",sans-serif;font-weight:400;text-transform:uppercase;font-size:19px;line-height:1.15;margin-bottom:9px;color:var(--hot)}
+.obj p{margin-bottom:0;font-size:15.5px;color:var(--ink2)}
+.obj p+p{margin-top:10px}
+.obj p strong{color:var(--ink)}
+
+pre{
+  background:var(--card);border:1px solid var(--line);border-radius:4px;padding:14px 16px;overflow-x:auto;
+  font-family:"JetBrains Mono",monospace;font-size:12.5px;line-height:1.6;margin:14px 0;color:var(--ink);
+}
+.foot{padding-block:40px 60px;color:var(--ink3);font-size:14px}
+.foot a{color:var(--ink2)}
+hr{border:0;border-top:1px dashed var(--line2);margin:32px 0}
+
+/* dica de rolagem nas tabelas largas (inserida por JS só quando precisa) */
+.scroll-hint{
+  font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink3);margin:-10px 0 16px;display:flex;align-items:center;gap:6px;
+}
+.scroll-hint::before{content:"↔";font-size:13px;color:var(--stencil)}
+
+/* ---------- mobile ---------- */
+@media (max-width:700px){
+  body{font-size:15.5px}
+  .wrap{padding-inline:18px}
+  .nav-in{padding:0 18px}
+  .nav a{padding:12px 8px}
+  .hero{padding-block:36px 30px}
+  .lede{font-size:16.5px}
+  .sub{font-size:16px}
+  section{padding-block:42px;scroll-margin-top:48px}
+  h3{font-size:17.5px;margin-top:30px}
+  h4{font-size:14.5px}
+  .specs{margin-top:26px}
+  .spec{padding:12px 14px}
+  .spec dd{font-size:20px}
+
+  .flow{gap:0;margin:20px 0}
+  .step{flex:1 1 100%;padding:11px 13px}
+  .step b{font-size:15px}
+  .step span{font-size:12.5px}
+
+  .copy{margin:14px 0 20px}
+  .copy-body{font-size:14.8px;padding:13px 14px}
+  .copy-head{padding:7px 10px}
+  .cbtn{padding:6px 12px}
+
+  .q{padding:13px 14px}
+  .q-t{font-size:15.5px;flex:1 1 100%}
+  .q-micro,.q-why{font-size:13.8px}
+  .q-opts,.q-logic{font-size:12px}
+
+  .card{padding:14px 15px}
+  .card small{font-size:13.5px}
+  .grid{gap:10px;grid-template-columns:1fr}
+
+  details summary{font-size:15.5px;padding:12px 26px 12px 0}
+  details summary::after{top:10px}
+  details .ans{font-size:14.8px}
+
+  .note,.warn{font-size:14.5px;padding:12px 14px}
+  .score-row{font-size:13.8px;padding:9px 12px;gap:10px}
+  .band{flex:1 1 100%}
+  .obj{padding:14px 15px}
+  .obj .said{font-size:17px}
+  .obj p{font-size:14.8px}
+  pre{font-size:11.5px;padding:12px 13px}
+  table{font-size:13.5px}
+  th,td{padding:9px 12px}
+  .foot{font-size:13.5px;padding-block:32px 48px}
+}
+
+@media (max-width:400px){
+  .wrap{padding-inline:16px}
+  .nav-in{padding:0 16px}
+  .specs{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="nav-in">
+    <a href="#arquitetura">01 Arquitetura</a>
+    <a href="#instagram">02 Instagram</a>
+    <a href="#ficha">03 A ficha</a>
+    <a href="#faq">04 FAQ</a>
+    <a href="#notion">05 Notion</a>
+    <a href="#n8n">06 n8n</a>
+    <a href="#pitch">07 Pitch</a>
+  </div>
+</nav>
+
+<header class="hero wrap">
+  <div class="eyebrow">Sistema de primeiro atendimento · @russo.tattooer</div>
+  <h1>Ele não<br>perde mais<br><em>nenhuma DM.</em></h1>
+  <p class="lede">Um funil de três peças que transforma "oi, quanto custa?" numa ficha completa antes do Russo abrir o celular. <strong>Ele continua respondendo pessoalmente</strong> — só que já sabendo a ideia, o local, o tamanho, a referência, o prazo e o quanto a pessoa tem pra investir.</p>
+  <dl class="specs">
+    <div class="spec"><dt>Custo mensal</dt><dd>R$ 0</dd></div>
+    <div class="spec"><dt>Tempo de montagem</dt><dd>1 tarde</dd></div>
+    <div class="spec"><dt>Ficha do cliente</dt><dd>~2 min</dd></div>
+    <div class="spec"><dt>Piloto sugerido</dt><dd>30 dias</dd></div>
+  </dl>
+</header>
+
+<!-- ============ 01 ============ -->
+<section id="arquitetura" class="wrap">
+  <span class="snum">01 — Arquitetura</span>
+  <h2>Quatro camadas,<br>zero real por mês</h2>
+  <p class="sub">A regra foi: nada que cobre mensalidade antes de provar que funciona. Tudo abaixo roda no plano gratuito, de verdade — não é trial.</p>
+
+  <div class="flow">
+    <div class="step"><b>Instagram</b><span>Saudação automática + 4 FAQs + link na bio</span><span class="price">Nativo · grátis</span></div>
+    <div class="arrow">→</div>
+    <div class="step"><b>Tally</b><span>A ficha de ideia, com lógica e upload de referência</span><span class="price">Free · grátis</span></div>
+    <div class="arrow">→</div>
+    <div class="step"><b>n8n</b><span>Limpa, pontua, monta o card e avisa</span><span class="price">Self-host · grátis</span></div>
+    <div class="arrow">→</div>
+    <div class="step"><b>Notion</b><span>Kanban de atendimentos + ficha por cliente</span><span class="price">Free · grátis</span></div>
+    <div class="arrow">→</div>
+    <div class="step"><b>WhatsApp</b><span>Aviso no WhatsApp do Russo: ficha quente na hora, o resto num resumo às 9h</span><span class="price">API oficial · ~R$ 0,04 por aviso</span></div>
+  </div>
+
+  <h3>Por que o Tally e não outro</h3>
+  <p>Foi o único que entrega no plano gratuito, ao mesmo tempo, as quatro coisas de que esse fluxo precisa: <strong>lógica condicional</strong> (ninguém responde pergunta de cobertura se não é cobertura), <strong>upload de arquivo até 10 MB</strong> (referência e foto do local), <strong>webhook</strong> (pro n8n) e <strong>integração nativa com Notion</strong> — com formulários e respostas ilimitados. O único limite real é a marca "Made with Tally" no rodapé; tirar isso custa US$ 24/mês, e no começo não vale.</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Opção</th><th>Lógica condicional</th><th>Upload</th><th>Webhook</th><th>Veredito</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Tally (free)</strong></td><td>Sim</td><td>10 MB</td><td>Sim</td><td>Começa aqui. Fica de pé numa tarde.</td></tr>
+        <tr><td>Notion Forms</td><td><strong>Não</strong> — todo mundo vê todos os campos</td><td>5 MB</td><td>Via automação Notion</td><td>Só se quiser a versão mais crua possível. A falta de lógica dobra o tamanho percebido da ficha.</td></tr>
+        <tr><td>Landing sua (Vercel/Astro)</td><td>Você que faz</td><td>Você que faz</td><td>POST direto</td><td>A melhor de todas — e a que mais combina com "autêntico". Fase 2.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note">
+    <b>Estratégia de migração</b>
+    <p>Sobe no Tally agora pra provar o conceito rápido. Quando o Russo comprar a ideia, você troca o Tally pela sua landing e <strong>não mexe em mais nada</strong> — o n8n continua recebendo no mesmo webhook, com o mesmo formato de payload. O resto do sistema nem percebe a troca.</p>
+  </div>
+
+  <h3>Onde não vale gastar (e onde talvez valha)</h3>
+  <div class="grid">
+    <div class="card"><h4>❌ ManyChat</h4><small>Era a resposta óbvia pra automação de DM, mas o plano gratuito caiu para <strong>25 contatos ativos por mês</strong> em março de 2026. Não dá pra construir nada em cima disso. O Pro é US$ 29/mês.</small></div>
+    <div class="card"><h4>❌ Tally Pro — US$ 24/mês</h4><small>Só compra a remoção da marca e domínio próprio. Se o branding incomodar o Russo, sua landing resolve isso de graça e com design melhor.</small></div>
+    <div class="card"><h4>⚠️ Servidor pro n8n</h4><small>Oracle Cloud Always Free (ARM) roda n8n sem custo. Se quiser sossego, um VPS de ~R$ 30/mês. n8n Cloud é ~€ 24/mês — só se você não quiser manter servidor.</small></div>
+    <div class="card"><h4>✅ Fase 2: Instagram Messaging API</h4><small>App próprio na Meta + n8n = DM automatizado de verdade, de graça. Custa trabalho de aprovação, não dinheiro. Só depois que o básico estiver rodando.</small></div>
+  </div>
+</section>
+
+<!-- ============ 02 ============ -->
+<section id="instagram" class="wrap">
+  <span class="snum">02 — A porta de entrada</span>
+  <h2>O que o Instagram<br>já faz de graça</h2>
+  <p class="sub">Conta profissional → Meta Business Suite → Bandeja de entrada → Respostas automáticas. Três recursos, nenhum plugin, custo zero.</p>
+
+  <h3>1. Resposta instantânea</h3>
+  <p>Dispara sozinha na primeira mensagem de cada pessoa. É a peça mais importante do sistema inteiro — e é a que resolve o problema do <em>cliente revoltado</em>. Ninguém fica bravo por esperar. Fica bravo por não saber se foi lido.</p>
+  <div class="copy">
+    <div class="copy-head"><span class="tag">Resposta instantânea · IG</span><button class="cbtn" type="button">copiar</button></div>
+    <div class="copy-body">Fala! Aqui é o Russo.
+
+Eu leio todas as mensagens. Como tatuo o dia inteiro, respondo em bloco, normalmente em até {{PRAZO_RESPOSTA}}.
+
+Me conta sua ideia aqui que fica mais rápido pros dois: {{LINK_FICHA}}
+
+São uns 3 minutos. Quando eu abrir sua mensagem já chego sabendo o que você quer, e te respondo com valor e agenda de uma vez.
+
+Tamo junto.</div>
+  </div>
+
+  <h3>2. Perguntas frequentes</h3>
+  <p>Aparecem como botões quando alguém abre a conversa. São <strong>4 slots, 80 caracteres cada</strong> — use os quatro e escolha bem, porque cada botão clicado é uma pergunta que o Russo não vai responder digitando.</p>
+  <div class="copy">
+    <div class="copy-head"><span class="tag">FAQ 1 · pergunta e resposta</span><button class="cbtn" type="button">copiar</button></div>
+    <div class="copy-body">Como faço pra agendar?
+
+Preenchendo minha ficha de ideia: {{LINK_FICHA}}. Leva uns 3 min e é por ali que eu monto a agenda. Depois que eu ler, te chamo no zap com valor e as datas que eu tenho.</div>
+  </div>
+  <div class="copy">
+    <div class="copy-head"><span class="tag">FAQ 2 · pergunta e resposta</span><button class="cbtn" type="button">copiar</button></div>
+    <div class="copy-body">Quanto custa uma tattoo sua?
+
+Depende de tamanho, local e complexidade. Chutar valor sem ver a ideia é desrespeito com você. Manda a ficha ({{LINK_FICHA}}) que eu te dou o valor fechado, sem "a partir de".</div>
+  </div>
+  <div class="copy">
+    <div class="copy-head"><span class="tag">FAQ 3 · pergunta e resposta</span><button class="cbtn" type="button">copiar</button></div>
+    <div class="copy-body">Tem agenda pra quando?
+
+Trabalho com fila, não com "primeiro que chegar". Preenche a ficha ({{LINK_FICHA}}) que eu te falo a data real disponível pro seu projeto, não uma data genérica.</div>
+  </div>
+  <div class="copy">
+    <div class="copy-head"><span class="tag">FAQ 4 · pergunta e resposta</span><button class="cbtn" type="button">copiar</button></div>
+    <div class="copy-body">Você manda o desenho antes?
+
+Trabalho muito no freehand, desenho direto na sua pele no dia. A gente olha junto e ajusta antes da agulha. Te explico tudo na ficha: {{LINK_FICHA}}</div>
+  </div>
+
+  <h3>3. Respostas salvas (atalhos)</h3>
+  <p>Ilimitadas. O Russo digita o atalho e o texto inteiro aparece. É o que mata as respostas que ele digita cem vezes por semana. Sugestão de atalhos: <code>/ficha</code> <code>/valor</code> <code>/cover</code> <code>/retoque</code> <code>/cuidados</code> <code>/sinal</code> <code>/local</code> <code>/menor</code> <code>/naoeomeu</code>. Os textos prontos estão na <a href="#faq">seção 04</a> — cada resposta do FAQ já é uma resposta salva.</p>
+
+  <h3>4. Bio, link e destaque</h3>
+  <ul>
+    <li><strong>Link na bio direto pra ficha.</strong> Sem Linktree no meio. Cada clique a mais derruba a conversão perto de 20%.</li>
+    <li><strong>Bio:</strong> "Tatuagem autoral · [cidade] · Orçamento só pela ficha ↓". A palavra "só" é o que faz a DM parar de chegar solta.</li>
+    <li><strong>Destaque fixo "COMO AGENDAR"</strong> com 4 stories: <em>o que eu faço</em> / <em>o que eu não faço</em> / <em>como funciona do primeiro contato até a agulha</em> / <em>o link</em>.</li>
+    <li><strong>Story semanal</strong> com sticker de link, sempre no mesmo dia. A ficha precisa aparecer, não só existir.</li>
+  </ul>
+
+  <div class="note">
+    <b>A coreografia completa fica em outra página</b>
+    <p>Esta seção monta as ferramentas. O que fazer quando a pessoa responde — as quatro portas de entrada, a linha do tempo do "oi" até o sinal pago, e os seis casos em que o cliente sai do roteiro — está em <a href="primeiras-72-horas.html">As Primeiras 72 Horas</a>.</p>
+  </div>
+
+  <div class="note">
+    <b>O detalhe que muda tudo</b>
+    <p>Repare que toda copy acima <strong>declara um prazo</strong> ("em até 48h, seg a qui"). É a única frase que separa "ele me ignorou" de "ele avisou que demora". Se o Russo não cumprir o prazo, o sistema inteiro perde o valor — melhor prometer 72h e cumprir do que prometer 24h e sumir.</p>
+  </div>
+</section>
+
+<!-- ============ 03 ============ -->
+<section id="ficha" class="wrap">
+  <span class="snum">03 — A ficha de ideia</span>
+  <h2>17 perguntas.<br>Nenhuma sobrando.</h2>
+  <p class="sub">Dezessete perguntas para todo mundo, mais cinco que só aparecem quando fazem sentido — ninguém que não vai cobrir nada responde sobre cobertura. Uma pergunta por tela. E chame de <strong>ficha de ideia</strong>, nunca de "formulário de orçamento": a segunda soa como fila de banco, a primeira soa como estúdio.</p>
+
+  <h3>Tela de abertura</h3>
+  <div class="copy">
+    <div class="copy-head"><span class="tag">Capa da ficha</span><button class="cbtn" type="button">copiar</button></div>
+    <div class="copy-body">FICHA DE IDEIA
+
+Aqui é onde tudo começa. Leva uns 3 minutos.
+
+Quanto melhor você preencher, mais rápido eu te respondo, e menos ida e volta a gente tem.
+
+Não é robô. Sou eu que leio, uma por uma.
+
+Bora.</div>
+  </div>
+
+  <h3>As perguntas</h3>
+
+  <div class="q">
+    <div class="q-top"><span class="q-n">01</span><span class="q-t">Como te chamo?</span><span class="q-type">texto curto</span></div>
+    <p class="q-why"><b>Por quê</b>Primeiro nome é o que ele usa pra abrir a resposta. "Salve, Marcos" converte melhor que "Olá".</p>
+  </div>
+
+  <div class="q">
+    <div class="q-top"><span class="q-n">02</span><span class="q-t">Seu @ do Instagram</span><span class="q-type">texto curto · obrigatório</span></div>
+    <p class="q-micro">Sem o @ eu não consigo te achar depois. Se seu perfil é fechado, me segue que eu aceito.</p>
+    <p class="q-why"><b>Por quê</b>Meio artístico funciona por perfil, não por CPF. O Russo bate o olho e entende o estilo da pessoa, a idade aparente, se já tem tattoo. Também filtra perfil fake e é como ele arquiva cliente.</p>
+  </div>
+
+  <div class="q">
+    <div class="q-top"><span class="q-n">03</span><span class="q-t">WhatsApp</span><span class="q-type">telefone · obrigatório</span></div>
+    <p class="q-micro">Com DDD. É por aqui que eu confirmo data e mando o desenho.</p>
+    <p class="q-why"><b>Por quê</b>Tira a conversa do Direct, que é onde as coisas se perdem. O n8n já devolve o link <code>wa.me</code> clicável no card do Notion.</p>
+  </div>
+
+  <div class="q">
+    <div class="q-top"><span class="q-n">04</span><span class="q-t">De onde você vem?</span><span class="q-type">múltipla escolha</span></div>
+    <p class="q-opts">→ Vitória · Vila Velha · Serra · Cariacica · Viana · Guarapari · Fundão · Fora da Grande Vitória</p>
+    <p class="q-logic">SE "Fora da Grande Vitória" → pergunta extra "Qual cidade?" (texto curto)</p>
+    <p class="q-why"><b>Por quê</b>O foco é o Espírito Santo. As sete cidades da Grande Vitória viram um toque, sem digitar. Quem vem de fora escreve a cidade, seja do interior ou de outro estado. O n8n grava a cidade e a Região (Grande Vitória ou fora dela) no card, e o Russo separa na hora o orçamento de quem vai viajar pra tatuar.</p>
+  </div>
+
+  <div class="q">
+    <div class="q-top"><span class="q-n">05</span><span class="q-t">É sua primeira tatuagem?</span><span class="q-type">múltipla escolha</span></div>
+    <p class="q-opts">→ É a primeira · Tenho uma ou duas · Sou bem tatuado(a) · Você já me tatuou</p>
+    <p class="q-logic">SE "É a primeira" → tela extra de acolhimento (texto abaixo)<br>SE "Você já me tatuou" → pula a pergunta 16 e soma +3 no score</p>
+    <p class="q-why"><b>Por quê</b>Primeira tattoo pergunta o dobro e precisa do dobro de segurança. Cliente antigo é o lead mais quente que existe e não pode ficar na mesma fila de um "oi".</p>
+  </div>
+
+  <div class="copy">
+    <div class="copy-head"><span class="tag">Tela condicional · primeira tattoo</span><button class="cbtn" type="button">copiar</button></div>
+    <div class="copy-body">Primeira, então. Massa.
+
+Só pra você ficar tranquilo antes de continuar:
+
+· Dói, mas é suportável, e a gente para quantas vezes você precisar.
+· Não existe pergunta boba. Pergunta tudo.
+· Eu não te empurro desenho. Se sua ideia não ficar boa na pele, eu te falo antes, não depois.
+
+Continua aí que faltam poucas.</div>
+  </div>
+
+  <div class="q">
+    <div class="q-top"><span class="q-n">06</span><span class="q-t">Me conta a ideia</span><span class="q-type">texto longo · obrigatório</span></div>
+    <p class="q-micro">Escreve como se estivesse me contando num boteco. Se tem significado, fala. Se é só porque você achou foda, fala também — as duas respostas são válidas.</p>
+    <p class="q-why"><b>Por quê</b>É o campo que o Russo mais vai ler e o que separa quem quer uma tattoo dele de quem quer uma tattoo qualquer. O tamanho da resposta é sinal: menos de 40 caracteres pontua negativo no score.</p>
+  </div>
+
+  <div class="q">
+    <div class="q-top"><span class="q-n">07</span><span class="q-t">Referências</span><span class="q-type">upload até 5 · + campo de link opcional</span></div>
+    <p class="q-micro">Manda o que te fez pensar nisso. Pode ser tattoo de outro artista, foto, print, quadro, desenho torto no guardanapo. Não precisa ser bonito, precisa ser o que você tem na cabeça.</p>
+    <p class="q-why"><b>Por quê</b>É o campo que mais economiza ida e volta no ano inteiro. Sem referência não existe estimativa — e é exatamente aqui que morrem as conversas de Direct.</p>
+  </div>
+
+  <div class="q">
+    <div class="q-top"><span class="q-n">08</span><span class="q-t">Onde no corpo?</span><span class="q-type">lista suspensa</span></div>
+    <p class="q-opts">→ Antebraço (interno) · Antebraço (externo) · Braço · Ombro · Peito · Costas (parte) · Costas (fechamento) · Costela · Barriga · Coxa · Panturrilha · Pé · Mão · Pescoço · Rosto · Outro</p>
+    <p class="q-logic">SE Mão, Pescoço ou Rosto → tela extra: política de local exposto</p>
+    <p class="q-why"><b>Por quê</b>Local define preço, tempo, dor e viabilidade mais do que o desenho. Mão, pescoço e rosto merecem uma conversa antes, não depois.</p>
+  </div>
+
+  <div class="q">
+    <div class="q-top"><span class="q-n">09</span><span class="q-t">Manda uma foto do local</span><span class="q-type">upload · obrigatório</span></div>
+    <p class="q-micro">Boa luz, sem filtro, com um cartão ou uma nota de R$ 10 do lado pra dar escala. É o que me deixa te dar o valor certo já na primeira resposta.</p>
+    <p class="q-why"><b>Por quê</b><strong>O campo mais subestimado da ficha.</strong> Uma foto resolve de uma vez: tamanho real, formato do músculo, tom de pele, cicatriz, estria, pelo, tattoo vizinha. Sozinha, ela elimina a maior parte do vai e vem.</p>
+  </div>
+
+  <div class="q">
+    <div class="q-top"><span class="q-n">10</span><span class="q-t">Tamanho aproximado</span><span class="q-type">múltipla escolha</span></div>
+    <p class="q-opts">→ Até 5 cm · 5 a 10 cm · 10 a 15 cm · 15 a 25 cm · Mais de 25 cm · Fechamento (braço · perna · costas) · Não sei · me ajuda</p>
+    <p class="q-why"><b>Por quê</b>"Não sei · me ajuda" é opção de propósito: sem ela, metade das pessoas chuta errado e trava o orçamento numa premissa falsa.</p>
+  </div>
+
+  <div class="q">
+    <div class="q-top"><span class="q-n">11</span><span class="q-t">É cobertura de uma tattoo antiga?</span><span class="q-type">sim / não</span></div>
+    <p class="q-logic">SE "Sim" → 3 perguntas extras: foto da tattoo atual (obrigatória) · há quanto tempo foi feita · já tentou remover a laser<br>SE "Sim" sem foto → −2 no score</p>
+    <p class="q-why"><b>Por quê</b>Cover-up sem foto é impossível de orçar e é a maior fonte de expectativa quebrada na tatuagem. Melhor descobrir agora.</p>
+  </div>
+
+  <div class="q">
+    <div class="q-top"><span class="q-n">12</span><span class="q-t">Preto e cinza ou colorido?</span><span class="q-type">múltipla escolha</span></div>
+    <p class="q-opts">→ Preto e cinza · Colorido · Confio em você</p>
+    <p class="q-why"><b>Por quê</b>Muda tempo de sessão, número de sessões e preço. E "confio em você" é ouro: sinaliza cliente que quer o trabalho <em>dele</em>, não um pedido de encomenda.</p>
+  </div>
+
+  <div class="q">
+    <div class="q-top"><span class="q-n">13</span><span class="q-t">Quanto você tem pra investir nesse projeto?</span><span class="q-type">múltipla escolha</span></div>
+    <p class="q-micro">Não é pra eu te cobrar esse valor. É pra eu te propor algo que caiba. Tattoo boa não é a mais barata — é a que você não vai querer cobrir daqui a cinco anos.</p>
+    <p class="q-opts">→ Até R$ 500 · R$ 500 a 1.000 · R$ 1.000 a 2.000 · R$ 2.000 a 4.000 · Acima de R$ 4.000 · Prefiro que você me diga</p>
+    <p class="q-why"><b>Por quê</b>É a pergunta que todo tatuador evita e a que mais economiza tempo. Ela não afasta cliente bom — afasta conversa que ia morrer no valor depois de 40 mensagens. E a microcopy acima é o que faz a pergunta não soar grosseira.</p>
+  </div>
+
+  <div class="q">
+    <div class="q-top"><span class="q-n">14</span><span class="q-t">Quando você quer fazer?</span><span class="q-type">múltipla escolha</span></div>
+    <p class="q-opts">→ Sem pressa · quero fazer bem feito · Nos próximos 30 dias · Tenho data marcada</p>
+    <p class="q-logic">SE "Tenho data marcada" → campo de data + "o que é?" (casamento, viagem, aniversário)</p>
+    <p class="q-why"><b>Por quê</b>Separa quem está sonhando de quem está comprando — sem tratar mal nenhum dos dois. Data marcada também alerta pra prazo de cicatrização antes do evento.</p>
+  </div>
+
+  <div class="q">
+    <div class="q-top"><span class="q-n">15</span><span class="q-t">Quando você consegue vir?</span><span class="q-type">seleção múltipla</span></div>
+    <p class="q-opts">→ Manhã de semana · Tarde de semana · Sábado · Dia inteiro, sem pressa · Sou flexível</p>
+    <p class="q-why"><b>Por quê</b>Elimina a pior troca de mensagens da tatuagem: sete propostas de horário até achar uma que serve.</p>
+  </div>
+
+  <div class="q">
+    <div class="q-top"><span class="q-n">16</span><span class="q-t">Como você chegou até mim?</span><span class="q-type">múltipla escolha</span></div>
+    <p class="q-opts">→ Instagram · Indicação (de quem?) · Convenção / evento · Passei no estúdio · Outro</p>
+    <p class="q-why"><b>Por quê</b>Em três meses o Russo sabe, com número, de onde vem o cliente que ele gosta de atender. Indicação soma +2 no score porque converte muito mais.</p>
+  </div>
+
+  <div class="q">
+    <div class="q-top"><span class="q-n">17</span><span class="q-t">Combinado?</span><span class="q-type">checkboxes obrigatórios</span></div>
+    <p class="q-opts">☐ Tenho 18 anos ou mais e levo documento com foto<br>☐ Sei que a data só trava com o sinal, e que o sinal não volta se eu desmarcar em cima da hora<br>☐ Sei que o desenho é fechado com o Russo e pode não ficar idêntico à referência — ele não copia trabalho de outro tatuador<br>☐ Sei que a resposta pode levar até 48h úteis</p>
+    <p class="q-why"><b>Por quê</b>Aqui é onde 90% dos atritos futuros morrem. A pessoa leu e marcou. Não é contrato, mas é um combinado registrado com data e hora — e muda completamente o tom de qualquer discussão depois.</p>
+  </div>
+
+  <h3>Tela final</h3>
+  <div class="copy">
+    <div class="copy-head"><span class="tag">Agradecimento · fim da ficha</span><button class="cbtn" type="button">copiar</button></div>
+    <div class="copy-body">Fechou. Tá na minha lista.
+
+Obrigado pela confiança de já sair mandando tudo. Isso me economiza um tempo que eu não tenho.
+
+Eu olho pessoalmente, uma por uma. Se for um trampo que eu faça bem, te chamo no WhatsApp em até {{PRAZO_RESPOSTA}} com valor, quantas sessões e as datas que eu tenho.
+
+Se não for meu estilo eu também te respondo, e te indico alguém que faça melhor que eu. Prefiro te mandar pro cara certo do que fazer meia-boca.
+
+Tamo junto.</div>
+  </div>
+
+  <div class="warn">
+    <b>Não pergunte saúde nessa ficha</b>
+    <p>Alergia, diabetes, uso de anticoagulante, gravidez, epilepsia, medicação contínua — tudo isso é <strong>dado pessoal sensível</strong> pela LGPD. Não deve trafegar em formulário público nem ficar solto num Notion compartilhado. Isso fica na <strong>ficha de anamnese assinada no estúdio, no dia da sessão</strong>. Se um dia quiser digitalizar, faça num banco separado, com acesso restrito e política de retenção definida. Manter fora da ficha de pré-atendimento é a decisão certa técnica e juridicamente.</p>
+  </div>
+</section>
+
+<!-- ============ 04 ============ -->
+<section id="faq" class="wrap">
+  <span class="snum">04 — O que ele sempre é perguntado</span>
+  <h2>As respostas que<br>ele digita mil vezes</h2>
+  <p class="sub">Cada uma vira uma resposta salva no Instagram e um bloco no destaque. Ajuste os valores e a voz com o Russo — a estrutura é essa.</p>
+
+  <p class="faq-cat">Dinheiro e agenda</p>
+  <details><summary>Quanto custa?</summary><div class="ans"><p>Depende de tamanho, local, complexidade e quantas sessões o projeto pede. Eu não trabalho com tabela por cm porque tattoo não é metro quadrado. Manda a ficha que eu te dou o valor fechado do <em>seu</em> projeto. Sem "a partir de", sem surpresa no dia.</p></div></details>
+  <details><summary>Você cobra por hora ou por peça?</summary><div class="ans"><p><em>[Escolha uma com o Russo e mantenha para sempre. Trocar de modelo no meio é o que gera desconfiança.]</em></p><p><strong>Por sessão:</strong> "Trabalho por sessão. A sessão é de X horas e custa R$ Y, independente do que der pra fazer nela. Projeto grande a gente divide em quantas precisar."</p><p><strong>Por peça:</strong> "Fecho o valor da peça inteira antes de começar. Você sabe quanto vai pagar no dia 1, mesmo que a gente leve três sessões."</p></div></details>
+  <details><summary>Tem agenda pra quando?</summary><div class="ans"><p>Trabalho com fila, não com "quem chegar primeiro". Depois que eu ler sua ficha eu te falo a data real disponível pro seu projeto, porque uma peça de 3h e um fechamento de costas não entram no mesmo buraco da agenda.</p></div></details>
+  <details><summary>Precisa de sinal? Quanto?</summary><div class="ans"><p>Sim. <strong>{{SINAL_PCT}}%</strong> pra travar a data, pago no ato do agendamento. Ele abate do valor final. O sinal existe porque o horário que eu reservo pra você é horário que eu recuso de outra pessoa. Se você desmarca em cima da hora, esse tempo não volta pra ninguém.</p><p>Desmarcou com mais de <strong>{{REMARCA_DIAS}} dias</strong> de antecedência? A gente remarca e o sinal segue válido. Menos que isso, o sinal fica.</p></div></details>
+  <details><summary>Aceita cartão? Parcela?</summary><div class="ans"><p>{{PAGAMENTO}}. Projeto grande dá pra dividir por sessão. Você paga cada uma no dia, sem juros e sem carnê.</p></div></details>
+
+  <p class="faq-cat">O trabalho</p>
+  <details><summary>Faz cobertura de tatuagem antiga?</summary><div class="ans"><p>Faço sim, e gosto. Mas cobertura tem regra, e eu prefiro te falar antes: preciso de foto da tattoo atual com boa luz, pra ver quanto de preto já tem ali. Nem tudo dá pra cobrir do jeito que a pessoa imagina. Às vezes o caminho é clarear a laser antes, e eu vou te falar isso na cara.</p><p>Cover quase sempre fica maior e mais escuro que a tattoo original. Se você topa isso, a gente faz coisa boa. Manda a foto na ficha que eu te respondo.</p></div></details>
+  <details><summary>Tatua em cima de cicatriz, estria ou mancha?</summary><div class="ans"><p>Cicatriz depende do tempo e do tipo. A partir de mais ou menos um ano, geralmente sim. Estria dá, mas a pele pega tinta diferente e o resultado tem textura própria. Manda a foto do local que eu te falo com honestidade o que dá e o que não dá.</p></div></details>
+  <details><summary>Vai ficar bom na minha pele? Sou retinto(a).</summary><div class="ans"><p>Vai. O que muda é a escolha de traço, espaçamento e contraste. Não a possibilidade. Manda a foto do local que eu já desenho pensando na sua pele, não adaptando depois.</p></div></details>
+  <details><summary>Você manda o desenho antes?</summary><div class="ans"><p>Eu fecho o desenho perto da data e mostro no dia ou na véspera. Não é frescura: desenho feito com dois meses de antecedência sempre fica pior, porque a ideia amadurece até lá. Se tiver algo que você não curtiu, a gente ajusta na hora. Nunca começo uma tattoo com você em dúvida.</p><p>O que eu não faço é copiar traço de outro tatuador. Referência sim, cópia não.</p></div></details>
+  <details><summary>Quanto tempo demora?</summary><div class="ans"><p>Peça pequena, 1 a 3 horas. Média, 3 a 5. Fechamento é projeto de várias sessões. Quando eu te passar o orçamento, vai junto quantas sessões e quanto tempo cada uma.</p></div></details>
+  <details><summary>Dói muito?</summary><div class="ans"><p>Dói. Mas é uma dor chata, não uma dor insuportável, e a gente para quantas vezes você precisar. Costela, pé, mão, joelho e pescoço doem mais. Antebraço, coxa e panturrilha doem menos. Come antes, dorme bem e não vem de ressaca que já resolve metade.</p></div></details>
+  <details><summary>Faz retoque? Cobra?</summary><div class="ans"><p><strong>Um retoque em até {{RETOQUE_PRAZO}}, de graça</strong>. Desde que a tattoo tenha cicatrizado dentro do combinado. Se falhou porque tomou sol, arrancou casquinha, foi pra piscina na primeira semana ou sumiu por oito meses, aí é retrabalho, e retrabalho é cobrado. Mão, pé e dedo têm regra própria: essas regiões rejeitam tinta por natureza e retoque ali é quase sempre esperado.</p></div></details>
+
+  <p class="faq-cat">Logística</p>
+  <details><summary>Menor de idade pode?</summary><div class="ans"><p>Não. Não tatuo menor de 18 nem com autorização dos pais. É lei e é postura. Não abro exceção, não adianta insistir.</p></div></details>
+  <details><summary>Posso levar acompanhante?</summary><div class="ans"><p>[Uma pessoa, sim / não, o espaço é pequeno]. Sessão longa cansa mais com plateia do que com companhia, então combina comigo antes.</p></div></details>
+  <details><summary>Onde fica o estúdio?</summary><div class="ans"><p>Estúdio Expurgo Tattoo, em {{CIDADE}}. {{ENDERECO}}. {{ESTACIONAMENTO}}. Eu mando a localização exata no WhatsApp depois que a data estiver fechada.</p></div></details>
+  <details><summary>E se eu me atrasar?</summary><div class="ans"><p>Até 15 minutos, tranquilo. Mais que isso eu preciso ver se ainda dá pra fazer o que a gente combinou. Sessão de 4 horas que começa 1 hora atrasada não é mais sessão de 4 horas. Se não der, remarca e o sinal segue válido uma vez.</p></div></details>
+
+  <hr>
+
+  <h3>Pré-cuidados — mandar 48h antes</h3>
+  <div class="copy">
+    <div class="copy-head"><span class="tag">Resposta salva · /pre</span><button class="cbtn" type="button">copiar</button></div>
+    <div class="copy-body">Chegando o dia. Faz assim que a sessão rende o dobro:
+
+· Dorme bem. Sessão longa em quem não dormiu vira sofrimento.
+· Come antes de vir. Nada de jejum, é a causa número 1 de gente passando mal.
+· Sem álcool nas 24h antes. Afina o sangue, borra o traço e dói mais.
+· Sem sol nem praia na área nos 15 dias antes. Pele queimada não tatua.
+· Hidrata a pele na semana. Pele seca sofre mais.
+· Roupa confortável que dê acesso ao local e que você não se importe de manchar.
+· Traz lanche, água e fone. Sessão longa é maratona, não sprint.
+· Não depila com cera no dia, eu raspo na hora.
+· Remédio de uso contínuo: mantém sua rotina normal.
+
+Qualquer coisa me chama.</div>
+  </div>
+
+  <h3>Pós-cuidados — mandar no fim da sessão</h3>
+  <div class="copy">
+    <div class="copy-head"><span class="tag">Resposta salva · /cuidados</span><button class="cbtn" type="button">copiar</button></div>
+    <div class="copy-body">Ficou foda. Agora é com você: 90% do resultado final é cicatrização.
+
+· Mantém o filme pelo tempo que eu te falei ([2h se filme comum / 3 a 5 dias se segunda pele]).
+· Lava com água corrente e sabonete neutro, com a mão limpa. Nada de bucha, nada de esfregar.
+· Seca dando batidinhas com papel toalha. Não esfrega.
+· Pomada em camada FINA, 2 a 3x por dia. Fina mesmo, tatuagem afogada em pomada cicatriza pior.
+· Casquinha e coceira são normais. Não coça, não arranca, não descasca. Cada casquinha arrancada é um pedaço de tinta que vai embora.
+· Sem sol direto por 30 dias. Depois de cicatrizada, protetor 50+ sempre que expuser.
+· Sem mar, piscina, banheira, sauna e academia pesada por 15 dias.
+· Sem roupa apertada ou áspera por cima.
+· Dorme de um jeito que não esfregue a área no lençol.
+
+Se ficar vermelho demais, quente, muito inchado ou com secreção: me manda foto E procura um médico. Não improvisa, não passa nada por conta.
+
+Em 15 dias me manda uma foto de como ficou. Adoro ver.</div>
+  </div>
+</section>
+
+<!-- ============ 05 ============ -->
+<section id="notion" class="wrap">
+  <span class="snum">05 — O painel</span>
+  <h2>Um banco.<br>Cinco jeitos de olhar.</h2>
+  <p class="sub">Um único database — <strong>Atendimentos</strong> — e views diferentes por cabeça. O Russo abre uma tela e sabe o que fazer hoje; você abre outra e sabe o que está funcionando.</p>
+
+  <h3>Propriedades</h3>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Propriedade</th><th>Tipo</th><th>Quem preenche</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Cliente</strong></td><td>Title</td><td>n8n</td></tr>
+        <tr><td>Status</td><td>Select — 🆕 Novo · 👀 Triagem · 💬 Orçado · 💰 Aguardando sinal · 📅 Agendado · 🖤 Feito · ❌ Perdido · 🙅 Não é meu estilo</td><td>Russo</td></tr>
+        <tr><td>Termômetro</td><td>Select — 🔥 Quente · 🌤 Morno · ❄️ Frio</td><td>n8n</td></tr>
+        <tr><td>Score</td><td>Number</td><td>n8n</td></tr>
+        <tr><td>Por que essa nota</td><td>Text</td><td>n8n</td></tr>
+        <tr><td>Instagram</td><td>URL (clicável)</td><td>n8n</td></tr>
+        <tr><td>WhatsApp</td><td>URL — <code>wa.me</code> pronto pra clicar</td><td>n8n</td></tr>
+        <tr><td>Cidade</td><td>Text</td><td>n8n</td></tr>
+        <tr><td>Ideia</td><td>Text</td><td>n8n</td></tr>
+        <tr><td>Local do corpo · Tamanho · Cor</td><td>Select</td><td>n8n</td></tr>
+        <tr><td>Cobertura</td><td>Checkbox</td><td>n8n</td></tr>
+        <tr><td>Referências · Foto do local · Cover atual</td><td>Files</td><td>n8n</td></tr>
+        <tr><td>Faixa de investimento · Prazo · Origem · Experiência</td><td>Select</td><td>n8n</td></tr>
+        <tr><td>Data limite</td><td>Date</td><td>n8n</td></tr>
+        <tr><td>Entrou em</td><td>Created time</td><td>Notion</td></tr>
+        <tr><td>Parado há</td><td>Formula</td><td>Notion</td></tr>
+        <tr><td>Valor orçado · Sinal pago · Data da sessão</td><td>Number · Checkbox · Date</td><td>Russo</td></tr>
+        <tr><td>Notas do Russo · Motivo da perda</td><td>Text · Select</td><td>Russo</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>A fórmula que evita cliente esquecido</h3>
+  <p>Propriedade <strong>Parado há</strong>. Ela só acende para quem ainda não foi respondido — quem já virou "Agendado" ou "Feito" fica em branco e não polui a tela.</p>
+  <div class="copy">
+    <div class="copy-head"><span class="tag">Fórmula Notion 2.0 · Parado há</span><button class="cbtn" type="button">copiar</button></div>
+    <div class="copy-body">let(
+  dias, dateBetween(now(), prop("Entrou em"), "days"),
+  if(
+    prop("Status") == "🆕 Novo" or prop("Status") == "👀 Triagem" or prop("Status") == "💬 Orçado",
+    if(dias >= 3, "🔴 " + format(dias) + "d parado",
+    if(dias >= 2, "🟡 " + format(dias) + "d",
+                  "🟢 " + format(dias) + "d")),
+    ""
+  )
+)</div>
+  </div>
+
+  <h3>As cinco views</h3>
+  <div class="grid">
+    <div class="card"><h4>📥 Responder hoje</h4><small><strong>Board por Termômetro.</strong> Filtro: Status é Novo ou Triagem. Ordem: Entrou em, mais antigo primeiro. É a única tela que o Russo precisa abrir de manhã.</small></div>
+    <div class="card"><h4>🎯 Pipeline</h4><small><strong>Board por Status.</strong> A vida do atendimento em colunas, do Novo ao Feito. Arrastar o card é o único trabalho manual do sistema.</small></div>
+    <div class="card"><h4>📅 Agenda</h4><small><strong>Calendar por Data da sessão.</strong> Filtro: Status é Agendado ou Feito. Vira a agenda real dele, com a ficha do cliente a um clique.</small></div>
+    <div class="card"><h4>🖼 Referências</h4><small><strong>Gallery</strong> com preview na propriedade Referências. Pra quando ele quer bater o olho no que está entrando, não ler.</small></div>
+    <div class="card"><h4>💀 Perdidos</h4><small><strong>Table</strong> agrupada por Motivo da perda. Em três meses isso responde a pergunta mais cara do negócio: por que as pessoas não fecham.</small></div>
+  </div>
+
+  <h3>O termômetro</h3>
+  <p>O n8n calcula a pontuação antes de criar o card, então o Notion não precisa de fórmula nenhuma pra isso — e você ajusta os pesos num lugar só.</p>
+  <div class="score">
+    <div class="score-row"><span>Já foi tatuado pelo Russo</span><span class="pts p">+3</span></div>
+    <div class="score-row"><span>Faixa de investimento de R$ 2.000 pra cima</span><span class="pts p">+3</span></div>
+    <div class="score-row"><span>Faixa de R$ 1.000 a 2.000</span><span class="pts p">+2</span></div>
+    <div class="score-row"><span>Veio por indicação</span><span class="pts p">+2</span></div>
+    <div class="score-row"><span>Mandou referência</span><span class="pts p">+2</span></div>
+    <div class="score-row"><span>Mandou foto do local</span><span class="pts p">+2</span></div>
+    <div class="score-row"><span>Tem data marcada</span><span class="pts p">+2</span></div>
+    <div class="score-row"><span>Faixa de R$ 500 a 1.000</span><span class="pts p">+1</span></div>
+    <div class="score-row"><span>Quer fazer nos próximos 30 dias</span><span class="pts p">+1</span></div>
+    <div class="score-row"><span>Descreveu a ideia com mais de 120 caracteres</span><span class="pts p">+1</span></div>
+    <div class="score-row"><span>Ideia com menos de 40 caracteres</span><span class="pts m">−1</span></div>
+    <div class="score-row"><span>Cobertura sem foto da tattoo atual</span><span class="pts m">−2</span></div>
+    <div class="score-row"><span>Orçamento até R$ 500 com peça grande ou fechamento</span><span class="pts m">−2</span></div>
+  </div>
+  <div class="bands">
+    <div class="band h"><b>🔥 Quente</b><span>8 pontos ou mais · aviso no WhatsApp na hora · responder no mesmo dia</span></div>
+    <div class="band w"><b>🌤 Morno</b><span>4 a 7 pontos · entra no resumo das 9h · responder em até 48h</span></div>
+    <div class="band c"><b>❄️ Frio</b><span>menos de 4 · bloco de resposta semanal · nunca fica sem resposta</span></div>
+  </div>
+  <div class="note">
+    <b>Regra inegociável</b>
+    <p>Frio <strong>não</strong> significa ignorado. Significa "responde na sexta de tarde, no bloco". Um lead frio sem resposta é exatamente o cliente revoltado que o sistema existe pra evitar — e é o que destrói a reputação do Russo mais rápido do que qualquer preço alto.</p>
+  </div>
+</section>
+
+<!-- ============ 06 ============ -->
+<section id="n8n" class="wrap">
+  <span class="snum">06 — O cérebro</span>
+  <h2>Dois gatilhos,<br>dez nodes</h2>
+  <p class="sub">O JSON completo vai junto neste kit, pronto pra importar. Aqui está o que cada peça faz e o que você precisa preencher.</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>#</th><th>Node</th><th>O que faz</th></tr></thead>
+      <tbody>
+        <tr><td class="num">1</td><td><strong>Webhook do Tally</strong></td><td>POST em <code>/webhook/russo-preatendimento</code>. Cole essa URL no Tally em Integrations → Webhooks.</td></tr>
+        <tr><td class="num">2</td><td><strong>Normalizar e pontuar</strong> <span class="mono">(Code)</span></td><td>O Tally manda <code>data.fields[]</code> com ids em vez de texto nas múltiplas escolhas. Esse node achata tudo por rótulo, resolve os ids, extrai as URLs dos uploads, calcula o score, separa quem é da Grande Vitória de quem vem de fora, monta o corpo do Notion e prepara os 3 textos do aviso no WhatsApp (sem quebra de linha, que é regra da Meta pra variável de modelo).</td></tr>
+        <tr><td class="num">3</td><td><strong>Criar card no Notion</strong> <span class="mono">(HTTP Request)</span></td><td>POST em <code>api.notion.com/v1/pages</code>. Usei HTTP Request em vez do node do Notion de propósito: o mapeamento de propriedades fica no JavaScript, num lugar só, e você adiciona um campo novo sem mexer em nenhuma interface.</td></tr>
+        <tr><td class="num">4</td><td><strong>Lead quente?</strong> <span class="mono">(IF)</span></td><td>Score maior ou igual a 8 vai pro caminho de cima.</td></tr>
+        <tr><td class="num">5</td><td><strong>Avisar o Russo no WhatsApp</strong> <span class="mono">(HTTP Request)</span></td><td>Só pra ficha quente. Manda o modelo <code>ficha_quente</code> pela API oficial (Cloud API), com botão "Abrir card" que leva direto pro Notion. Morno e frio não apitam: vão pro resumo das 9h.</td></tr>
+        <tr><td class="num">6</td><td><strong>Responder ao Tally</strong></td><td>Devolve 200. Sem isso o Tally marca o webhook como falho e começa a reenviar.</td></tr>
+        <tr><td class="num">7</td><td><strong>Todo dia às 9h</strong> <span class="mono">(Schedule)</span></td><td>Segundo gatilho, no fuso de São Paulo (o mesmo do ES).</td></tr>
+        <tr><td class="num">8</td><td><strong>Buscar pendentes no Notion</strong> <span class="mono">(HTTP Request)</span></td><td>Puxa tudo que está em Novo, Triagem ou Orçado.</td></tr>
+        <tr><td class="num">9</td><td><strong>Montar resumo</strong> <span class="mono">(Code)</span></td><td>Lista quem espera resposta (com 🔴 pra quem passou de 2 dias) e os orçados sem movimento há 5 dias ou mais. Se não tem nada, para aqui e não manda mensagem.</td></tr>
+        <tr><td class="num">10</td><td><strong>Mandar resumo no WhatsApp</strong> <span class="mono">(HTTP Request)</span></td><td>Modelo <code>resumo_fichas</code>. Uma mensagem por dia, no máximo.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>O que preencher antes de ativar</h3>
+  <ol>
+    <li><strong>Credencial Notion</strong> — crie uma integração interna em <code>notion.so/my-integrations</code>, copie o token e <strong>compartilhe o database com a integração</strong> (é o passo que todo mundo esquece: sem isso a API devolve 404, não 403).</li>
+    <li><strong>Variável <code>NOTION_DB_ATENDIMENTOS</code></strong> — o id do database (o hash na URL, entre a barra e o <code>?</code>). Ou troque direto no código pelo id fixo.</li>
+    <li><strong>Número do bot</strong>: um chip pré-pago que não esteja em nenhum WhatsApp. É ele que manda o aviso pro Russo. Pra testar hoje sem chip, a Meta dá um número de teste no app.</li>
+    <li><strong>App na Meta</strong>: <code>developers.facebook.com</code> → Criar app → tipo Business → adicionar o produto WhatsApp. Copie o <em>Phone number ID</em> pra variável <code>WA_PHONE_NUMBER_ID</code>.</li>
+    <li><strong>Token permanente</strong>: no Gerenciador de Negócios, Usuários do sistema → gerar token com a permissão <code>whatsapp_business_messaging</code>. Ele vai só na credencial Header Auth do n8n (<code>Authorization: Bearer …</code>), nunca no código nem no GitHub.</li>
+    <li><strong>Forma de pagamento</strong> na conta do WhatsApp. Sem cartão cadastrado a Meta não entrega os modelos.</li>
+    <li><strong>Os dois modelos abaixo</strong>, categoria Utilidade, idioma Português (BR). A Meta pede um exemplo pra cada variável na hora de cadastrar.</li>
+    <li><strong>Variável <code>WA_RUSSO</code></strong>: o WhatsApp do Russo só com dígitos, com 55 e DDD (<code>5527…</code>).</li>
+    <li><strong>Os rótulos das perguntas no Tally</strong> devem bater exatamente com as strings do node 2 (<code>get('Me conta a ideia')</code> e companhia). Se você reescrever uma pergunta, atualize o rótulo lá. Inclusive a nova <code>Qual cidade?</code>.</li>
+  </ol>
+
+  <div class="copy">
+    <div class="copy-head"><span class="tag">Modelo ficha_quente · Utilidade · pt_BR</span><button class="cbtn" type="button">copiar</button></div>
+    <div class="copy-body">🔥 Ficha quente: {{1}}
+
+Ideia: {{2}}
+Detalhes: {{3}}
+
+Nota e motivos estão no card.</div>
+  </div>
+  <p class="sub" style="margin-top:-8px">Botão de link "Abrir card", URL dinâmica <code>https://www.notion.so/{{1}}</code>. Na tela bloqueada aparece: <em>🔥 Ficha quente: Marcos · R$2.000 a 4.000 · 30 dias · Coxa</em></p>
+
+  <div class="copy">
+    <div class="copy-head"><span class="tag">Modelo resumo_fichas · Utilidade · pt_BR</span><button class="cbtn" type="button">copiar</button></div>
+    <div class="copy-body">Bom dia. Fichas esperando resposta: {{1}}
+
+{{2}}
+
+Orçados pra cutucar: {{3}}
+
+Abre a aba Responder hoje no Notion.</div>
+  </div>
+  <p class="sub" style="margin-top:-8px">Botão de link "Abrir Notion", URL dinâmica <code>https://www.notion.so/{{1}}</code> (o n8n manda o id do database).</p>
+
+  <div class="note">
+    <b>Quanto custa</b>
+    <p>Desde 1º de outubro de 2026 a Meta cobra cada modelo de Utilidade no Brasil: cerca de <strong>R$ 0,035 por mensagem</strong> (US$ 0,0068). Com 30 avisos quentes e 30 resumos no mês, dá uns <strong>R$ 2 por mês</strong>, mais o chip uma vez. Se a Meta reclassificar o modelo como Marketing, sobe pra uns R$ 0,32 cada. Por isso os textos são secos e informativos.</p>
+  </div>
+
+  <div class="warn">
+    <b>Dois detalhes que quebram em produção</b>
+    <p><strong>Selects do Notion:</strong> a API cria a opção sozinha se ela não existir — mas com a cor padrão. Crie as opções à mão antes, com as cores certas, senão o board fica cinza.</p>
+    <p><strong>Links de arquivo do Tally:</strong> entram no Notion como anexo externo, ou seja, ficam apontando pro storage do Tally. Se um dia esses links expirarem ou o Russo apagar o form, as imagens somem do Notion. Se as referências forem virar acervo de verdade, acrescente um node que baixa e sobe as imagens pro Drive ou pro storage seu.</p>
+  </div>
+
+  <h3>Depois que rodar: três automações que valem ouro</h3>
+  <div class="grid">
+    <div class="card"><h4>📝 Mensagem de retomada pronta</h4><small>O resumo das 9h já diz quem está orçado há 5 dias. O próximo passo é o n8n escrever a retomada na voz do Russo e deixar no card, pra ele só copiar e mandar.</small></div>
+    <div class="card"><h4>🚗 Orçamento de quem vem de fora</h4><small>Quem vem do interior ou de outro estado viaja pra tatuar: precisa de sessão mais longa, data travada com antecedência e sinal antes da passagem. A Região separa esses cards pro Russo responder com essa conversa já na cabeça.</small></div>
+    <div class="card"><h4>🖤 Pós-tattoo em 15 dias</h4><small>Status vira "Feito" → agenda um lembrete de 15 dias → mensagem pedindo foto da cicatrização. Cuidado com o cliente e conteúdo pro feed no mesmo movimento.</small></div>
+  </div>
+</section>
+
+<!-- ============ 07 ============ -->
+<section id="pitch" class="wrap">
+  <span class="snum">07 — Como apresentar</span>
+  <h2>Ele não é contra<br>automação. Ele é<br>contra virar<br>igual aos outros.</h2>
+  <p class="sub">Essa distinção é a chave da conversa inteira. Se você entrar vendendo "bot", ele já ouviu a palavra e já decidiu. Se você entrar falando do problema dele, você não precisa vender nada.</p>
+
+  <h3>Passo 1 — Não apresente. Diagnostique.</h3>
+  <p>Senta com ele, abre o Direct <strong>junto</strong>, e conta três números em voz alta:</p>
+  <ul>
+    <li>Quantas mensagens não respondidas tem ali agora.</li>
+    <li>Quantas delas têm mais de uma semana.</li>
+    <li>Quantas viraram cliente no último mês.</li>
+  </ul>
+  <p>Não comente. Deixa o silêncio trabalhar. <strong>O número dói mais do que qualquer argumento seu</strong> — e mais importante: a conclusão vira dele, não sua.</p>
+
+  <h3>Passo 2 — A conta do prejuízo</h3>
+  <p>Faça na frente dele, num papel:</p>
+  <pre>DMs que ele não respondeu no mês        ____
+× taxa de conversão dele (chute 20%)    ____
+= clientes perdidos                     ____
+× ticket médio dele                     R$ ____
+= R$ ________ que evaporaram este mês</pre>
+  <p>Depois some as horas dele no celular por semana × 4. Some o desgaste de cada cliente irritado. Esse número é o que ele está pagando <em>hoje</em> por não ter sistema — e você vai propor uma alternativa que custa R$ 0.</p>
+
+  <h3>Passo 3 — Reposicione a palavra</h3>
+  <p>Não é bot. Não é atendimento automático. <strong>É ficha de anamnese.</strong></p>
+  <p>Dentista tem. Médico tem. Arquiteto tem briefing. Fotógrafo tem contrato. Nenhum deles ficou menos profissional por isso — todos ficaram <em>mais</em>. A ficha não coloca uma máquina entre ele e o cliente: ela tira a parte burocrática da conversa <strong>para que sobre conversa de verdade</strong>. Hoje ele gasta o pouco tempo que tem perguntando "onde no corpo?". Depois, ele vai gastar esse mesmo tempo falando de desenho.</p>
+
+  <h3>Passo 4 — Faça ele escrever a copy</h3>
+  <p><strong>Esse é o passo que decide.</strong> A resistência quase nunca é sobre tecnologia — é sobre autoria. Se você chega com tudo pronto, é o seu sistema aplicado nele. Se você chega com as perguntas e ele escreve as frases, é o sistema <em>dele</em>, e você só montou.</p>
+  <p>Leve as perguntas da seção 03 e peça: <em>"como você falaria isso?"</em>. Ele vai reescrever metade — e cada frase reescrita é uma objeção que morreu sozinha. Textos como <em>"se não for meu estilo, te indico alguém que faça melhor que eu"</em> só funcionam se saírem da boca dele.</p>
+
+  <h3>Passo 5 — Mostre um card pronto</h3>
+  <p>Antes da conversa, preencha a ficha você mesmo como se fosse um cliente. Abra o Notion na frente dele e mostre o card: nome, @, ideia, referência, foto do local, faixa de valor, prazo — tudo em uma tela.</p>
+  <p>E pergunte: <em>"quanto tempo de Direct você levaria pra ter isso tudo?"</em>. A resposta honesta é vinte mensagens em três dias. O card chegou em dois minutos, enquanto ele tatuava.</p>
+
+  <h3>Passo 6 — Piloto de 30 dias com botão de saída</h3>
+  <p>Nunca proponha adotar. Proponha <strong>testar</strong>. E ofereça a saída antes que ele peça:</p>
+  <div class="copy">
+    <div class="copy-head"><span class="tag">A frase que fecha</span><button class="cbtn" type="button">copiar</button></div>
+    <div class="copy-body">Testa 30 dias. Eu monto tudo, você não mexe em nada além de abrir o Notion de manhã.
+
+Se no fim do mês você achar que ficou frio, que perdeu cliente ou que virou uma coisa que não é você, eu apago tudo e volta como era. Sem drama, sem "só mais uma semana".
+
+O que a gente mede: quanto tempo você levou pra responder, quantos ficaram sem resposta, quantos orçamentos fecharam e quanto tempo você passou no celular.
+
+Se os quatro números melhorarem, a gente continua. Se não, você tinha razão e eu pago a cerveja.</div>
+  </div>
+
+  <h3>As objeções que ele vai levantar</h3>
+
+  <div class="obj">
+    <div class="said">"Vai ficar frio, robotizado. Não sou assim."</div>
+    <p>A copy é dele, palavra por palavra. E existe um detalhe que ele não pensou: <strong>hoje o cliente recebe silêncio.</strong> Não existe nada mais frio que silêncio. Uma mensagem dizendo "eu leio tudo, respondo em até 48h" é infinitamente mais quente do que três dias de visualizado.</p>
+    <p>Reforço: ele continua respondendo <strong>pessoalmente</strong>. O automático faz uma coisa só — segurar a pessoa e coletar informação. A conversa continua sendo com ele.</p>
+  </div>
+
+  <div class="obj">
+    <div class="said">"Meu cliente não vai preencher isso."</div>
+    <p>Alguns não vão. E aqui está o ponto que vale a conversa inteira: <strong>quem não gasta 2 minutos numa ficha dificilmente vai gastar 6 horas numa cadeira e R$ 3.000.</strong> A ficha não afasta cliente bom — ela afasta a conversa que ia morrer no preço depois de quarenta mensagens.</p>
+    <p>E se ele quiser um plano B: quem insistir no Direct, ele responde normalmente e preenche a ficha depois. O sistema continua servindo.</p>
+  </div>
+
+  <div class="obj">
+    <div class="said">"Tatuador bom não precisa disso."</div>
+    <p>Justamente o contrário. Quem tem agenda vazia responde tudo na hora — tem tempo de sobra. Quem tem agenda lotada é exatamente quem precisa de fila organizada. <strong>Ter processo é sintoma de demanda, não de desespero.</strong></p>
+    <p>E, do lado de fora, uma ficha bem feita comunica curadoria: "esse cara não pega qualquer trabalho". Isso não distancia — isso valoriza.</p>
+  </div>
+
+  <div class="obj">
+    <div class="said">"Não tenho tempo pra montar nem paciência pra aprender."</div>
+    <p>Ele não vai montar nada — você monta. E o que sobra pra ele é uma coisa só: <strong>abrir um app no celular e olhar uma lista.</strong> Não tem senha nova, não tem painel, não tem configuração. É menos coisa pra aprender do que o Direct do Instagram já exige hoje.</p>
+  </div>
+
+  <div class="obj">
+    <div class="said">"E se eu perder cliente por causa disso?"</div>
+    <p>Mede. É pra isso que serve o piloto. Mas repare no que está sendo comparado: não é "ficha × atendimento perfeito". É <strong>"ficha × mensagem que ele nunca abriu"</strong>. O ponto de partida real dele hoje é a mensagem perdida.</p>
+  </div>
+
+  <h3>O que medir nos 30 dias</h3>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Métrica</th><th>Como medir</th><th>O que significa se melhorar</th></tr></thead>
+      <tbody>
+        <tr><td>Tempo médio até a primeira resposta</td><td>"Entrou em" → data em que virou Orçado</td><td>O cliente para de esfriar na fila</td></tr>
+        <tr><td>% de fichas respondidas</td><td>Status ≠ Novo ÷ total</td><td>Ninguém mais some sem resposta</td></tr>
+        <tr><td>Fichas → orçamento → sinal</td><td>Contagem por Status</td><td>O funil real, com número, pela primeira vez</td></tr>
+        <tr><td>Horas dele no celular</td><td>Tempo de uso do Instagram no aparelho</td><td>Devolve tempo de vida, não só de trabalho</td></tr>
+        <tr><td>Cliente irritado no mês</td><td>Contagem honesta dos dois</td><td>É a métrica que ele mais vai sentir</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note">
+    <b>O que não fazer</b>
+    <p>Não mostre esse material inteiro pra ele de cara. Sete seções, tabela, JSON e fórmula é a linguagem que <strong>você</strong> fala — pra ele isso parece burocracia chegando na porta do estúdio. Mostre a seção 07, a ficha da seção 03 e um card pronto no Notion. O resto é seu.</p>
+  </div>
+</section>
+
+<footer class="foot wrap">
+  <p><strong>Ordem de montagem sugerida:</strong> Notion (30 min) → Tally (1h) → n8n (45 min) → Instagram (15 min) → preencher você mesmo como cliente e ver o card nascer. Só então chamar o Russo.</p>
+  <p>Custos verificados em setembro de 2026: <a href="https://tally.so/pricing">planos do Tally</a> · <a href="https://freesurveymakers.com/notion-forms/">limites do Notion Forms</a> · <a href="https://metawingz.co/product-review/manychat-free-plan-review/">plano gratuito do ManyChat</a>. Preços de SaaS mudam — reconfira antes de decidir.</p>
+</footer>
+
+<script>
+document.addEventListener('click', function(e){
+  var btn = e.target.closest('.cbtn');
+  if(!btn) return;
+  var box = btn.closest('.copy');
+  if(!box) return;
+  var body = box.querySelector('.copy-body');
+  var text = body.textContent;
+  var done = function(){
+    var old = btn.textContent;
+    btn.textContent = 'copiado ✓';
+    btn.classList.add('done');
+    setTimeout(function(){ btn.textContent = old; btn.classList.remove('done'); }, 1600);
+  };
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(done, function(){ fallback(text, done); });
+  } else {
+    fallback(text, done);
+  }
+});
+
+function fallback(text, done){
+  var ta = document.createElement('textarea');
+  ta.value = text;
+  ta.setAttribute('readonly','');
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); done(); } catch(err) {}
+  document.body.removeChild(ta);
+}
+
+// dica de rolagem só nas tabelas que realmente não cabem
+Array.prototype.forEach.call(document.querySelectorAll('.tw'), function(tw){
+  var check = function(){
+    var overflows = tw.scrollWidth > tw.clientWidth + 4;
+    var hint = tw.nextElementSibling && tw.nextElementSibling.classList.contains('scroll-hint')
+      ? tw.nextElementSibling : null;
+    if(overflows && !hint){
+      hint = document.createElement('div');
+      hint.className = 'scroll-hint';
+      hint.textContent = 'arraste a tabela para o lado';
+      tw.parentNode.insertBefore(hint, tw.nextSibling);
+    } else if(!overflows && hint){
+      hint.remove();
+    }
+  };
+  check();
+  window.addEventListener('resize', check);
+  tw.addEventListener('scroll', function(){
+    var hint = tw.nextElementSibling;
+    if(hint && hint.classList.contains('scroll-hint')) hint.style.opacity = '0';
+  }, { once: true, passive: true });
+});
+
+var links = Array.prototype.slice.call(document.querySelectorAll('.nav a'));
+var sections = links.map(function(a){ return document.querySelector(a.getAttribute('href')); });
+if('IntersectionObserver' in window){
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if(!en.isIntersecting) return;
+      var i = sections.indexOf(en.target);
+      if(i < 0) return;
+      links.forEach(function(l){ l.classList.remove('on'); });
+      links[i].classList.add('on');
+      var el = links[i];
+      var bar = document.querySelector('.nav-in');
+      if(bar && (el.offsetLeft < bar.scrollLeft || el.offsetLeft + el.offsetWidth > bar.scrollLeft + bar.clientWidth)){
+        bar.scrollTo({ left: Math.max(0, el.offsetLeft - 40), behavior: 'smooth' });
+      }
+    });
+  }, { rootMargin: '-52px 0px -70% 0px' });
+  sections.forEach(function(s){ if(s) io.observe(s); });
+}
+</script>
+
+</body>
+</html>
