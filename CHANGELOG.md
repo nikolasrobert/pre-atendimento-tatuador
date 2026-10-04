@@ -38,3 +38,12 @@ Cada etapa abaixo virou um ou mais commits. As decisões ficam registradas aqui 
 - Code nodes do n8n extraídos pra `n8n/code/`, com testes e um script que mantém o `workflow.json` em sincronia.
 - CI no GitHub Actions: JSON válido, código compila, sincronia e testes.
 - Site estático em `docs/`, pronto pro Netlify publicar a cada push.
+
+## Produção
+- A ficha virou site próprio (`site/`), no lugar do Tally: mesma conversa do protótipo, sem tela de bastidor, envio de verdade.
+- Fotos comprimidas no celular (máx. 1600 px) e guardadas no Netlify Blobs, servidas em `/arquivo/...`. Contorna o limite de 10 MB por arquivo do Tally grátis.
+- Vídeo do local por botão de WhatsApp, já com o nome do cliente na mensagem.
+- Função `/api/ficha` repassa pro n8n no formato do Tally, então o workflow não precisou mudar de contrato. Honeypot contra robô.
+- Só a ficha vai pro ar: as páginas internas (estratégia, voz, pitch) ficam fora do site público.
+- n8n: modo de teste (`WA_MODO=texto` e `WA_AVISAR_TODAS=sim`), menção no Notion pra notificar no app, detalhes da ficha no corpo do card e configuração que funciona mesmo com `$env` bloqueado.
+- Corrigido: a faixa "R$ 1.000 a 2.000" pontuava como faixa alta.

@@ -8,8 +8,9 @@ Sistema de primeiro atendimento para um tatuador autônomo da Grande Vitória (E
 
 ```mermaid
 flowchart LR
-  IG[Instagram<br/>resposta automática + FAQ] -->|link da ficha| T[Tally<br/>ficha de ideia]
-  T -->|webhook| N8N[n8n<br/>normaliza + pontua]
+  IG[Instagram<br/>link na bio + resposta automática] -->|link da ficha| T[Ficha de ideia<br/>site no Netlify]
+  T -->|/api/ficha| F[Função Netlify<br/>fotos no Blobs]
+  F -->|webhook| N8N[n8n<br/>normaliza + pontua]
   N8N -->|API| NO[(Notion<br/>Atendimentos)]
   N8N -->|score ≥ 8| WA[WhatsApp do tatuador<br/>aviso na hora]
   CRON[Todo dia 9h] --> N8N2[n8n<br/>resumo] -->|pendentes| WA
@@ -17,7 +18,7 @@ flowchart LR
 ```
 
 1. **Instagram**: a resposta automática nativa manda o link da ficha. Não usa bot de DM.
-2. **Ficha (Tally)**: 17 perguntas base, mais desvios condicionais (cobertura, primeira tattoo, local exposto, cidade fora da Grande Vitória). Foto do local e referências por upload.
+2. **Ficha (site próprio no Netlify)**: 17 perguntas base, mais desvios condicionais (cobertura, primeira tattoo, local exposto, cidade fora da Grande Vitória). As fotos são comprimidas no celular e guardadas no Netlify Blobs; vídeo vai por um botão de WhatsApp. O Tally continua como alternativa sem código: a função manda o mesmo formato de payload.
 3. **n8n**: limpa o payload do Tally, calcula o score (🔥 quente, 🌤 morno, ❄️ frio), cria o card no Notion e separa a região (Grande Vitória ou fora).
 4. **WhatsApp (Cloud API oficial)**: ficha quente apita na hora. O resto entra num resumo único às 9h, que também lembra os orçados parados há 5 dias ou mais.
 5. **Notion**: board "Responder hoje", pipeline, agenda, galeria de referências e perdidos com motivo.
@@ -27,7 +28,7 @@ flowchart LR
 | Peça | Custo mensal |
 | --- | --- |
 | Instagram (recursos nativos) | R$ 0 |
-| Tally (free) | R$ 0 |
+| Netlify (ficha + função + fotos) | R$ 0 |
 | Notion (free) | R$ 0 |
 | n8n self-hosted | R$ 0 a 30 |
 | WhatsApp Cloud API | ~R$ 0,035 por aviso (modelo de Utilidade, tabela Meta de 1º/out/2026) |
@@ -35,7 +36,9 @@ flowchart LR
 ## Estrutura
 
 ```
-docs/        páginas do projeto (mobile-first), servidas como site estático
+site/        a ficha de produção (é o que vai pro link da bio)
+netlify/     funções: recebe a ficha, guarda as fotos, serve as fotos
+docs/        páginas internas do projeto (não vão pro ar)
 n8n/         workflow.json (importável) + code/ com os Code nodes
 notion/      schema do banco de atendimentos
 whatsapp/    modelos de mensagem pra cadastrar na Meta
@@ -46,16 +49,16 @@ tests/       testes dos Code nodes com payloads de exemplo
 ## Rodando
 
 ```bash
-npm test                 # testa os Code nodes do n8n
+npm test                 # testa os Code nodes do n8n e a função da ficha
 npm run sync             # copia n8n/code/*.js para dentro do workflow.json
 npm run placeholders     # lista os {{TOKENS}} que ainda faltam preencher
 ```
 
-Configuração do n8n: importe `n8n/workflow.json` e preencha as variáveis de `.env.example`. Os tokens (Notion e WhatsApp) ficam só nas credenciais do n8n, nunca no repositório.
+Passo a passo de produção (Netlify, n8n, WhatsApp de teste): [DEPLOY.md](DEPLOY.md). Os tokens ficam nas credenciais do n8n e nas variáveis do Netlify, nunca no repositório.
 
-## Páginas
+## Páginas internas (`docs/`)
 
-O site em `docs/` sai no ar a cada push na `main` quando o repositório está ligado ao Netlify (`netlify.toml` já aponta pra pasta).
+Não vão pro ar: abra os arquivos localmente.
 
 | Página | O que é |
 | --- | --- |

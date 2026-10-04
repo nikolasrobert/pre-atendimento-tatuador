@@ -1,12 +1,14 @@
-// Lista os {{TOKENS}} que ainda faltam nas páginas (dados que o tatuador precisa passar).
+// Lista os {{TOKENS}} que ainda faltam na ficha (site/) e nas páginas (docs/) (dados que o tatuador precisa passar).
 // --strict: sai com erro se sobrar algum. Use antes de publicar pra cliente.
 const fs = require('fs');
 const path = require('path');
 
-const dir = path.join(__dirname, '..', 'docs');
+const raiz = path.join(__dirname, '..');
 const found = {};
-for (const f of fs.readdirSync(dir).filter(f => f.endsWith('.html'))) {
-  const html = fs.readFileSync(path.join(dir, f), 'utf8');
+const arquivos = ['site', 'docs'].flatMap(d =>
+  fs.readdirSync(path.join(raiz, d)).filter(f => f.endsWith('.html')).map(f => path.join(d, f)));
+for (const f of arquivos) {
+  const html = fs.readFileSync(path.join(raiz, f), 'utf8');
   // <code>{{TOKEN}}</code> é documentação sobre o token, não copy: não conta
   const copy = html.replace(/<code>\{\{[A-Z_]+\}\}<\/code>/g, '');
   for (const m of copy.matchAll(/\{\{([A-Z_]+)\}\}/g)) {
