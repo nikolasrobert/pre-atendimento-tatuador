@@ -1,0 +1,346 @@
+{
+  "name": "Russo · Pré-atendimento (Tally → Notion → WhatsApp)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "russo-preatendimento",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "a1000000-0000-4000-8000-000000000001",
+      "name": "Webhook do Tally",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -460,
+        300
+      ],
+      "webhookId": "russo-preatendimento"
+    },
+    {
+      "parameters": {
+        "jsCode": "// === Pré-atendimento Russo · normaliza o payload do Tally e pontua o lead ===\n// Entrada: webhook do Tally (FORM_RESPONSE). Saída: 1 item pronto pro Notion + WhatsApp.\n\nconst body = $input.first().json;\nconst fields = (body && body.data && body.data.fields) || [];\n\n// Tally manda [{key, label, type, value, options?}]. Vira um objeto label -> valor legível.\nconst raw = {};\nfor (const f of fields) {\n  let v = f.value;\n  if (Array.isArray(v) && Array.isArray(f.options)) {\n    // múltipla escolha / dropdown / checkboxes: value é array de ids\n    v = v.map(id => (f.options.find(o => o.id === id) || {}).text).filter(Boolean).join(', ');\n  } else if (Array.isArray(v) && v.length && v[0] && v[0].url) {\n    // upload de arquivos\n    v = v.map(a => a.url);\n  } else if (Array.isArray(v)) {\n    v = v.join(', ');\n  }\n  raw[String(f.label || '').trim()] = v;\n}\n\nconst get = (label, fb = '') => {\n  const v = raw[label];\n  return (v === undefined || v === null || v === '') ? fb : v;\n};\nconst arr = (label) => {\n  const v = raw[label];\n  return Array.isArray(v) ? v : (v ? [v] : []);\n};\n\n// --- campos ---\nconst nome        = String(get('Como te chamo?', 'Sem nome'));\nconst insta       = String(get('Seu @ do Instagram')).trim().replace(/^@/, '').replace(/\\s+/g, '');\nconst whats       = String(get('WhatsApp')).replace(/\\D/g, '');\nconst cidadeOpc   = String(get('De onde você vem?'));\nconst cidadeOutra = String(get('Qual cidade?')).trim();\nconst cidade      = cidadeOutra || cidadeOpc;\nconst regiao      = /fora da grande vit/i.test(cidadeOpc) ? '🚗 Fora da Grande Vitória' : (cidadeOpc ? '🏠 Grande Vitória' : '');\nconst experiencia = String(get('É sua primeira tatuagem?'));\nconst ideia       = String(get('Me conta a ideia'));\nconst refs        = arr('Referências');\nconst refLink     = String(get('Link de pasta / Pinterest'));\nconst local       = String(get('Onde no corpo?'));\nconst fotoLocal   = arr('Foto do local');\nconst tamanho     = String(get('Tamanho aproximado'));\nconst coberturaTx = String(get('É cobertura de uma tattoo antiga?'));\nconst cobertura   = /^sim/i.test(coberturaTx.trim());\nconst fotoCover   = arr('Foto da tattoo que vai ser coberta');\nconst cor         = String(get('Preto e cinza ou colorido?'));\nconst faixa       = String(get('Quanto você tem pra investir nesse projeto?'));\nconst prazo       = String(get('Quando você quer fazer?'));\nconst dataLimite  = String(get('Qual a data?'));\nconst disp        = String(get('Quando você consegue vir?'));\nconst origem      = String(get('Como você chegou até mim?'));\n\n// --- pontuação ---\nlet score = 0;\nconst porque = [];\nconst add = (p, motivo) => { score += p; porque.push((p > 0 ? '+' : '') + p + ' ' + motivo); };\n\nif (/j[áa] me tatuou/i.test(experiencia)) add(3, 'já é cliente');\nif (/indica/i.test(origem)) add(2, 'veio por indicação');\nif (refs.length || refLink) add(2, 'mandou referência');\nif (fotoLocal.length) add(2, 'mandou foto do local');\n\nif (/4\\.?000|acima/i.test(faixa)) add(3, 'faixa alta');\nelse if (/2\\.?000/i.test(faixa)) add(3, 'faixa alta');\nelse if (/1\\.?000/i.test(faixa)) add(2, 'faixa média');\nelse if (/500/i.test(faixa)) add(1, 'faixa inicial');\n\nif (/data marcada/i.test(prazo)) add(2, 'tem data marcada');\nelse if (/30 dias/i.test(prazo)) add(1, 'quer nos próximos 30 dias');\n\nif (ideia.length > 120) add(1, 'descreveu bem a ideia');\nif (ideia.length > 0 && ideia.length < 40) add(-1, 'ideia vaga');\nif (cobertura && !fotoCover.length) add(-2, 'cobertura sem foto');\nif (/at[ée] R\\$ ?500/i.test(faixa) && /(15|25|fechamento)/i.test(tamanho)) add(-2, 'orçamento x tamanho incompatível');\n\nconst termometro = score >= 8 ? '🔥 Quente' : (score >= 4 ? '🌤 Morno' : '❄️ Frio');\n\n// --- helpers Notion ---\nconst txt  = (s) => ({ rich_text: [{ type: 'text', text: { content: String(s || '').slice(0, 1900) } }] });\nconst sel  = (s) => (s ? { select: { name: String(s).slice(0, 90) } } : { select: null });\nconst file = (urls, prefixo) => ({\n  files: (urls || []).slice(0, 10).map((u, i) => ({\n    type: 'external',\n    name: prefixo + '-' + (i + 1),\n    external: { url: u },\n  })),\n});\n\nconst waLink = whats ? 'https://wa.me/' + (whats.length <= 11 ? '55' + whats : whats) : '';\nconst igLink = insta ? 'https://instagram.com/' + insta : '';\n\nconst notion = {\n  parent: { database_id: $env.NOTION_DB_ATENDIMENTOS || 'COLE_AQUI_O_ID_DO_DATABASE' },\n  icon: { type: 'emoji', emoji: score >= 8 ? '🔥' : (score >= 4 ? '🌤' : '❄️') },\n  properties: {\n    'Cliente':                { title: [{ type: 'text', text: { content: nome } }] },\n    'Status':                 sel('🆕 Novo'),\n    'Entrou em':              { date: { start: (body && body.data && body.data.createdAt) || new Date().toISOString() } },\n    'Termômetro':             sel(termometro),\n    'Score':                  { number: score },\n    'Por que essa nota':      txt(porque.join(' · ')),\n    'Instagram':              { url: igLink || null },\n    'WhatsApp':               { url: waLink || null },\n    'Cidade':                 txt(cidade),\n    'Região':                 sel(regiao),\n    'Experiência':            sel(experiencia),\n    'Ideia':                  txt(ideia),\n    'Local do corpo':         sel(local),\n    'Tamanho':                sel(tamanho),\n    'Cor':                    sel(cor),\n    'Cobertura':              { checkbox: cobertura },\n    'Faixa de investimento':  sel(faixa),\n    'Prazo':                  sel(prazo),\n    'Data limite':            dataLimite ? { date: { start: dataLimite } } : { date: null },\n    'Disponibilidade':        txt(disp),\n    'Origem':                 sel(origem),\n    'Referências':            file(refs, 'ref'),\n    'Foto do local':          file(fotoLocal, 'local'),\n    'Cover atual':            file(fotoCover, 'cover'),\n  },\n  children: [\n    { object: 'block', type: 'heading_3', heading_3: { rich_text: [{ type: 'text', text: { content: 'A ideia, nas palavras do cliente' } }] } },\n    { object: 'block', type: 'quote', quote: { rich_text: [{ type: 'text', text: { content: ideia || '(não descreveu)' } }] } },\n    { object: 'block', type: 'heading_3', heading_3: { rich_text: [{ type: 'text', text: { content: 'Rascunho de resposta' } }] } },\n    { object: 'block', type: 'paragraph', paragraph: { rich_text: [{ type: 'text', text: { content:\n      'Fala ' + nome.split(' ')[0] + '! Curti sua ideia. ' +\n      (cobertura ? 'Cobertura dá pra fazer. O desenho tem que nascer em cima do que já tem, te explico. ' : '') +\n      'Sobre a ideia: ' } }] } },\n  ],\n};\n\n// WhatsApp (template \"ficha_quente\"): parâmetro não aceita quebra de linha, tab nem 4+ espaços seguidos\nconst limpa = (t, max) => {\n  const v = String(t || '').replace(/[\\r\\n\\t]+/g, ' ').replace(/ {4,}/g, '   ').trim();\n  return v.length > max ? v.slice(0, max - 1) + '…' : (v || '-');\n};\nconst primeiro   = (nome.split(' ')[0] || 'Sem nome');\nconst prazoCurto = /data marcada/i.test(prazo) ? ('data ' + (dataLimite || 'marcada'))\n                 : (/30 dias/i.test(prazo) ? '30 dias' : 'sem pressa');\nconst faixaCurta = faixa.replace('Prefiro que você me diga', 'sem faixa').replace(/R\\$ ?/g, 'R$');\n// {{1}} vai na 1a linha, a que aparece na tela bloqueada: \"🔥 Ficha quente: Marcos · R$2.000 a 4.000 · 30 dias · Coxa\"\nconst waParams = [\n  limpa([primeiro, faixaCurta, prazoCurto, local].filter(Boolean).join(' · '), 80),\n  limpa(ideia, 220),\n  limpa([\n    tamanho, cor, cobertura ? 'COBERTURA' : '', cidade, insta ? '@' + insta : '',\n    refs.length + (refs.length === 1 ? ' referência' : ' referências') + (fotoLocal.length ? ' + foto do local' : ' · SEM foto do local'),\n  ].filter(Boolean).join(' · '), 300),\n];\n\nreturn [{\n  json: {\n    nome, insta, whats, waLink, igLink, cidade, ideia, local, tamanho, cor,\n    cobertura, faixa, prazo, dataLimite, origem, experiencia, regiao,\n    refs, fotoLocal, fotoCover,\n    score, termometro, porque: porque.join(' · '),\n    waParams,\n    notion,\n  },\n}];\n"
+      },
+      "id": "a1000000-0000-4000-8000-000000000002",
+      "name": "Normalizar e pontuar",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.notion.com/v1/pages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.notion) }}",
+        "options": {}
+      },
+      "id": "a1000000-0000-4000-8000-000000000003",
+      "name": "Criar card no Notion",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -20,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cond-quente",
+              "leftValue": "={{ $('Normalizar e pontuar').item.json.score }}",
+              "rightValue": 8,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "id": "a1000000-0000-4000-8000-000000000004",
+      "name": "Lead quente?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ ok: true, termometro: $('Normalizar e pontuar').item.json.termometro }) }}",
+        "options": {}
+      },
+      "id": "a1000000-0000-4000-8000-000000000007",
+      "name": "Responder ao Tally",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        680,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/{{ $env.WA_API_VERSION || 'v23.0' }}/{{ $env.WA_PHONE_NUMBER_ID }}/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ messaging_product: 'whatsapp', to: $env.WA_RUSSO, type: 'template', template: { name: 'ficha_quente', language: { code: 'pt_BR' }, components: [ { type: 'body', parameters: $('Normalizar e pontuar').item.json.waParams.map(t => ({ type: 'text', text: t })) }, { type: 'button', sub_type: 'url', index: '0', parameters: [ { type: 'text', text: $('Criar card no Notion').item.json.id.replace(/-/g, '') } ] } ] } }) }}",
+        "options": {}
+      },
+      "id": "wa-quente",
+      "name": "Avisar o Russo no WhatsApp",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        440,
+        200
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "",
+          "name": "WhatsApp Cloud API (Bearer)"
+        }
+      },
+      "notes": "Header Auth: Authorization = Bearer <token do usuário do sistema>. O token fica só na credencial do n8n.",
+      "notesInFlow": false
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 * * *"
+            }
+          ]
+        }
+      },
+      "id": "cron-9h",
+      "name": "Todo dia às 9h",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -460,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.notion.com/v1/databases/{{ $env.NOTION_DB_ATENDIMENTOS }}/query",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\"page_size\": 100, \"filter\": {\"or\": [{\"property\": \"Status\", \"select\": {\"equals\": \"🆕 Novo\"}}, {\"property\": \"Status\", \"select\": {\"equals\": \"👀 Triagem\"}}, {\"property\": \"Status\", \"select\": {\"equals\": \"💬 Orçado\"}}]}}",
+        "options": {}
+      },
+      "id": "notion-pendentes",
+      "name": "Buscar pendentes no Notion",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -240,
+        640
+      ],
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "jsCode": "// === Resumo das 9h · o que está esperando o Russo ===\n// Entrada: resposta do Notion (databases/query). Saída: 3 parâmetros do template \"resumo_fichas\", ou nada.\nconst res  = ($input.first().json && $input.first().json.results) || [];\nconst DIA  = 86400000;\nconst agora = Date.now();\n\nconst P       = (pg, k) => (pg.properties && pg.properties[k]) || {};\nconst nomeDe  = (pg) => (((P(pg, 'Cliente').title || [])[0] || {}).plain_text || 'Sem nome').replace(/^EXEMPLO · /, '').split(' ')[0];\nconst status  = (pg) => (P(pg, 'Status').select || {}).name || '';\nconst local   = (pg) => (P(pg, 'Local do corpo').select || {}).name || '';\nconst termo   = (pg) => ((P(pg, 'Termômetro').select || {}).name || '').split(' ')[0];\nconst entrou  = (pg) => new Date((P(pg, 'Entrou em').date || {}).start || pg.created_time).getTime();\nconst parado  = (pg) => Math.floor((agora - entrou(pg)) / DIA);\nconst semMexer = (pg) => Math.floor((agora - new Date(pg.last_edited_time).getTime()) / DIA);\n\nconst esperando = res.filter(pg => /Novo|Triagem/.test(status(pg))).sort((a, b) => entrou(a) - entrou(b));\n// Orçado sem ninguém mexer no card há 5+ dias = hora do follow-up. Quem manda é o Russo, à mão (regra da Meta no Direct).\nconst cutucar   = res.filter(pg => /Orçado/.test(status(pg)) && semMexer(pg) >= 5);\n\nif (!esperando.length && !cutucar.length) return [];   // dia limpo: não manda nada\n\nconst limpa = (t, max) => {\n  const v = String(t || '').replace(/[\\r\\n\\t]+/g, ' ').replace(/ {4,}/g, '   ').trim();\n  return v.length > max ? v.slice(0, max - 1) + '…' : (v || '-');\n};\nconst linha = (pg) => {\n  const d = parado(pg);\n  return [termo(pg), nomeDe(pg)].filter(Boolean).join(' ') + (local(pg) ? ' (' + local(pg) + ')' : '') + (d >= 2 ? ' 🔴' + d + 'd' : '');\n};\n\nreturn [{\n  json: {\n    waParams: [\n      String(esperando.length),\n      limpa(esperando.map(linha).join(' · ') || 'nenhuma', 400),\n      limpa(cutucar.map(pg => nomeDe(pg) + ' (' + semMexer(pg) + 'd)').join(' · ') || 'ninguém', 200),\n    ],\n    notionDb: String($env.NOTION_DB_ATENDIMENTOS || '').replace(/-/g, ''),\n  },\n}];\n"
+      },
+      "id": "code-resumo",
+      "name": "Montar resumo",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -20,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/{{ $env.WA_API_VERSION || 'v23.0' }}/{{ $env.WA_PHONE_NUMBER_ID }}/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ messaging_product: 'whatsapp', to: $env.WA_RUSSO, type: 'template', template: { name: 'resumo_fichas', language: { code: 'pt_BR' }, components: [ { type: 'body', parameters: $json.waParams.map(t => ({ type: 'text', text: t })) }, { type: 'button', sub_type: 'url', index: '0', parameters: [ { type: 'text', text: $json.notionDb } ] } ] } }) }}",
+        "options": {}
+      },
+      "id": "wa-resumo",
+      "name": "Mandar resumo no WhatsApp",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        200,
+        640
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "",
+          "name": "WhatsApp Cloud API (Bearer)"
+        }
+      },
+      "notes": "Header Auth: Authorization = Bearer <token do usuário do sistema>. O token fica só na credencial do n8n.",
+      "notesInFlow": false
+    }
+  ],
+  "connections": {
+    "Webhook do Tally": {
+      "main": [
+        [
+          {
+            "node": "Normalizar e pontuar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalizar e pontuar": {
+      "main": [
+        [
+          {
+            "node": "Criar card no Notion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Criar card no Notion": {
+      "main": [
+        [
+          {
+            "node": "Lead quente?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lead quente?": {
+      "main": [
+        [
+          {
+            "node": "Avisar o Russo no WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Responder ao Tally",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Avisar o Russo no WhatsApp": {
+      "main": [
+        [
+          {
+            "node": "Responder ao Tally",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Todo dia às 9h": {
+      "main": [
+        [
+          {
+            "node": "Buscar pendentes no Notion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar pendentes no Notion": {
+      "main": [
+        [
+          {
+            "node": "Montar resumo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Montar resumo": {
+      "main": [
+        [
+          {
+            "node": "Mandar resumo no WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/Sao_Paulo"
+  },
+  "pinData": {},
+  "meta": {
+    "instanceId": "russo-pre-atendimento"
+  },
+  "tags": []
+}
