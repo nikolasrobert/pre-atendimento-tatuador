@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: workflow.json é JSON válido
+        run: node -e "JSON.parse(require('fs').readFileSync('n8n/workflow.json','utf8'))"
+
+      - name: Code nodes compilam
+        run: for f in n8n/code/*.js; do node --check "$f"; done
+
+      - name: workflow.json em sincronia com n8n/code
+        run: npm run sync:check
+
+      - name: Testes dos Code nodes
+        run: npm test
+
+      - name: Placeholders pendentes (informativo)
+        run: npm run placeholders
